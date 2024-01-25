@@ -1,0 +1,21 @@
+@import "../node_modules/bootstrap/scss/functions";
+@import "../node_modules/bootstrap/scss/variables";
+@import "../node_modules/bootstrap/scss/variables-dark";
+
+$custom-colors: (
+  "dark-lava": #4B4237,
+  "goldenrod": #D5A021,
+  "alabaster": #EDE7D9,
+  "spanish-gray": #A49694,
+  "dim-gray": #736B60,
+  "purple-100": $purple-100,
+  "blue-200": $blue-200,
+  "pink": $pink,
+  "teal-800": $teal-800,
+);
+
+$theme-colors: map-merge($theme-colors, $custom-colors);
+
+
+// 5. Import all the rest of Bootstrap 
+@import "../node_modules/bootstrap/scss/bootstrap";

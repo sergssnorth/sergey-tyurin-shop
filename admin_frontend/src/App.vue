@@ -1,0 +1,345 @@
+<template>
+  <header class="py-3 mb-4 border-bottom shadow">
+    <div class="container-fluid align-items-center d-flex">
+        <div class="flex-shrink-1">
+            <a href="#" class="d-flex align-items-center col-lg-4 mb-2 mb-lg-0 link-dark text-decoration-none">
+                <i class="bi bi-bootstrap fs-2 text-dark"></i>
+            </a>
+        </div>
+        <div class="flex-grow-1 d-flex align-items-center">
+            <form class="w-100 me-3">
+                <input type="search" class="form-control" placeholder="Search...">
+            </form>
+            <div class="flex-shrink-0 dropdown">
+                <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="https://via.placeholder.com/28?text=!" alt="user" width="32" height="32" class="rounded-circle">
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="dropdownUser2" style="">
+                    <li><a class="dropdown-item" href="#">New project...</a></li>
+                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item" href="#">Sign out</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+<div class="container-fluid pb-3 flex-grow-1 d-flex flex-column flex-sm-row overflow-auto">
+    <div class="row flex-grow-sm-1 flex-grow-0">
+        <aside class="col-sm-2 flex-grow-sm-1 flex-shrink-1 flex-grow-0 sticky-top pb-sm-0 pb-3">
+            <div class="border rounded-3 p-1 h-100 sticky-top">
+                <ul class="nav nav-pills flex-sm-column flex-row mb-auto justify-content-between text-truncate">
+                    
+                    <!-- Статистика -->
+                    <li class="mb-2">
+                      <div class="d-inline-flex gap-1" style="width: 100%;">
+                        <button @click=" isClickedStatistics = !isClickedStatistics" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;" data-bs-toggle="collapse" href="#multiCollapseStatistics" role="button" aria-expanded="false" aria-controls="multiCollapseStatistics">
+                          <div>
+                            <span><i class="bi bi-bar-chart-fill"></i></span>
+                            <span style="padding-left: 1rem;">Статистика</span>
+                          </div>
+                          <span><i :class="isClickedStatistics ? 'bi-caret-up-fill' : 'bi-caret-right-fill'"></i></span>
+                        </button>
+                      </div>
+                      <div class="row">
+                        <div class="col">
+                          <div class="container">
+                          <div class="collapse multi-collapse" id="multiCollapseStatistics">
+                            <button @click="$router.push('/')" class="btn btn-outline-primary d-flex justify-content-between my-1" style="width: 100%;">
+                              <div>
+                                <span><i class="bi bi-table"></i></span>
+                                <span style="padding-left: 1rem;">Общая</span>
+                              </div>
+                            </button>
+                            <button @click="$router.push('/product-statistics')" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;">
+                              <div>
+                                <span><i class="bi bi-table"></i></span>
+                                <span style="padding-left: 1rem;">Товары</span>
+                              </div>
+                            </button>
+                          </div>
+                        </div>
+                        </div>
+                      </div>
+                    </li>
+
+                    <!-- Модели -->
+                    <li class="mb-2">
+                      <div class="d-inline-flex gap-1" style="width: 100%;">
+                        <button @click="isClickedModel = !isClickedModel" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;" data-bs-toggle="collapse" href="#multiCollapseExample2" role="button" aria-expanded="false" aria-controls="multiCollapseExample2">
+                          <div>
+                            <span><i class="bi bi-box-fill"></i></span>
+                            <span style="padding-left: 1rem;">Модели</span>
+                          </div>
+                          <span><i :class="isClickedModel ? 'bi-caret-up-fill' : 'bi-caret-right-fill'"></i></span>
+                        </button>
+                      </div>
+                      <div class="row">
+                        <div class="col">
+                          <div class="container">
+                          <div class="collapse multi-collapse" id="multiCollapseExample2">
+                            <button @click="$router.push('/models')" class="btn btn-outline-primary d-flex justify-content-between my-1" style="width: 100%;">
+                              <div>
+                                <span><i class="bi bi-table"></i></span>
+                                <span style="padding-left: 1rem;">Модели</span>
+                              </div>
+                            </button>
+                            <button class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;">
+                              <div>
+                                <span><i class="bi bi-table"></i></span>
+                                <span style="padding-left: 1rem;">Категории</span>
+                              </div>
+                            </button>
+                          </div>
+                        </div>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="mb-2">
+                      <div class="d-inline-flex gap-1" style="width: 100%;">
+                        <button @click="isClicked = !isClicked" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;" data-bs-toggle="collapse" href="#multiCollapseExample2" role="button" aria-expanded="false" aria-controls="multiCollapseExample2">
+                          <div>
+                            <span><i class="bi bi-house-fill"></i></span>
+                            <span style="padding-left: 1rem;">Склад</span>
+                          </div>
+                          <span><i :class="isClicked ? 'bi-caret-up-fill' : 'bi-caret-right-fill'"></i></span>
+                        </button>
+                      </div>
+                      <div class="row">
+                        <div class="col">
+                          <div class="container">
+                          <div class="collapse multi-collapse" id="multiCollapseExample2">
+                            <button class="btn btn-outline-primary d-flex justify-content-between my-1" style="width: 100%;">
+                              <div>
+                                <span><i class="bi bi-table"></i></span>
+                                <span style="padding-left: 1rem;">Приход</span>
+                              </div>
+                            </button>
+                            <button class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;">
+                              <div>
+                                <span><i class="bi bi-table"></i></span>
+                                <span style="padding-left: 1rem;">Расход</span>
+                              </div>
+                            </button>
+                          </div>
+                        </div>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="mb-2">
+                      <div class="d-inline-flex gap-1" style="width: 100%;">
+                        <button @click="isClicked = !isClicked" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;" data-bs-toggle="collapse" href="#multiCollapseExample2" role="button" aria-expanded="false" aria-controls="multiCollapseExample2">
+                          <div>
+                            <span><i class="bi bi-wallet-fill"></i></span>
+                            <span style="padding-left: 1rem;">Прайс-лист</span>
+                          </div>
+                          <span><i :class="isClicked ? 'bi-caret-up-fill' : 'bi-caret-right-fill'"></i></span>
+                        </button>
+                      </div>
+                      <div class="row">
+                        <div class="col">
+                          <div class="container">
+                          <div class="collapse multi-collapse" id="multiCollapseExample2">
+                            <button class="btn btn-outline-primary d-flex justify-content-between my-1" style="width: 100%;">
+                              <div>
+                                <span><i class="bi bi-table"></i></span>
+                                <span style="padding-left: 1rem;">Прайс</span>
+                              </div>
+                            </button>
+                            <button class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;">
+                              <div>
+                                <span><i class="bi bi-table"></i></span>
+                                <span style="padding-left: 1rem;">Промокоды</span>
+                              </div>
+                            </button>
+                          </div>
+                        </div>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="mb-2">
+                      <div class="d-inline-flex gap-1" style="width: 100%;">
+                        <button @click="isClicked = !isClicked" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;" data-bs-toggle="collapse" href="#multiCollapseExample2" role="button" aria-expanded="false" aria-controls="multiCollapseExample2">
+                          <div>
+                            <span><i class="bi bi-file-text-fill"></i></span>
+                            <span style="padding-left: 1rem;">Заказы</span>
+                          </div>
+                          <span><i :class="isClicked ? 'bi-caret-up-fill' : 'bi-caret-right-fill'"></i></span>
+                        </button>
+                      </div>
+                      <div class="row">
+                        <div class="col">
+                          <div class="container">
+                          <div class="collapse multi-collapse" id="multiCollapseExample2">
+                            <button class="btn btn-outline-primary d-flex justify-content-between my-1" style="width: 100%;">
+                              <div>
+                                <span><i class="bi bi-table"></i></span>
+                                <span style="padding-left: 1rem;">Все заказы</span>
+                              </div>
+                            </button>
+                            <button class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;">
+                              <div>
+                                <span><i class="bi bi-table"></i></span>
+                                <span style="padding-left: 1rem;">Статистика</span>
+                              </div>
+                            </button>
+                          </div>
+                        </div>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="mb-2">
+                      <div class="d-inline-flex gap-1" style="width: 100%;">
+                        <button @click="isClicked = !isClicked" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;" data-bs-toggle="collapse" href="#multiCollapseExample2" role="button" aria-expanded="false" aria-controls="multiCollapseExample2">
+                          <div>
+                            <span><i class="bi bi-people-fill"></i></span>
+                            <span style="padding-left: 1rem;">Клиенты</span>
+                          </div>
+                          <span><i :class="isClicked ? 'bi-caret-up-fill' : 'bi-caret-right-fill'"></i></span>
+                        </button>
+                      </div>
+                      <div class="row">
+                        <div class="col">
+                          <div class="container">
+                          <div class="collapse multi-collapse" id="multiCollapseExample2">
+                            <button class="btn btn-outline-primary d-flex justify-content-between my-1" style="width: 100%;">
+                              <div>
+                                <span><i class="bi bi-table"></i></span>
+                                <span style="padding-left: 1rem;">Все клиенты</span>
+                              </div>
+                            </button>
+                            <button class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;">
+                              <div>
+                                <span><i class="bi bi-table"></i></span>
+                                <span style="padding-left: 1rem;">Статистика</span>
+                              </div>
+                            </button>
+                          </div>
+                        </div>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="mb-2">
+                      <div class="d-inline-flex gap-1" style="width: 100%;">
+                        <button @click="isClicked = !isClicked" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;" data-bs-toggle="collapse" href="#multiCollapseExample2" role="button" aria-expanded="false" aria-controls="multiCollapseExample2">
+                          <div>
+                            <span><i class="bi bi-table"></i></span>
+                            <span style="padding-left: 1rem;">Отчеты</span>
+                          </div>
+                          <span><i :class="isClicked ? 'bi-caret-up-fill' : 'bi-caret-right-fill'"></i></span>
+                        </button>
+                      </div>
+                      <div class="row">
+                        <div class="col">
+                          <div class="container">
+                          <div class="collapse multi-collapse" id="multiCollapseExample2">
+                            <button class="btn btn-outline-primary d-flex justify-content-between my-1" style="width: 100%;">
+                              <div>
+                                <span><i class="bi bi-table"></i></span>
+                                <span style="padding-left: 1rem;">Все отчеты</span>
+                              </div>
+                            </button>
+                            <button class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;">
+                              <div>
+                                <span><i class="bi bi-table"></i></span>
+                                <span style="padding-left: 1rem;">Статистика</span>
+                              </div>
+                            </button>
+                          </div>
+                        </div>
+                        </div>
+                      </div>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+        <main class="col overflow-auto h-100">
+            <div class="border rounded-3 p-3">
+                <section>
+                  <router-view/>
+                </section>
+                <h2>Main</h2>
+                <p>Sriracha biodiesel taxidermy organic post-ironic, Intelligentsia salvia mustache 90's code editing brunch. Butcher polaroid VHS art party, hashtag Brooklyn deep v PBR narwhal sustainable mixtape swag wolf squid tote bag. Tote bag cronut semiotics, raw denim deep v taxidermy messenger bag. Tofu YOLO Etsy, direct trade ethical Odd Future jean shorts paleo. Forage Shoreditch tousled aesthetic irony, street art organic Bushwick artisan cliche semiotics ugh synth chillwave meditation. Shabby chic lomo plaid vinyl chambray Vice. Vice sustainable cardigan, Williamsburg master cleanse hella DIY 90's blog.</p>
+                <p>Ethical Kickstarter PBR asymmetrical lo-fi. Dreamcatcher street art Carles, stumptown gluten-free Kickstarter artisan Wes Anderson wolf pug. Godard sustainable you probably haven't heard of them, vegan farm-to-table Williamsburg slow-carb readymade disrupt deep v. Meggings seitan Wes Anderson semiotics, cliche American Apparel whatever. Helvetica cray plaid, vegan brunch Banksy leggings +1 direct trade. Wayfarers codeply PBR selfies. Banh mi McSweeney's Shoreditch selfies, forage fingerstache food truck occupy YOLO Pitchfork fixie iPhone fanny pack art party Portland.</p>
+                <hr />
+                <h4>More content...</h4>
+                <p>Ethical Kickstarter PBR asymmetrical lo-fi. Dreamcatcher street art Carles, stumptown gluten-free Kickstarter artisan Wes Anderson wolf pug. Godard sustainable you probably haven't heard of them, vegan farm-to-table Williamsburg slow-carb readymade disrupt deep v. Meggings seitan Wes Anderson semiotics, cliche American Apparel whatever. Helvetica cray plaid, vegan brunch Banksy leggings +1 direct trade. Wayfarers codeply PBR selfies. Banh mi McSweeney's Shoreditch selfies, forage fingerstache food truck occupy YOLO Pitchfork fixie iPhone fanny pack art party Portland.</p>
+                <hr />
+                <h4>More content...</h4>
+                <p>Sriracha biodiesel taxidermy organic post-ironic, Intelligentsia salvia mustache 90's code editing brunch. Butcher polaroid VHS art party, hashtag Brooklyn deep v PBR narwhal sustainable mixtape swag wolf squid tote bag. Tote bag cronut semiotics, raw denim deep v taxidermy messenger bag. Tofu YOLO Etsy, direct trade ethical Odd Future jean shorts paleo. Forage Shoreditch tousled aesthetic irony, street art organic Bushwick artisan cliche semiotics ugh synth chillwave meditation. Shabby chic lomo plaid vinyl chambray Vice. Vice sustainable cardigan, Williamsburg master cleanse hella DIY 90's blog.</p>
+            </div>
+        </main>
+    </div>
+  </div>
+</template>
+
+
+<script>
+import axios from 'axios'
+
+export default {
+    data() {
+        return {
+          isClickedStatistics: false,
+          isClickedModel: false,
+
+        }
+    },
+}
+</script>
+
+<style lang="scss">
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+}
+
+
+nav {
+  padding: 30px;
+
+  a {
+    font-weight: bold;
+    color: #2c3e50;
+
+    &.router-link-exact-active {
+      color: #42b983;
+    }
+  }
+}
+
+
+.nav-item{
+    position:  relative;
+}
+.nav-links[data-toggle].collapsed:after {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-arrow-down-circle' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293z'/%3E%3C/svg%3E");
+    transition: all 0.5s;
+  }
+.nav-links[data-toggle]:not(.collapsed):after {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-arrow-up-circle' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-7.5 3.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707z'/%3E%3C/svg%3E");
+}
+
+// .d-inline-flex.btn-outline-primary {
+//   --bs-btn-font-weight: 600;
+//   --bs-btn-color: #fff;
+//   --bs-btn-bg: #fff;
+//   --bs-btn-border-color: #333;
+//   --bs-btn-hover-color: #0d6efd;
+//   --bs-btn-hover-bg: #0d6efd;
+//   --bs-btn-hover-border-color: #0d6efd;
+//   --bs-btn-focus-shadow-rgb: #0d6efd;
+//   --bs-btn-active-color: #333;
+//   --bs-btn-active-bg: #0d6efd;
+//   --bs-btn-active-border-color: #0d6efd;
+// }
+
+
+
+</style>

@@ -2,7 +2,7 @@ from fastapi import Depends, FastAPI
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 from app.db import get_session
-from app.models import Song, SongCreate
+from app.models import BigCategory, Category
 from typing import Annotated
 
 from fastapi import Depends, FastAPI
@@ -45,17 +45,25 @@ async def read_items(token: Annotated[str, Depends(oauth2_scheme)]):
     return {"token": token}
 
 
-@app.get("/songs", response_model=list[Song])
-async def get_songs(session: AsyncSession = Depends(get_session)):
-    result = await session.execute(select(Song))
-    songs = result.scalars().all()
-    return [Song(name=song.name, artist=song.artist, id=song.id) for song in songs]
+@app.get("/big_categories", response_model=list[BigCategory])
+async def get_big_categories(session: AsyncSession = Depends(get_session)):
+    result = await session.execute(select(BigCategory))
+    big_categories = result.scalars().all()
+    return [BigCategory(id==big_category.id, name=big_category.name, slug=big_category.slug) for big_category in big_categories]
 
-
-@app.post("/songs")
-async def add_song(song: SongCreate, session: AsyncSession = Depends(get_session)):
-    song = Song(name=song.name, artist=song.artist)
-    session.add(song)
+@app.post("/big_categories")
+async def add_big_categories(big_category: BigCategory, session: AsyncSession = Depends(get_session)):
+    new_big_category = BigCategory(name = big_category.name, slug=big_category.slug)
+    session.add(new_big_category)
     await session.commit()
-    await session.refresh(song)
-    return song
+    await session.refresh(new_big_category)
+    return new_big_category
+
+# @app.post("/songs")
+# async def add_song(song: SongCreate, session: AsyncSession = Depends(get_session)):
+#     n
+#     song = Song(name=song.name, artist=song.artist)
+#     session.add(song)
+#     await session.commit()
+#     await session.refresh(song)
+#     return song

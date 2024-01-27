@@ -15,8 +15,8 @@ async def get_categories(session: AsyncSession = Depends(get_session)):
     return [Category(id=category.id, name=category.name, slug=category.slug, big_category_id=category.big_category_id) for category in categories]
 
 @router.post("/category")
-async def add_category(big_category: Category, session: AsyncSession = Depends(get_session)):
-    new_category = Category(name=big_category.name, slug=big_category.slug)
+async def add_category(category: Category, session: AsyncSession = Depends(get_session)):
+    new_category = Category(name=category.name, slug=category.slug, big_category_id=category.big_category_id)
     session.add(new_category)
     await session.commit()
     await session.refresh(new_category)

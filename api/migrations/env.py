@@ -11,7 +11,12 @@ from alembic import context
 from app.models.big_category import BigCategory
 from app.models.category import Category
 from app.models.collection import Collection
+from app.models.model import Model
+from app.models.size import Size
+from app.models.color import Color
 from app.models.product import Product
+from app.models.warehouse import Warehouse
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config

@@ -1,6 +1,5 @@
 from sqlmodel import SQLModel, Field, Relationship
 from typing import Optional, List
-from .big_category import BigCategory
 from datetime import datetime
 
 class Collection(SQLModel, table=True):
@@ -8,5 +7,4 @@ class Collection(SQLModel, table=True):
     name: str
     slug: str
     description: str
-    created_at: datetime = Field(default_factory=datetime.now, nullable=False)
-    products: List["Product"] = Relationship(back_populates="collection")
+    models: List["Models"] = Relationship(back_populates="collection")

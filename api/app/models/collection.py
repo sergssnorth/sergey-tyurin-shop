@@ -7,4 +7,4 @@ class Collection(SQLModel, table=True):
     name: str
     slug: str
     description: str
-    models: List["Models"] = Relationship(back_populates="collection")
+    models: List["Model"] = Relationship(back_populates="collection")

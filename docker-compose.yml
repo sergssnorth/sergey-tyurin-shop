@@ -29,11 +29,10 @@ services:
     build:
       context: ./admin_frontend
       dockerfile: Dockerfile
+    restart: always
     container_name: admin_frontend
-    volumes:
-      - ./admin_frontend:/var/www/html/app
     ports:
-      - "8080:8080"
+      - "8080:80"
 
   db:
     container_name: db

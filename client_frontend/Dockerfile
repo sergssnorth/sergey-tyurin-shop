@@ -1,21 +1,23 @@
-FROM node:lts-alpine
+FROM node:16.19.0 as build-stage
 
-# устанавливаем простой HTTP-сервер для статики
-RUN npm install -g http-server
-
-# делаем каталог 'app' текущим рабочим каталогом
+# make the 'app' folder the current working directory
 WORKDIR /app
 
-# копируем оба 'package.json' и 'package-lock.json' (если есть)
-COPY package*.json ./
+# copy both 'package.json' and 'package-lock.json' (if available)
+# use slashes in copy because of error in `Github Action` build process
+COPY package*.json ./ 
 
-# устанавливаем зависимости проекта
+# copy project files and folders to the current working directory (i.e. 'app' folder)
+COPY . ./
+
+# install project dependencies
 RUN npm install
 
-# копируем файлы и каталоги проекта в текущий рабочий каталог (т.е. в каталог 'app')
-COPY . .
-
-# собираем приложение для production с минификацией
+# build the app
 RUN npm run build
 
-CMD [ "http-server", "dist" ]
+FROM nginx as production-stage
+COPY --from=build-stage /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/nginx.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

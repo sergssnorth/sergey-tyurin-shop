@@ -57,13 +57,31 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
-    name: 'Models',
+    name: 'BigCategories',
     data() {
         return {
-            
+            big_categories: []
         }
     },
-}
+    mounted() {
+        this.getBigCategories() 
+    },
+    methods: {
+        async getBigCategories() {
+            await axios
+                .get(`/big_categories`)
+                .then(response => {
+                    this.big_categories = response.data
+                    console.log(this.big_categories)
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        },
+    }
+}   
 
 </script>

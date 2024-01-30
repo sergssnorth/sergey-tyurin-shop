@@ -209,7 +209,6 @@ export default {
     mounted() {
         this.getProduct() 
         this.favorite = this.$store.state.favorite
-    
     },
     computed: {
         availableProductSize() {

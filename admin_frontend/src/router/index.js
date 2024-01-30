@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import AdminHome from '../views/admin/AdminHome.vue'
-import ProductStatistics from  '../views/admin/ProductStatistics.vue'
-import Models from  '../views/admin/Models.vue'
+import AdminHome from '../views/AdminHome.vue'
+import ProductStatistics from  '../views/ProductStatistics.vue'
+import Models from  '../views/Models.vue'
+import BigCategories from '../views/BigCategories.vue'
 
 const routes = [
   {
@@ -13,6 +14,11 @@ const routes = [
     path: '/product-statistics',
     name: 'ProductStatistics',
     component: ProductStatistics
+  },
+  {
+    path: '/big-categories',
+    name: 'BigCategories',
+    component: BigCategories
   },
   {
     path: '/models',

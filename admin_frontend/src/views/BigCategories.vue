@@ -1,70 +1,65 @@
 <template>
-    <div class="container">
-        <div class="accordion" id="accordionPanelsStayOpenExample">
-        <div class="accordion-item">
-            <h2 class="accordion-header">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
-                    <div class="container">                    
-                        <div class="row">
-                            <div class="col-10">
-                                <span>Accordion Item #1</span>
-                            </div>
-                            <div class="col-2">
-                                <span @click="$router.push('/')" class="mx-1"><i class="bi bi-box-fill"></i></span>
-                                <div class="vr"></div>
-                                <span @click="$router.push('/')" class="mx-1"><i class="bi bi-box-fill"></i></span>
-                                <div class="vr"></div>
-                                <span @click="$router.push('/')" class="mx-1"><i class="bi bi-box-fill"></i></span>
-                                <div class="vr"></div>
-                            </div>
-                        </div>
+    <div class="container-fluid text-center">
+        <div class="row align-items-center mb-3">
+          <div class="col-11">
+            <div class="input-group align-items-center">
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
+              <input type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+            </div>
+          </div>
+          <div class="col-1">
+            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bi bi-file-earmark-plus" style="font-size: 20px"></i></button>
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                  <div class="modal-header text-center">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Создать раздел</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="form-floating mb-3">
+                      <input type="text" class="form-control" placeholder="name@example.com" v-model="name">
+                      <label for="floatingInput">Имя</label>
                     </div>
-                </button>
-                
-            </h2>
-            <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
-            <div class="accordion-body">
-                <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                    <div class="form-floating mb-3">
+                      <input type="text" class="form-control" placeholder="Password" v-model="slug">
+                      <label for="floatingPassword">Слаг</label>
+                    </div>
+                  </div>
+                  <div class="modal-footer ">
+                    <button @click="addBigCategory()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Cоздать</button>
+                  </div>
+                </div>
+              </div>
             </div>
-            </div>
+          </div>
         </div>
-        <div class="accordion-item">
-            <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
-                Accordion Item #2
-            </button>
-            </h2>
-            <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse">
-            <div class="accordion-body">
-                <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-            </div>
-            </div>
-        </div>
-        <div class="accordion-item">
-            <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
-                Accordion Item #3
-            </button>
-            </h2>
-            <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse">
-            <div class="accordion-body">
-                <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-            </div>
-            </div>
-        </div>
+        <div class="row">
+          <div class="col">
+            <ListBigCategories 
+              v-for="category in big_categories"
+              v-bind:key="category.id"
+              v-bind:category="category" />
+          </div>
         </div>
     </div>
 </template>
 
 <script>
 import axios from 'axios'
+import ListBigCategories from '@/components/ListBigCategories'
 
 export default {
     name: 'BigCategories',
     data() {
         return {
-            big_categories: []
+            big_categories: [],
+            name: '',
+            slug: '',
         }
+    },
+    components: {
+        ListBigCategories
     },
     mounted() {
         this.getBigCategories() 
@@ -76,6 +71,21 @@ export default {
                 .then(response => {
                     this.big_categories = response.data
                     console.log(this.big_categories)
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        },
+        async addBigCategory() {
+            const formData = {
+                name: this.name,
+                slug: this.slug
+            }
+            await axios
+                .post(`/big_category`, formData)
+                .then(response => {
+                    console.log(response.data)
+                    this.getBigCategories();
                 })
                 .catch(error => {
                     console.log(error)

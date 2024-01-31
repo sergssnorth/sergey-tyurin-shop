@@ -5,7 +5,7 @@
         <div class="card text-bg-light p-2" style="min-height: 100%;">
           <ul class="nav nav-pills flex-sm-column flex-row mb-auto justify-content-between text-truncate">
             <!-- Статистика -->
-            <li>
+            <li class="mb-2">
               <div class="d-inline-flex gap-1" style="width: 100%;">
                 <button @click=" isClickedStatistics = !isClickedStatistics" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;" data-bs-toggle="collapse" href="#multiCollapseStatistics" role="button" aria-expanded="false" aria-controls="multiCollapseStatistics">
                   <div>
@@ -29,6 +29,51 @@
                       <div>
                         <span><i class="bi bi-table"></i></span>
                         <span style="padding-left: 1rem;">Товары</span>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+                </div>
+              </div>
+            </li>
+            <!-- Модели -->
+
+            <li>
+              <div class="d-inline-flex gap-1" style="width: 100%;">
+                <button @click="isClickedModel = !isClickedModel" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;" data-bs-toggle="collapse" href="#multiCollapseExample2" role="button" aria-expanded="false" aria-controls="multiCollapseExample2">
+                  <div>
+                    <span><i class="bi bi-box-fill"></i></span>
+                    <span style="padding-left: 1rem;">Модели</span>
+                  </div>
+                  <span><i :class="isClickedModel ? 'bi-caret-up-fill' : 'bi-caret-right-fill'"></i></span>
+                </button>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="container">
+                  <div class="collapse multi-collapse" id="multiCollapseExample2">
+                    <button @click="$router.push('/big-categories')" class="btn btn-outline-primary d-flex justify-content-between my-1" style="width: 100%;">
+                      <div>
+                        <span><i class="bi bi-table"></i></span>
+                        <span style="padding-left: 1rem;">Разделы</span>
+                      </div>
+                    </button>
+                    <button @click="$router.push('/categories')" class="btn btn-outline-primary d-flex justify-content-between mb-1" style="width: 100%;">
+                      <div>
+                        <span><i class="bi bi-table"></i></span>
+                        <span style="padding-left: 1rem;">Категории</span>
+                      </div>
+                    </button>
+                    <button @click="$router.push('/models')" class="btn btn-outline-primary d-flex justify-content-between mb-1" style="width: 100%;">
+                      <div>
+                        <span><i class="bi bi-table"></i></span>
+                        <span style="padding-left: 1rem;">Модели</span>
+                      </div>
+                    </button>
+                    <button @click="$router.push('/products')" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;">
+                      <div>
+                        <span><i class="bi bi-table"></i></span>
+                        <span style="padding-left: 1rem;">Продукты</span>
                       </div>
                     </button>
                   </div>

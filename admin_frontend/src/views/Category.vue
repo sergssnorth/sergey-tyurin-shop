@@ -1,0 +1,187 @@
+<template>
+    <div class="container-fluid text-center">
+        <div class="row align-items-center mb-3">
+            <div class="col-3">
+                <select v-model="filter_big_category_id" class="form-select" aria-label="Default select example" @change="handleFilterChange">
+                    <option :value="0">Все разделы</option>
+                    <option v-for="big_category in big_categories" :key="big_category.id" :value="big_category.id">
+                        {{ big_category.name }}
+                    </option>
+                </select>
+            </div>
+          <div class="col-8">
+            <div class="input-group align-items-center">
+              <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
+              <input type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+            </div>
+          </div>
+          <div class="col-1">
+            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bi bi-file-earmark-plus" style="font-size: 20px"></i></button>
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                  <div class="modal-header text-center">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Создать раздел</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="form-floating mb-3">
+                      <input type="text" class="form-control" placeholder="name@example.com" v-model="name">
+                      <label for="floatingInput">Имя</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                      <input type="text" class="form-control" placeholder="Password" v-model="slug">
+                      <label for="floatingPassword">Слаг</label>
+                    </div>
+                    <select v-model="big_category_id" class="form-select py-3" aria-label="Default select example">
+                        <option :value="0">Выберите раздел</option>
+                        <option v-for="big_category in big_categories" :key="big_category.id" :value="big_category.id">
+                            {{ big_category.name }}
+                        </option>
+                    </select>
+                  </div>
+                  <div class="modal-footer ">
+                    <button @click="addCategory()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Cоздать</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <ListCategories 
+              v-for="category in categories"
+              v-bind:key="category.id"
+              v-bind:category="category"
+              @categoryDeleted="handleCategoryDeleted" 
+              @categoryUpdated="handleCategoryUpdated"/>
+          </div>
+        </div>
+    </div>
+</template>
+
+<script>
+import axios from 'axios'
+import ListCategories from '@/components/ListCategories'
+
+export default {
+    name: 'Category',
+    data() {
+        return {
+            filter_big_category_id: 0,
+            big_categories: [],
+            categories: [],
+            name: '',
+            slug: '',
+            big_category_id: 0,
+            FilterId: '',
+        }
+    },
+    components: {
+        ListCategories
+    },
+    mounted() {
+        this.getBigCategories()
+        this.FilterId = this.getFilterId()
+        this.getCategories(this.FilterId)
+    },
+    methods: {
+        async getBigCategories() {
+            console.log('Метод getBigCategories')
+            await axios
+                .get(`/big_categories`)
+                .then(response => {
+                    this.big_categories = response.data
+                    console.log(this.big_categories)
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        },
+        getFilterId() {
+            console.log('Метод getFilterId')
+            const filterId = this.$route.query.big_category_id;
+            this.filter_big_category_id = filterId
+            return filterId
+        },
+        async getCategories(filterId) {
+            console.log('Метод getCategories')
+            if (filterId !== undefined && filterId !== null) {
+                console.log('Значение filterId:', filterId);
+                const params = filterId !== '0' ? { big_category_id: filterId } : {};
+                console.log(filterId)
+                await axios
+                    .get(`/categories`, { params })
+                    .then(response => {
+                        this.categories = response.data
+                        console.log(this.categories)
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+            } else {
+                console.log('Значение filterId отсутствует');
+                await axios
+                .get(`/categories`)
+                .then(response => {
+                    this.categories = response.data
+                    console.log(this.categories)
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+            }
+            
+            
+        },
+        async addCategory() {
+            let filterId;
+
+            const formData = {
+                name: this.name,
+                slug: this.slug,
+                big_category_id: this.big_category_id
+            }
+            console.log(formData)
+            await axios
+                .post(`/category`, formData)
+                .then(response => {
+                    console.log(response.data)
+                    filterId = this.getFilterId()
+                    this.getCategories(filterId);
+                    this.name = '',
+                    this.slug = '',
+                    this.big_category_id = 0
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        },
+        handleFilterChange() {
+            console.log('Хендлер handleFilterChange')
+            this.$router.push({ 
+                path: '/categories',
+                query: { big_category_id: this.filter_big_category_id }
+            });
+        },
+        handleCategoryDeleted(deletedCategoryId) {
+            console.log('Хендлер handleCategoryDeleted')
+            this.big_categories = this.big_categories.filter(category => category.id !== deletedCategoryId);
+        },
+        handleCategoryUpdated(updatedCategoryId) {
+            console.log('Хендлер handleCategoryUpdated')
+            filterId = this.getFilterId()
+            this.getCategories(filterId);
+        },
+    },
+    beforeRouteUpdate(to, from, next) {
+        console.log('Хук beforeRouteUpdate');
+        const filterId = to.query.big_category_id;
+        this.filter_big_category_id = filterId
+        this.getCategories(filterId)
+        next();
+    },
+}   
+
+</script>

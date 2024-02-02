@@ -36,10 +36,12 @@
         </div>
         <div class="row">
           <div class="col">
-            <ListBigCategories 
+            <ListCollections 
               v-for="category in big_categories"
               v-bind:key="category.id"
-              v-bind:category="category" />
+              v-bind:category="category"
+              @categoryDeleted="handleCategoryDeleted" 
+              @categoryUpdated="handleCategoryUpdated"/>
           </div>
         </div>
     </div>
@@ -47,10 +49,10 @@
 
 <script>
 import axios from 'axios'
-import ListBigCategories from '@/components/ListBigCategories'
+import ListCollections from '@/components/ListCollections'
 
 export default {
-    name: 'BigCategories',
+    name: 'Collection',
     data() {
         return {
             big_categories: [],
@@ -59,7 +61,7 @@ export default {
         }
     },
     components: {
-        ListBigCategories
+        ListCollections
     },
     mounted() {
         this.getBigCategories() 
@@ -90,6 +92,14 @@ export default {
                 .catch(error => {
                     console.log(error)
                 })
+        },
+        handleCategoryDeleted(deletedCategoryId) {
+        // Обновляем список категорий после удаления
+            this.big_categories = this.big_categories.filter(category => category.id !== deletedCategoryId);
+        },
+        handleCategoryUpdated(updatedCategoryId) {
+        // Обновляем список категорий после обновления
+            this.getBigCategories();
         },
     }
 }   

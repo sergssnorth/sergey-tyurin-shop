@@ -26,7 +26,7 @@ async def add_big_categories(big_category: BigCategory, session: AsyncSession = 
 async def update_big_category(big_category_id: int, updated_big_category: BigCategory, session: AsyncSession = Depends(get_session)):
     existing_big_category = await session.get(BigCategory, big_category_id)
     if existing_big_category is None:
-        raise HTTPException(status_code=404, detail="Категория не найдена")
+        raise HTTPException(status_code=404, detail="Раздел не найден")
     existing_big_category.name = updated_big_category.name
     existing_big_category.slug = updated_big_category.slug
     await session.commit()
@@ -37,11 +37,11 @@ async def update_big_category(big_category_id: int, updated_big_category: BigCat
 async def delete_big_category(big_category_id: int, session: AsyncSession = Depends(get_session)):
     big_category = await session.get(BigCategory, big_category_id)
     if big_category is None:
-        raise HTTPException(status_code=404, detail="Категория не найдена")
+        raise HTTPException(status_code=404, detail="Раздел не найден")
     try:
         await session.delete(big_category)
         await session.commit()
-        return {"message": "Категория успешно удалена"}
+        return {"message": "Раздел успешно удален"}
     except Exception as e:
-        print(f"Ошибка при удалении категории: {e}")
+        print(f"Ошибка при удалении Раздела: {e}")
         await session.rollback()  # Откат изменений в случае ошибки

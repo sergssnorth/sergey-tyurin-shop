@@ -39,7 +39,7 @@
 import VueApexCharts from "vue3-apexcharts";
 
 export default {
-    name: 'AdminHome',
+    name: 'Home',
     components: {VueApexCharts},
     data: () => ({
 

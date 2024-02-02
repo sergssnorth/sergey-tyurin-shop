@@ -2,8 +2,8 @@
     <div class="card mb-1">
         <div class="card-body py-1 px-3">
         <div class="d-flex align-items-center">
-            <span>{{ category.name }}</span>
-            <button @click="$router.push(`/categories?big_category_id=${this.category.id}`)" class="btn btn-icon d-inline ms-auto px-2"><i class="bi bi bi-box-seam"></i></button>
+            <span>{{ localCategory.name }}</span>
+            <button class="btn btn-icon d-inline ms-auto px-2"><i class="bi bi bi-box-seam"></i></button>
             
             <button data-bs-toggle="modal" data-bs-target="#editModal" class="btn btn-icon d-inline text-primary px-2"><i class="bi bi-pen"></i></button>
             <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -15,11 +15,11 @@
                   </div>
                   <div class="modal-body">
                     <div class="form-floating mb-3">
-                      <input type="text" class="form-control" placeholder="name@example.com" v-model="category.name">
+                      <input type="text" class="form-control" placeholder="name@example.com" v-model="localCategory.name">
                       <label for="floatingInput">Имя</label>
                     </div>
                     <div class="form-floating mb-3">
-                      <input type="text" class="form-control" placeholder="Password" v-model="category.slug">
+                      <input type="text" class="form-control" placeholder="Password" v-model="localCategory.slug">
                       <label for="floatingPassword">Слаг</label>
                     </div>
                   </div>
@@ -40,40 +40,40 @@
 import axios from 'axios'
 
 export default {
-    name: 'ListBigCategories',
+    name: 'ListCategories',
     props: {
         category: Object,
     },
     data() {
         return {
-            big_category: this.category,
+            localCategory: this.category,
         }
     },
     computed: {
        
     },
     methods: {
-        async deleteBigCategory() {
+        async deleteCategory() {
             await axios
-                .delete(`/big_category/${this.big_category.id}`)
+                .delete(`/category/${this.localCategory.id}`)
                 .then(response => {
                     console.log(response.data)
-                    this.$emit('categoryDeleted', this.category.id);
+                    this.$emit('categoryDeleted', this.localCategory.id);
                 })
                 .catch(error => {
                     console.log(error)
                 })
         },
-        async updateBigCategory() {
+        async updateCategory() {
             const formData = {
-                name: this.big_category.name,
-                slug: this.big_category.slug
+                name: this.localCategory.name,
+                slug: this.localCategory.slug
             }
             await axios
-                .put(`/big_category/${this.big_category.id}`, formData)
+                .put(`/category/${this.localCategory.id}`, formData)
                 .then(response => {
                     console.log(response.data)
-                    this.$emit('categoryUpdated', this.category.id);
+                    this.$emit('categoryUpdated', this.localCategory.id);
                 })
                 .catch(error => {
                     console.log(error)

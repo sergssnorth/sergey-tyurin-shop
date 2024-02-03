@@ -25,6 +25,10 @@
                       <input type="text" class="form-control" placeholder="Password" v-model="slug">
                       <label for="floatingPassword">Слаг</label>
                     </div>
+                    <div class="form-floating mb-3">
+                      <input type="text" class="form-control" placeholder="Password" v-model="description">
+                      <label for="floatingPassword">Описание</label>
+                    </div>
                   </div>
                   <div class="modal-footer ">
                     <button @click="addCollection()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Cоздать</button>
@@ -39,9 +43,9 @@
             <ListCollections
               v-for="collection in collections"
               v-bind:key="collection.id"
-              v-bind:category="collection"
-              @categoryDeleted="handleCategoryDeleted" 
-              @categoryUpdated="handleCategoryUpdated"/>
+              v-bind:collection="collection"
+              @collectionDeleted="handleCollectionDeleted" 
+              @collectionUpdated="handleCollectionUpdated"/>
           </div>
         </div>
     </div>
@@ -58,6 +62,7 @@ export default {
             collections: [],
             name: '',
             slug: '',
+            description: '',
         }
     },
     components: {
@@ -69,35 +74,36 @@ export default {
     methods: {
         async getCollections() {
             await axios
-                .get(`/big_categories`)
+                .get(`/collections`)
                 .then(response => {
-                    this.big_categories = response.data
-                    console.log(this.big_categories)
+                    this.collections = response.data
+                    console.log(this.collections)
                 })
                 .catch(error => {
                     console.log(error)
                 })
         },
-        async addBigCategory() {
+        async addCollection() {
             const formData = {
                 name: this.name,
-                slug: this.slug
+                slug: this.slug,
+                description: this.description,
             }
             await axios
-                .post(`/big_category`, formData)
+                .post(`/collection`, formData)
                 .then(response => {
                     console.log(response.data)
-                    this.getBigCategories();
+                    this.getCollections();
                 })
                 .catch(error => {
                     console.log(error)
                 })
         },
-        handleCategoryDeleted(deletedCategoryId) {
+        handleCollectionDeleted(deletedCollectionId) {
         // Обновляем список категорий после удаления
-            this.big_categories = this.big_categories.filter(category => category.id !== deletedCategoryId);
+            this.collections = this.collections.filter(collection => collection.id !== deletedCollectionId);
         },
-        handleCategoryUpdated(updatedCategoryId) {
+        handleCollectionUpdated(updatedCategoryId) {
         // Обновляем список категорий после обновления
             this.getBigCategories();
         },

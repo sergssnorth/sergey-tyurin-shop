@@ -13,7 +13,7 @@
               <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content">
                   <div class="modal-header text-center">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Создать раздел</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Создать размер</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body">
@@ -27,7 +27,7 @@
                     </div>
                   </div>
                   <div class="modal-footer ">
-                    <button @click="addBigCategory()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Cоздать</button>
+                    <button @click="addSize()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Cоздать</button>
                   </div>
                 </div>
               </div>
@@ -37,11 +37,11 @@
         <div class="row">
           <div class="col">
             <ListSizes 
-              v-for="category in big_categories"
-              v-bind:key="category.id"
-              v-bind:category="category"
-              @categoryDeleted="handleCategoryDeleted" 
-              @categoryUpdated="handleCategoryUpdated"/>
+              v-for="size in sizes"
+              v-bind:key="size.id"
+              v-bind:size="size"
+              @sizeDeleted="handleSizeDeleted" 
+              @sizeUpdated="handleSizeUpdated"/>
           </div>
         </div>
     </div>
@@ -55,7 +55,7 @@ export default {
     name: 'Size',
     data() {
         return {
-            big_categories: [],
+            sizes: [],
             name: '',
             slug: '',
         }
@@ -64,42 +64,46 @@ export default {
         ListSizes
     },
     mounted() {
-        this.getBigCategories() 
+        this.getSizes() 
     },
     methods: {
-        async getBigCategories() {
+        async getSizes() {
             await axios
-                .get(`/big_categories`)
+                .get(`/sizes`)
                 .then(response => {
-                    this.big_categories = response.data
-                    console.log(this.big_categories)
+                    this.sizes = response.data
+                    console.log(this.sizes)
                 })
                 .catch(error => {
                     console.log(error)
                 })
         },
-        async addBigCategory() {
+        async addSize() {
             const formData = {
                 name: this.name,
                 slug: this.slug
             }
-            await axios
-                .post(`/big_category`, formData)
+            try {
+                await axios
+                .post(`/size`, formData)
                 .then(response => {
                     console.log(response.data)
-                    this.getBigCategories();
+                    this.sizes.push(response.data);
                 })
                 .catch(error => {
                     console.log(error)
                 })
+            } catch (error) {
+                console.log(error);
+            }
         },
-        handleCategoryDeleted(deletedCategoryId) {
+        handleSizeDeleted(deletedSizeId) {
         // Обновляем список категорий после удаления
-            this.big_categories = this.big_categories.filter(category => category.id !== deletedCategoryId);
+            this.sizes = this.sizes.filter(size => size.id !== deletedSizeId);
         },
-        handleCategoryUpdated(updatedCategoryId) {
-        // Обновляем список категорий после обновления
-            this.getBigCategories();
+        handleSizeUpdated(updatedSizeId) {
+            console.log("handleSizeUpdated")
+            this.getSizes();
         },
     }
 }   

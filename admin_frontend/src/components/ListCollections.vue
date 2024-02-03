@@ -2,8 +2,8 @@
     <div class="card mb-1">
         <div class="card-body py-1 px-3">
         <div class="d-flex align-items-center">
-            <span>{{ category.name }}</span>
-            <button @click="$router.push(`/categories?big_category_id=${this.category.id}`)" class="btn btn-icon d-inline ms-auto px-2"><i class="bi bi bi-box-seam"></i></button>
+            <span>{{ data_collection.name }}</span>
+            <button @click="$router.push(`/models`)" class="btn btn-icon d-inline ms-auto px-2"><i class="bi bi bi-box-seam"></i></button>
             
             <button data-bs-toggle="modal" data-bs-target="#editModal" class="btn btn-icon d-inline text-primary px-2"><i class="bi bi-pen"></i></button>
             <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -15,22 +15,26 @@
                   </div>
                   <div class="modal-body">
                     <div class="form-floating mb-3">
-                      <input type="text" class="form-control" placeholder="name@example.com" v-model="category.name">
+                      <input type="text" class="form-control" placeholder="name@example.com" v-model="data_collection.name">
                       <label for="floatingInput">Имя</label>
                     </div>
                     <div class="form-floating mb-3">
-                      <input type="text" class="form-control" placeholder="Password" v-model="category.slug">
+                      <input type="text" class="form-control" placeholder="Password" v-model="data_collection.slug">
                       <label for="floatingPassword">Слаг</label>
                     </div>
+                    <div class="form-floating mb-3">
+                      <input type="text" class="form-control" placeholder="Password" v-model="data_collection.description">
+                      <label for="floatingPassword">Описание</label>
+                    </div>
                   </div>
-                  <div class="modal-footer ">
-                    <button @click="updateBigCategory()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Изменить</button>
+                  <div class="modal-footer">
+                    <button @click="updateCollection()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Изменить</button>
                   </div>
                 </div>
               </div>
             </div>
 
-            <button @click="deleteBigCategory()" class="btn btn-icon d-inline text-danger px-2"><i class="bi bi-trash3"></i></button>
+            <button @click="deleteCollection()" class="btn btn-icon d-inline text-danger px-2"><i class="bi bi-trash3"></i></button>
         </div>
         </div>
     </div>
@@ -40,40 +44,41 @@
 import axios from 'axios'
 
 export default {
-    name: 'ListBigCategories',
+    name: 'ListCollections',
     props: {
-        category: Object,
+        collection: Object,
     },
     data() {
         return {
-            big_category: this.category,
+            data_collection: this.collection,
         }
     },
     computed: {
        
     },
     methods: {
-        async deleteBigCategory() {
+        async deleteCollection() {
             await axios
-                .delete(`/big_category/${this.big_category.id}`)
+                .delete(`/collection/${this.data_collection.id}`)
                 .then(response => {
                     console.log(response.data)
-                    this.$emit('categoryDeleted', this.category.id);
+                    this.$emit('collectionDeleted', this.data_collection.id);
                 })
                 .catch(error => {
                     console.log(error)
                 })
         },
-        async updateBigCategory() {
+        async updateCollection() {
             const formData = {
-                name: this.big_category.name,
-                slug: this.big_category.slug
+                name: this.data_collection.name,
+                slug: this.data_collection.slug,
+                description: this.data_collection.slug
             }
             await axios
-                .put(`/big_category/${this.big_category.id}`, formData)
+                .put(`/collection/${this.data_collection.id}`, formData)
                 .then(response => {
                     console.log(response.data)
-                    this.$emit('categoryUpdated', this.category.id);
+                    this.$emit('collectionUpdated', this.data_collection.id);
                 })
                 .catch(error => {
                     console.log(error)

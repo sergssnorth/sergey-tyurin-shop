@@ -97,13 +97,13 @@
                 <div class="col">
                   <div class="container">
                   <div class="collapse multi-collapse" id="multiCollapseReference">
-                    <button @click="$router.push('/collections')" class="btn btn-outline-primary d-flex justify-content-between mb-1" style="width: 100%;">
+                    <button @click="$router.push('/collections')" class="btn btn-outline-primary d-flex justify-content-between my-1" style="width: 100%;">
                       <div>
                         <span><i class="bi bi-table"></i></span>
                         <span style="padding-left: 1rem;">Коллекции</span>
                       </div>
                     </button>
-                    <button @click="$router.push('/sizes')" class="btn btn-outline-primary d-flex justify-content-between my-1" style="width: 100%;">
+                    <button @click="$router.push('/sizes')" class="btn btn-outline-primary d-flex justify-content-between mb-1" style="width: 100%;">
                       <div>
                         <span><i class="bi bi-table"></i></span>
                         <span style="padding-left: 1rem;">Размеры</span>

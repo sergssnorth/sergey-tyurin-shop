@@ -13,7 +13,7 @@
               <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content">
                   <div class="modal-header text-center">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Создать раздел</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Создать коллекцию</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body">
@@ -27,7 +27,7 @@
                     </div>
                   </div>
                   <div class="modal-footer ">
-                    <button @click="addBigCategory()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Cоздать</button>
+                    <button @click="addCollection()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Cоздать</button>
                   </div>
                 </div>
               </div>
@@ -36,10 +36,10 @@
         </div>
         <div class="row">
           <div class="col">
-            <ListCollections 
-              v-for="category in big_categories"
-              v-bind:key="category.id"
-              v-bind:category="category"
+            <ListCollections
+              v-for="collection in collections"
+              v-bind:key="collection.id"
+              v-bind:category="collection"
               @categoryDeleted="handleCategoryDeleted" 
               @categoryUpdated="handleCategoryUpdated"/>
           </div>
@@ -55,7 +55,7 @@ export default {
     name: 'Collection',
     data() {
         return {
-            big_categories: [],
+            collections: [],
             name: '',
             slug: '',
         }
@@ -64,10 +64,10 @@ export default {
         ListCollections
     },
     mounted() {
-        this.getBigCategories() 
+        this.getCollections() 
     },
     methods: {
-        async getBigCategories() {
+        async getCollections() {
             await axios
                 .get(`/big_categories`)
                 .then(response => {

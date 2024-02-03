@@ -105,7 +105,7 @@ export default {
         },
         handleCollectionUpdated(updatedCategoryId) {
         // Обновляем список категорий после обновления
-            this.getBigCategories();
+            this.getCollections();
         },
     }
 }   

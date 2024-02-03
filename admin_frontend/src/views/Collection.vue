@@ -18,15 +18,15 @@
                   </div>
                   <div class="modal-body">
                     <div class="form-floating mb-3">
-                      <input type="text" class="form-control" placeholder="name@example.com" v-model="name">
+                      <input type="text" class="form-control" placeholder="name@example.com" v-model="new_name">
                       <label for="floatingInput">Имя</label>
                     </div>
                     <div class="form-floating mb-3">
-                      <input type="text" class="form-control" placeholder="Password" v-model="slug">
+                      <input type="text" class="form-control" placeholder="Password" v-model="new_slug">
                       <label for="floatingPassword">Слаг</label>
                     </div>
                     <div class="form-floating mb-3">
-                      <input type="text" class="form-control" placeholder="Password" v-model="description">
+                      <input type="text" class="form-control" placeholder="Password" v-model="new_description">
                       <label for="floatingPassword">Описание</label>
                     </div>
                   </div>
@@ -60,9 +60,9 @@ export default {
     data() {
         return {
             collections: [],
-            name: '',
-            slug: '',
-            description: '',
+            new_name: '',
+            new_slug: '',
+            new_description: '',
         }
     },
     components: {
@@ -85,27 +85,30 @@ export default {
         },
         async addCollection() {
             const formData = {
-                name: this.name,
-                slug: this.slug,
-                description: this.description,
+                name: this.new_name,
+                slug: this.new_slug,
+                description: this.new_description,
             }
             await axios
                 .post(`/collection`, formData)
                 .then(response => {
                     console.log(response.data)
+                    this.new_name = ''
+                    this.new_slug = ''
+                    this.new_description = ''
                     this.getCollections();
                 })
                 .catch(error => {
                     console.log(error)
                 })
         },
-        handleCollectionDeleted(deletedCollectionId) {
-        // Обновляем список категорий после удаления
-            this.collections = this.collections.filter(collection => collection.id !== deletedCollectionId);
+        handleCollectionDeleted() {
+          this.getCollections();
+
         },
-        handleCollectionUpdated(updatedCategoryId) {
-        // Обновляем список категорий после обновления
-            this.getCollections();
+        handleCollectionUpdated() {
+          console.log("handleCollectionUpdated")
+          this.getCollections();
         },
     }
 }   

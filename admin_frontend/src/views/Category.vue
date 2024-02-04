@@ -1,7 +1,7 @@
 <template>
     <div class="container-fluid text-center">
         <div class="row align-items-center mb-3">
-            <div class="col-3">
+            <div class="col-2">
                 <select v-model="filter_big_category_id" class="form-select" aria-label="Default select example" @change="handleFilterChange">
                     <option :value="0">Все разделы</option>
                     <option v-for="big_category in big_categories" :key="big_category.id" :value="big_category.id">
@@ -9,7 +9,7 @@
                     </option>
                 </select>
             </div>
-          <div class="col-8">
+          <div class="col-9">
             <div class="input-group align-items-center">
               <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
               <input type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
@@ -54,6 +54,7 @@
               v-for="category in categories"
               v-bind:key="category.id"
               v-bind:category="category"
+              v-bind:big_categories="big_categories"
               @categoryDeleted="handleCategoryDeleted" 
               @categoryUpdated="handleCategoryUpdated"/>
           </div>
@@ -165,13 +166,20 @@ export default {
                 query: { big_category_id: this.filter_big_category_id }
             });
         },
-        handleCategoryDeleted(deletedCategoryId) {
+        handleCategoryDeleted() {
             console.log('Хендлер handleCategoryDeleted')
-            this.big_categories = this.big_categories.filter(category => category.id !== deletedCategoryId);
+            const filterId = this.getFilterId()
+            console.log('filterId')
+            console.log(filterId)
+            console.log('filterId')
+            this.getCategories(filterId);
         },
-        handleCategoryUpdated(updatedCategoryId) {
+        handleCategoryUpdated() {
             console.log('Хендлер handleCategoryUpdated')
-            filterId = this.getFilterId()
+            const filterId = this.getFilterId()
+            console.log('filterId')
+            console.log(filterId)
+            console.log('filterId')
             this.getCategories(filterId);
         },
     },

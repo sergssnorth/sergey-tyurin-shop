@@ -37,11 +37,11 @@
         <div class="row">
           <div class="col">
             <ListBigCategories 
-              v-for="category in big_categories"
-              v-bind:key="category.id"
-              v-bind:category="category"
-              @categoryDeleted="handleCategoryDeleted" 
-              @categoryUpdated="handleCategoryUpdated"/>
+              v-for="big_category in big_categories"
+              v-bind:key="big_category.id"
+              v-bind:big_category="big_category"
+              @bigCategoryDeleted="handleBigCategoryDeleted" 
+              @bigCategoryUpdated="handleBigCategoryUpdated"/>
           </div>
         </div>
     </div>
@@ -93,13 +93,12 @@ export default {
                     console.log(error)
                 })
         },
-        handleCategoryDeleted(deletedCategoryId) {
-        // Обновляем список категорий после удаления
-            this.big_categories = this.big_categories.filter(category => category.id !== deletedCategoryId);
+        handleBigCategoryDeleted() {
+          this.getBigCategories();
         },
-        handleCategoryUpdated(updatedCategoryId) {
+        handleBigCategoryUpdated() {
         // Обновляем список категорий после обновления
-            this.getBigCategories();
+          this.getBigCategories();
         },
     }
 }   

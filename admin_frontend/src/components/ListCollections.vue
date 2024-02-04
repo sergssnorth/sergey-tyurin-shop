@@ -51,7 +51,7 @@ export default {
     data() {
         return {
             data_collection: this.collection,
-            update_data_collection: { // добавьте это поле
+            update_data_collection: {
                 name: '',
                 slug: '',
                 description: '',
@@ -64,7 +64,7 @@ export default {
     methods: {
         async deleteCollection() {
             await axios
-                .delete(`/collection/${this.collection.id}`)
+                .delete(`/collection/${this.data_collection.id}`)
                 .then(response => {
                     console.log(response.data)
                     this.$emit('collectionDeleted');
@@ -80,7 +80,7 @@ export default {
                 description: this.update_data_collection.slug,
             }
             await axios
-                .put(`/collection/${this.collection.id}`, formData)
+                .put(`/collection/${this.data_collection.id}`, formData)
                 .then(response => {
                     console.log(response.data)
                     this.data_collection = { ...this.update_data_collection }

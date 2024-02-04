@@ -97,11 +97,11 @@ export default {
                 console.log(error);
             }
         },
-        handleSizeDeleted(deletedSizeId) {
-        // Обновляем список категорий после удаления
-            this.sizes = this.sizes.filter(size => size.id !== deletedSizeId);
+        handleSizeDeleted() {
+            console.log("handleSizeDeleted")
+            this.getSizes();
         },
-        handleSizeUpdated(updatedSizeId) {
+        handleSizeUpdated() {
             console.log("handleSizeUpdated")
             this.getSizes();
         },

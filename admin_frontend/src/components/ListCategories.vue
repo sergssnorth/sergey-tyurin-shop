@@ -2,35 +2,46 @@
     <div class="card mb-1">
         <div class="card-body py-1 px-3">
         <div class="d-flex align-items-center">
-            <span>{{ localCategory.name }}</span>
-            <button class="btn btn-icon d-inline ms-auto px-2"><i class="bi bi bi-box-seam"></i></button>
+            <span>{{ data_category.name }} </span>
             
-            <button data-bs-toggle="modal" data-bs-target="#editModal" class="btn btn-icon d-inline text-primary px-2"><i class="bi bi-pen"></i></button>
-            <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            
+            <span class="ms-auto" style="color: grey; margin-right: 0.5rem;"><i class="bi bi-boxes"></i></span>
+            <span class="" style="color: grey; margin-right: 1.5rem;">{{ bigCategoryName }}</span>
+            <div class="vr" style="margin-right: 1.15rem;"></div>
+            <button class="btn btn-icon d-inline px-2"><i class="bi bi bi-box-seam"></i></button>
+            
+            <button data-bs-toggle="modal" :data-bs-target="'#editModal_' + data_category.id" class="btn btn-icon d-inline text-primary px-2"><i class="bi bi-pen"></i></button>
+            <div class="modal fade" :id="'editModal_' + data_category.id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
               <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content">
                   <div class="modal-header text-center">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Изменить раздел</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Изменить категорию, {{ data_category.name }}</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body">
                     <div class="form-floating mb-3">
-                      <input type="text" class="form-control" placeholder="name@example.com" v-model="localCategory.name">
+                      <input type="text" class="form-control" placeholder="name@example.com" v-model="update_data_category.name">
                       <label for="floatingInput">Имя</label>
                     </div>
                     <div class="form-floating mb-3">
-                      <input type="text" class="form-control" placeholder="Password" v-model="localCategory.slug">
+                      <input type="text" class="form-control" placeholder="Password" v-model="update_data_category.slug">
                       <label for="floatingPassword">Слаг</label>
                     </div>
+                    <select v-model="update_data_category.big_category_id" class="form-select py-3" aria-label="Default select example">
+                        <option :value="0">Выберите раздел</option>
+                        <option v-for="big_category in data_big_categories" :key="big_category.id" :value="big_category.id">
+                            {{ big_category.name }}
+                        </option>
+                    </select>
                   </div>
                   <div class="modal-footer ">
-                    <button @click="updateBigCategory()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Изменить</button>
+                    <button @click="updateCategory()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Изменить</button>
                   </div>
                 </div>
               </div>
             </div>
 
-            <button @click="deleteBigCategory()" class="btn btn-icon d-inline text-danger px-2"><i class="bi bi-trash3"></i></button>
+            <button @click="deleteCategory()" class="btn btn-icon d-inline text-danger px-2"><i class="bi bi-trash3"></i></button>
         </div>
         </div>
     </div>
@@ -43,22 +54,37 @@ export default {
     name: 'ListCategories',
     props: {
         category: Object,
+        big_categories: Array
     },
     data() {
         return {
-            localCategory: this.category,
+            data_category: this.category,
+            data_big_categories: this.big_categories,
+            update_data_category: {
+                name: '',
+                slug: '',
+                big_category_id: '',
+            },
         }
     },
     computed: {
-       
+        bigCategoryName() {
+            const bigCategoryId = this.data_category.big_category_id;
+            const bigCategory = this.data_big_categories.find(category => category.id === bigCategoryId);
+            return bigCategory ? bigCategory.name : '';
+        },
+    },
+
+    created() {
+      this.update_data_category = { ...this.category };
     },
     methods: {
         async deleteCategory() {
             await axios
-                .delete(`/category/${this.localCategory.id}`)
+                .delete(`/category/${this.data_category.id}`)
                 .then(response => {
                     console.log(response.data)
-                    this.$emit('categoryDeleted', this.localCategory.id);
+                    this.$emit('categoryDeleted');
                 })
                 .catch(error => {
                     console.log(error)
@@ -66,14 +92,16 @@ export default {
         },
         async updateCategory() {
             const formData = {
-                name: this.localCategory.name,
-                slug: this.localCategory.slug
+                name: this.update_data_category.name,
+                slug: this.update_data_category.slug,
+                big_category_id: this.update_data_category.big_category_id,
             }
             await axios
-                .put(`/category/${this.localCategory.id}`, formData)
+                .put(`/category/${this.data_category.id}`, formData)
                 .then(response => {
                     console.log(response.data)
-                    this.$emit('categoryUpdated', this.localCategory.id);
+                    this.data_category = { ...this.update_data_category }
+                    this.$emit('categoryUpdated');
                 })
                 .catch(error => {
                     console.log(error)

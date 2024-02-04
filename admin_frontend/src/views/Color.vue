@@ -27,7 +27,7 @@
                     </div>
                   </div>
                   <div class="modal-footer ">
-                    <button @click="addBigCategory()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Cоздать</button>
+                    <button @click="addColor()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Cоздать</button>
                   </div>
                 </div>
               </div>
@@ -37,11 +37,11 @@
         <div class="row">
           <div class="col">
             <ListColors 
-              v-for="category in big_categories"
-              v-bind:key="category.id"
-              v-bind:category="category"
-              @categoryDeleted="handleCategoryDeleted" 
-              @categoryUpdated="handleCategoryUpdated"/>
+              v-for="color in colors"
+              v-bind:key="color.id"
+              v-bind:color="color"
+              @colorDeleted="handleColorDeleted" 
+              @colorUpdated="handleColorUpdated"/>
           </div>
         </div>
     </div>
@@ -55,7 +55,7 @@ export default {
     name: 'Color',
     data() {
         return {
-            big_categories: [],
+            colors: [],
             name: '',
             slug: '',
         }
@@ -64,42 +64,40 @@ export default {
         ListColors
     },
     mounted() {
-        this.getBigCategories() 
+        this.getColors() 
     },
     methods: {
-        async getBigCategories() {
+        async getColors() {
             await axios
-                .get(`/big_categories`)
+                .get(`/colors`)
                 .then(response => {
-                    this.big_categories = response.data
-                    console.log(this.big_categories)
+                    this.colors = response.data
+                    console.log(this.colors)
                 })
                 .catch(error => {
                     console.log(error)
                 })
         },
-        async addBigCategory() {
+        async addColor() {
             const formData = {
                 name: this.name,
                 slug: this.slug
             }
             await axios
-                .post(`/big_category`, formData)
+                .post(`/color`, formData)
                 .then(response => {
                     console.log(response.data)
-                    this.getBigCategories();
+                    this.getColors();
                 })
                 .catch(error => {
                     console.log(error)
                 })
         },
-        handleCategoryDeleted(deletedCategoryId) {
-        // Обновляем список категорий после удаления
-            this.big_categories = this.big_categories.filter(category => category.id !== deletedCategoryId);
+        handleColorDeleted() {
+            this.getColors();
         },
-        handleCategoryUpdated(updatedCategoryId) {
-        // Обновляем список категорий после обновления
-            this.getBigCategories();
+        handleColorUpdated() {
+            this.getColors();
         },
     }
 }   

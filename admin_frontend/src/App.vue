@@ -64,7 +64,7 @@
                         <span style="padding-left: 1rem;">Категории</span>
                       </div>
                     </button>
-                    <button @click="$router.push('/models')" class="btn btn-outline-primary d-flex justify-content-between mb-1" style="width: 100%;">
+                    <button @click="$router.push('/models?big_category_id=0&category_id=0')" class="btn btn-outline-primary d-flex justify-content-between mb-1" style="width: 100%;">
                       <div>
                         <span><i class="bi bi-table"></i></span>
                         <span style="padding-left: 1rem;">Модели</span>

@@ -4,43 +4,59 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import Model, Category, BigCategory
 from app.db import get_session
 from sqlmodel import select, and_, join
-
+from pydantic import BaseModel 
 
 router = APIRouter()
 
+class ModelResponse(BaseModel):
+    id: int
+    name: str
+    slug: str
+    description: str
+    collection_id: int
+    big_category_id: int
+    category_id: int
 
-@router.get("/models", response_model=list[Model])
+
+@router.get("/models")
 async def get_models(
     big_category_id: Optional[int] = None, 
     category_id: Optional[int] = None, 
     collection_id: Optional[int] = None, 
     session: AsyncSession = Depends(get_session)):
 
-    stmt = select(Model)
-    stmt = stmt.join(Category).join(BigCategory)
+    query = select(Model, Category).join(Category)
 
     if big_category_id is not None:
-        stmt = stmt.where(Category.big_category_id == big_category_id)
+        query = query.filter(Category.big_category_id == big_category_id)
 
     if category_id is not None:
-        stmt = stmt.where(Model.category_id == category_id)
+        query = query.filter(Model.category_id == category_id)
 
     if collection_id is not None:
-        stmt = stmt.where(Model.collection_id == collection_id)
+        query = query.filter(Model.collection_id == collection_id)
 
-    result = await session.execute(stmt)
-    models = result.scalars().all()
-    return [ 
-        Model(
-            id=model.id,
-            name=model.name, 
-            slug=model.slug, 
-            description=model.description, 
-            collection_id=model.collection_id, 
-            category_id=model.category_id,
-            big_category_id=model.category.big_category_id
-        ) for model in models
-    ]
+    models_and_categories = await session.execute(query)
+    models_and_categories_list = list(models_and_categories)
+    
+
+    result_list = []
+
+    for model, category in models_and_categories_list:
+        result_list.append(
+            ModelResponse(
+                id=model.id, 
+                name=model.name,
+                slug= model.slug,
+                description=model.description,
+                collection_id = model.collection_id,
+                big_category_id = category.big_category_id,
+                category_id = model.category_id,
+            )
+        )
+
+    return result_list
+    
 
 @router.post("/model")
 async def add_model(model: Model, session: AsyncSession = Depends(get_session)):

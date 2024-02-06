@@ -8,9 +8,9 @@
             <span class="ms-auto" style="color: grey; margin-right: 0.5rem;"><i class="bi bi-boxes"></i></span>
             <span class="" style="color: grey; margin-right: 1.5rem;">{{ bigCategoryName }}</span>
             <div class="vr" style="margin-right: 1.15rem;"></div>
-            <button class="btn btn-icon d-inline px-2"><i class="bi bi bi-box-seam"></i></button>
+            <button @click="$router.push(`/models?big_category_id=${this.data_category.big_category_id}&category_id=${this.data_category.id}&collection_id=0`)" class="btn btn-icon d-inline px-2"><i class="bi bi bi-box-seam"></i></button>
             
-            <button data-bs-toggle="modal" :data-bs-target="'#editModal_' + data_category.id" class="btn btn-icon d-inline text-primary px-2"><i class="bi bi-pen"></i></button>
+            <button  data-bs-toggle="modal" :data-bs-target="'#editModal_' + data_category.id" class="btn btn-icon d-inline text-primary px-2"><i class="bi bi-pen"></i></button>
             <div class="modal fade" :id="'editModal_' + data_category.id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
               <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content">

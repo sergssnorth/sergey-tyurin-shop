@@ -54,7 +54,7 @@
                         <label for="floatingPassword">Описание</label>
                         </div>
                         
-                        <select v-model="big_category_id" class="form-select py-3 mb-3" aria-label="Default select example" @change="handleBigCategoryFilterChange">
+                        <select v-model="big_category_id" class="form-select py-3 mb-3" aria-label="Default select example" @change="handleBigCategoryFilterChangeCreateModal">
                             <option :value="0">Выберите раздел</option>
                             <option v-for="big_category in big_categories" :key="big_category.id" :value="big_category.id">
                                 {{ big_category.name }}
@@ -68,9 +68,16 @@
                             </option>
                         </select>
 
+                        <select v-model="collection_id" class="form-select py-3 mb-3" aria-label="Default select example">
+                            <option :value="0">Выберите коллекцию</option>
+                            <option v-for="collection in collections" :key="collection.id" :value="collection.id">
+                                {{ collection.name }}
+                            </option>
+                        </select>
+
                     </div>
                     <div class="modal-footer ">
-                        <button @click="addCategory()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Cоздать</button>
+                        <button @click="addModel()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Cоздать</button>
                     </div>
                     </div>
                 </div>
@@ -110,9 +117,16 @@ export default {
             collections: [],
             models: [],
 
+            list_select_big_categories: [],
+            list_select_categories: [],
+            list_select_collections: [],
+            
             name: '',
             slug: '',
+            description: '',
             big_category_id: 0,
+            category_id: 0,
+            collection_id: 0,
             FilterId: '',
         }
     },
@@ -124,7 +138,37 @@ export default {
         this.getBigCategories()
         this.getCollections()
         this.getFilterId()
+        // Добавить логику для правильного обновления
+
+        const { big_category_id, category_id, collection_id } = this.$route.query;
+
+        if (big_category_id !== '0') {
+            const parsedBigCategoryId = parseInt(big_category_id, 10);
+            this.filter_big_category_id = parsedBigCategoryId
+        }
+
+        if (category_id !== '0') {
+            const parsedCategoryId = parseInt(category_id, 10);
+            this.filter_category_id = parsedCategoryId
+        }
+
+        if (collection_id !== '0') {
+            const parsedCollectionId = parseInt(collection_id, 10);
+            this.filter_collection_id = parsedCollectionId
+        }
+
         this.getCategories(this.filter_big_category_id)
+
+            // Копирование значений из big_categories в list_select_big_categories
+        this.list_select_big_categories = this.big_categories.slice();
+
+        // Копирование значений из categories в list_select_categories
+        this.list_select_categories = this.categories.slice();
+
+        // Копирование значений из collections в list_select_collections
+        this.list_select_collections = this.collections.slice();
+
+
         this.getModels(this.filter_big_category_id, this.filter_category_id, this.filter_collection_id)
     },
     methods: {
@@ -227,24 +271,34 @@ export default {
             }
         },
         
-        async addCategory() {
-            let filterId;
+        async addModel() {
+            // let filterId;
 
             const formData = {
                 name: this.name,
                 slug: this.slug,
-                big_category_id: this.big_category_id
+                description: this.description,
+                category_id: this.category_id,
+                collection_id: this.collection_id
             }
             console.log(formData)
             await axios
-                .post(`/category`, formData)
+                .post(`/model`, formData)
                 .then(response => {
                     console.log(response.data)
-                    filterId = this.getFilterId()
-                    this.getCategories(filterId);
+                    // filterId = this.getFilterId()
+                    // this.getCategories(filterId);
+                    //this.getModels(this.big_category_id, this.category_id, this.collection_id)
+                    const queryString = `?big_category_id=${this.big_category_id}&category_id=${this.category_id}&collection_id=${this.collection_id}`;
+                    this.$router.push(`/models${queryString}`);
+                    
                     this.name = '',
                     this.slug = '',
-                    this.big_category_id = 0
+                    this.description = '',
+                    this.big_category_id = 0,
+                    this.category_id = 0,
+                    this.collection_id = 0
+
                 })
                 .catch(error => {
                     console.log(error)
@@ -261,6 +315,11 @@ export default {
             const queryString = `?big_category_id=${this.filter_big_category_id}&category_id=${this.filter_category_id}&collection_id=${this.filter_collection_id}`;
 
             this.$router.push(`/models${queryString}`);
+        },
+        handleBigCategoryFilterChangeCreateModal() {
+            console.log('Хендлер handleBigCategoryFilterChangeCreateModal');
+            this.category_id = 0
+            this.getCategories(this.big_category_id)
         },
 
         handleCategoryFilterChange() {
@@ -298,6 +357,10 @@ export default {
         const big_category_filterId = to.query.big_category_id;
         const category_filterId = to.query.category_id;
         const collection_filterId = to.query.collection_id;
+
+        this.filter_big_category_id = to.query.big_category_id;
+        this.filter_category_id = to.query.category_id;
+        this.filter_collection_id = to.query.collection_id;
         //this.filter_big_category_id = filterId
         this.getCategories(big_category_filterId)
         this.getModels(big_category_filterId, category_filterId, collection_filterId)

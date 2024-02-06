@@ -6,7 +6,12 @@
             
             
             <span class="ms-auto" style="color: grey; margin-right: 0.5rem;"><i class="bi bi-boxes"></i></span>
-            <span class="" style="color: grey; margin-right: 1.5rem;"> Hello </span>
+            <span class="" style="color: grey; margin-right: 0.5rem;"> {{ TreeBigCategory }}</span>
+            <span class="" style="color: grey; margin-right: 0.5rem;"><i class="bi bi-arrow-right"></i></span>
+            <span class="" style="color: grey; margin-right: 1.5rem;"> {{ TreeCategory }}</span>
+            <span class="" style="color: grey; margin-right: 0.5rem;"><i class="bi bi-gem"></i></span>
+            <span class="" style="color: grey; margin-right: 1.5rem;"> {{ TreeCollection }}</span>
+
             <div class="vr" style="margin-right: 1.15rem;"></div>
             <button class="btn btn-icon d-inline px-2"><i class="bi bi bi-box-seam"></i></button>
             
@@ -27,10 +32,26 @@
                       <input type="text" class="form-control" placeholder="Password" v-model="update_data_model.slug">
                       <label for="floatingPassword">Слаг</label>
                     </div>
-                    <select v-model="update_data_model.big_category_id" class="form-select py-3" aria-label="Default select example">
+                    <div class="form-floating mb-3">
+                      <input type="text" class="form-control" placeholder="Password" v-model="update_data_model.description">
+                      <label for="floatingPassword">Описание</label>
+                    </div>
+                    <select v-model="update_data_model.big_category_id" class="form-select py-3 mb-3" aria-label="Default select example">
                         <option :value="0">Выберите раздел</option>
                         <option v-for="big_category in data_big_categories" :key="big_category.id" :value="big_category.id">
                             {{ big_category.name }}
+                        </option>
+                    </select>
+                    <select v-model="update_data_model.category_id" class="form-select py-3 mb-3" aria-label="Default select example">
+                        <option :value="0">Выберите категорию</option>
+                        <option v-for="category in data_categories" :key="category.id" :value="category.id">
+                            {{ category.name }}
+                        </option>
+                    </select>
+                    <select v-model="update_data_model.collection_id" class="form-select py-3 mb-3" aria-label="Default select example">
+                        <option :value="0">Выберите коллекцию</option>
+                        <option v-for="collection in data_collections" :key="collection.id" :value="collection.id">
+                            {{ collection.name }}
                         </option>
                     </select>
                   </div>
@@ -68,25 +89,44 @@ export default {
             update_data_model: {
                 name: '',
                 slug: '',
-                big_category_id: '',
+                description: '',
+                big_category_id: 0,
+                category_id: 0,
+                collection_id: 0,
+                FilterId: '',
             },
         }
     },
     computed: {
-        // bigCategoryName() {
-        //     const bigCategoryId = this.data_category.big_category_id;
-        //     const bigCategory = this.data_big_categories.find(category => category.id === bigCategoryId);
-        //     return bigCategory ? bigCategory.name : '';
-        // },
-    },
+        TreeBigCategory() {
+            console.log("TreeBigCategory")
+            const bigCategoryId = this.data_model.big_category_id
+            const bigCategory = this.data_big_categories.find(category => category.id == bigCategoryId)  
 
+            return bigCategory ? bigCategory.name : ''; 
+        },
+        TreeCategory() {
+            console.log("TreeCategory")
+            const categoryId = this.data_model.category_id
+            const category = this.data_categories.find(category => category.id == categoryId)  
+
+            return category ? category.name : ''; 
+        },
+        TreeCollection() {
+            console.log("TreeCollection")
+            const collectionId = this.data_model.collection_id
+            const collection = this.data_collections.find(collection => collection.id == collectionId)
+
+            return collection ? collection.name : ''; 
+        }
+    },
     created() {
-      this.update_data_category = { ...this.category };
+      this.update_data_model = { ...this.data_model };
     },
     methods: {
-        async deleteCategory() {
+        async deleteModel() {
             await axios
-                .delete(`/category/${this.data_category.id}`)
+                .delete(`/model/${this.data_model.id}`)
                 .then(response => {
                     console.log(response.data)
                     this.$emit('categoryDeleted');
@@ -95,17 +135,19 @@ export default {
                     console.log(error)
                 })
         },
-        async updateCategory() {
+        async updateModel() {
             const formData = {
-                name: this.update_data_category.name,
-                slug: this.update_data_category.slug,
-                big_category_id: this.update_data_category.big_category_id,
+                name: this.update_data_model.name,
+                slug: this.update_data_model.slug,
+                description: this.update_data_model.description,
+                category_id: this.update_data_model.category_id,
+                collection_id: this.update_data_model.collection_id
             }
             await axios
-                .put(`/category/${this.data_category.id}`, formData)
+                .put(`/model/${this.data_model.id}`, formData)
                 .then(response => {
                     console.log(response.data)
-                    this.data_category = { ...this.update_data_category }
+                    this.data_model = { ...this.update_data_model}
                     this.$emit('categoryUpdated');
                 })
                 .catch(error => {

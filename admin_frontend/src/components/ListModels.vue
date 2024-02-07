@@ -13,7 +13,7 @@
             <span class="" style="color: grey; margin-right: 1.5rem;"> {{ TreeCollection }}</span>
 
             <div class="vr" style="margin-right: 1.15rem;"></div>
-            <button class="btn btn-icon d-inline px-2"><i class="bi bi bi-box-seam"></i></button>
+            <button @click="$router.push(`/product/${this.data_model.id}`)"  class="btn btn-icon d-inline px-2"><i class="bi bi bi-box-seam"></i></button>
             
             <button data-bs-toggle="modal" :data-bs-target="'#editModal_' + data_model.id" class="btn btn-icon d-inline text-primary px-2"><i class="bi bi-pen"></i></button>
             <div class="modal fade" :id="'editModal_' + data_model.id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

@@ -6,3 +6,4 @@ from .size import Size
 from .color import Color
 from .product import Product
 from .warehouse import Warehouse
+from .product_size import ProductSize

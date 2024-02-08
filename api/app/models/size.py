@@ -6,4 +6,4 @@ class Size(SQLModel, table=True):
     name: str
     slug: str
 
-    products: List["Product"] = Relationship(back_populates="size")
+    product_sizes: List["ProductSize"] = Relationship(back_populates="size")

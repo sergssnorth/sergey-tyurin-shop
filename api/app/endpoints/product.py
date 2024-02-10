@@ -54,7 +54,7 @@ async def add_product(product: Product, session: AsyncSession = Depends(get_sess
 
 @router.put("/product/{product_id}")
 async def update_product(product_id: int, updated_product: Product, session: AsyncSession = Depends(get_session)):
-    existing_product = await session.get(Product, updated_product)
+    existing_product = await session.get(Product, product_id)
     if existing_product is None:
         raise HTTPException(status_code=404, detail="Продукт не найден")
     existing_product.model_id = updated_product.model_id

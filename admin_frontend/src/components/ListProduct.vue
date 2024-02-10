@@ -31,10 +31,17 @@
 
                 <button @click="deleteBigCategory()" class="btn btn-icon d-inline text-danger px-2"><i class="bi bi-trash3"></i></button>
             </a>
+            <div class="separator-card"></div>
             <div id="collapseIndicatorChevron" class="collapse" aria-labelledby="headingExampleTwo" data-bs-parent="#collapseIndicatorExampleOne" >
                 <div class="card-body">
-                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred.
-                    <button class="btn">Text</button>
+                    <div v-for="size in data_product_sizes" :key="size.id" class="d-flex align-items-center">
+                        <span>{{ size.size_name }}</span>
+                        <button data-bs-toggle="modal" data-bs-target="#editModal" class="btn btn-icon d-inline text-primary ms-auto px-2"><i class="bi bi-pen"></i></button>
+                        <button @click="deleteBigCategory()" class="btn btn-icon d-inline text-danger px-2"><i class="bi bi-trash3"></i></button>
+                    </div>
+                    <div class="d-flex align-items-center mt-3">
+                        <button class="btn btn-outline-success"><i class="bi bi-plus-circle" style="margin-right: 0.5em;"></i>Добавить размер</button>
+                    </div>
                 </div>
             </div>
     </div>
@@ -51,12 +58,29 @@ export default {
     data() {
         return {
             data_product: this.product,
+            data_product_sizes: []
         }
+    },
+    mounted() {
+        this.getProductSizes(this.data_product.id)
     },
     computed: {
        
     },
     methods: {
+        async getProductSizes(product_id) {
+            const params = { product_id: product_id}
+            await axios
+                .get(`/product-sizes`, { params })
+                .then(response => {
+                    this.data_product_sizes = response.data
+                    console.log(this.data_product_sizes)
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        },
+
         async deleteBigCategory() {
             await axios
                 .delete(`/big_category/${this.big_category.id}`)
@@ -87,6 +111,28 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss">
 
+
+.separator-card {
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+.separator-card::before,
+.separator-card::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #dee2e6;
+  margin-left: 0.25em;
+}
+
+.separator-card:not(:empty)::before {
+  margin-right: 2em;
+}
+
+.separator-card:not(:empty)::after {
+  margin-left: 2em;
+}
 </style>

@@ -23,6 +23,7 @@ async def get_models(
     big_category_id: Optional[int] = None, 
     category_id: Optional[int] = None, 
     collection_id: Optional[int] = None, 
+    model_id: Optional[int] = None, 
     session: AsyncSession = Depends(get_session)):
 
     query = select(Model, Category).join(Category)
@@ -35,6 +36,9 @@ async def get_models(
 
     if collection_id is not None:
         query = query.filter(Model.collection_id == collection_id)
+
+    if model_id is not None:
+        query = query.filter(Model.id == model_id)
 
     models_and_categories = await session.execute(query)
     models_and_categories_list = list(models_and_categories)

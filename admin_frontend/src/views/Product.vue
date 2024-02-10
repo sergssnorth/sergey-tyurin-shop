@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <div class="row align-items-center mb-3">
             <div class="col-11">
-                <div class="separator">Product name</div>
+                <div class="separator">{{ model.name }}</div>
             </div>
             
             <div class="col-1">
@@ -11,7 +11,7 @@
                 <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                     <div class="modal-content">
                     <div class="modal-header text-center">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Создать модель</h1>
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Добавить цвет</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -68,28 +68,6 @@
                 @productUpdated="handleCategoryUpdated"/>
 
             </div>
-            <div>
-                <div class="card mb-1">
-                    <a href="#collapseIndicatorChevron" class="card-body py-1 px-3 d-flex align-items-center" id="headingExampleTwo" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseIndicatorChevron">
-                        <span>Привет</span>
-                        <span class="ms-auto" style="color: grey; margin-right: 0.5rem;"><i class="bi bi-boxes"></i></span>
-                        <span class="" style="color: grey; margin-right: 1.5rem;">Привет</span>
-                        <div class="vr" style="margin-right: 1.15rem;"></div>
-                        <button class="btn btn-icon d-inline px-2"><i class="bi bi bi-box-seam"></i></button>
-                        
-                        
-                    </a>
-
-
-                    <div id="collapseIndicatorChevron" class="collapse" aria-labelledby="headingExampleTwo" data-bs-parent="#collapseIndicatorExampleOne" >
-                    <div class="card-body">
-                        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred.
-                        <button class="btn">Text</button>
-                    </div>
-                    
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </template>
@@ -103,6 +81,7 @@ export default {
     data() {
         return {
             model_id: 0,
+            model: {},
             products: [],
         }
     },
@@ -111,10 +90,36 @@ export default {
     },
 
     mounted() {
+        
         this.model_id = this.$route.params.model_id
+        this.getModels(this.model_id)
         this.getProducts(this.model_id)
+       
     },
     methods: {
+        async getModels(model_id) {
+            console.log('Метод getModels')
+            
+            const params = {};
+
+            if (model_id !== undefined && model_id !== null) {
+                console.log('Значение big_category_filterId:', model_id);
+                const parsedModelId = parseInt(model_id, 10);
+
+                if (!isNaN(parsedModelId) && parsedModelId !== 0) {
+                    params.model_id = parsedModelId;
+                }
+            }
+            console.log(params);
+
+            try {
+                const response = await axios.get('/models', { params });
+                this.model = response.data[0];
+                console.log(this.model);
+            } catch (error) {
+                console.log(error);
+            }
+        },
         async getProducts(model_id) {
             const params = { model_id: model_id}
             await axios
@@ -122,6 +127,37 @@ export default {
                 .then(response => {
                     this.products = response.data
                     console.log(this.collections)
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        },
+        async addProduct() {
+            const formData = {
+                name: this.name,
+                slug: this.slug,
+                description: this.description,
+                category_id: this.category_id,
+                collection_id: this.collection_id
+            }
+            console.log(formData)
+            await axios
+                .post(`/model`, formData)
+                .then(response => {
+                    console.log(response.data)
+                    // filterId = this.getFilterId()
+                    // this.getCategories(filterId);
+                    //this.getModels(this.big_category_id, this.category_id, this.collection_id)
+                    const queryString = `?big_category_id=${this.big_category_id}&category_id=${this.category_id}&collection_id=${this.collection_id}`;
+                    this.$router.push(`/models${queryString}`);
+                    
+                    this.name = '',
+                    this.slug = '',
+                    this.description = '',
+                    this.big_category_id = 0,
+                    this.category_id = 0,
+                    this.collection_id = 0
+
                 })
                 .catch(error => {
                     console.log(error)

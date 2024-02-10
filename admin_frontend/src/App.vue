@@ -83,9 +83,9 @@
             </li>
             
              <!-- Справочники -->
-            <li>
+            <li class="mb-2">
               <div class="d-inline-flex gap-1" style="width: 100%;">
-                <button @click="isClickedReference = !isClickedReference" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;" data-bs-toggle="collapse" href="#multiCollapseReference" role="button" aria-expanded="false" aria-controls="multiCollapseReference">
+                <button @click="toggleReferenceCollapse" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;" data-bs-toggle="collapse" data-bs-target="#multiCollapseReference" href="#multiCollapseReference" role="button" aria-expanded="false" aria-controls="multiCollapseReference">
                   <div>
                     <span><i class="bi bi-box-fill"></i></span>
                     <span style="padding-left: 1rem;">Справочники</span>
@@ -109,13 +109,94 @@
                         <span style="padding-left: 1rem;">Размеры</span>
                       </div>
                     </button>
-                    <button @click="$router.push('/colors')" class="btn btn-outline-primary d-flex justify-content-between mb-1" style="width: 100%;">
+                    <button @click="$router.push('/colors')" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;">
                       <div>
                         <span><i class="bi bi-table"></i></span>
                         <span style="padding-left: 1rem;">Цвета</span>
                       </div>
                     </button>
                     
+                  </div>
+                </div>
+                </div>
+              </div>
+            </li>
+
+            <!-- Заказы -->
+            <li class="mb-2">
+              <div class="d-inline-flex gap-1" style="width: 100%;">
+                <button @click="isClickedOrders = !isClickedOrders" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;" data-bs-toggle="collapse" href="#multiCollapseOrders" role="button" aria-expanded="false" aria-controls="multiCollapseOrders">
+                  <div>
+                    <span><i class="bi bi-box-fill"></i></span>
+                    <span style="padding-left: 1rem;">Заказы</span>
+                  </div>
+                  <span><i :class="isClickedOrders ? 'bi-caret-up-fill' : 'bi-caret-right-fill'"></i></span>
+                </button>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="container">
+                  <div class="collapse multi-collapse" id="multiCollapseOrders">
+                    <button @click="$router.push('/collections')" class="btn btn-outline-primary d-flex justify-content-between mt-1" style="width: 100%;">
+                      <div>
+                        <span><i class="bi bi-table"></i></span>
+                        <span style="padding-left: 1rem;">Все заказы</span>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+                </div>
+              </div>
+            </li>
+
+            <!-- Клиенты -->
+            <li class="mb-2">
+              <div class="d-inline-flex gap-1" style="width: 100%;">
+                <button @click="isClickedClients = !isClickedClients" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;" data-bs-toggle="collapse" href="#multiCollapseClients" role="button" aria-expanded="false" aria-controls="multiCollapseClients">
+                  <div>
+                    <span><i class="bi bi-box-fill"></i></span>
+                    <span style="padding-left: 1rem;">Клиенты</span>
+                  </div>
+                  <span><i :class="isClickedClients ? 'bi-caret-up-fill' : 'bi-caret-right-fill'"></i></span>
+                </button>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="container">
+                  <div class="collapse multi-collapse" id="multiCollapseClients">
+                    <button @click="$router.push('/clients')" class="btn btn-outline-primary d-flex justify-content-between mt-1" style="width: 100%;">
+                      <div>
+                        <span><i class="bi bi-table"></i></span>
+                        <span style="padding-left: 1rem;">Все клиенты</span>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+                </div>
+              </div>
+            </li>
+
+            <!-- Склад -->
+            <li class="mb-2">
+              <div class="d-inline-flex gap-1" style="width: 100%;">
+                <button @click="isClickedWarehouse = !isClickedWarehouse" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;" data-bs-toggle="collapse" href="#multiCollapseWarehouse" role="button" aria-expanded="false" aria-controls="multiCollapseWarehouse">
+                  <div>
+                    <span><i class="bi bi-box-fill"></i></span>
+                    <span style="padding-left: 1rem;">Склад</span>
+                  </div>
+                  <span><i :class="isClickedWarehouse ? 'bi-caret-up-fill' : 'bi-caret-right-fill'"></i></span>
+                </button>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="container">
+                  <div class="collapse multi-collapse" id="multiCollapseWarehouse">
+                    <button @click="$router.push('/collections')" class="btn btn-outline-primary d-flex justify-content-between mt-1" style="width: 100%;">
+                      <div>
+                        <span><i class="bi bi-table"></i></span>
+                        <span style="padding-left: 1rem;">Все заказы</span>
+                      </div>
+                    </button>
                   </div>
                 </div>
                 </div>
@@ -134,15 +215,81 @@
 
 <script>
 import axios from 'axios'
+import bootstrap from 'bootstrap/dist/js/bootstrap.js'
 
 export default {
     data() {
         return {
           isClickedStatistics: false,
           isClickedModel: false,
+
           isClickedReference: false,
+          multiCollapseReference: null,
+          
+          isClickedOrders: false,
+
+          isClickedClients: false,
+
+          isClickedWarehouse: false,
         }
     },
+    methods: {
+      toggleReferenceCollapse() {
+      // Проверяем, создан ли уже экземпляр collapse
+      if (!this.multiCollapseReference) {
+        // Если нет, создаем его и сохраняем ссылку
+        this.multiCollapseReference = new bootstrap.Collapse(document.getElementById('multiCollapseReference'));
+      }
+      
+      // Теперь можем использовать ссылку на collapse для управления состоянием
+      this.multiCollapseReference.toggle();
+      this.isClickedReference = !this.isClickedReference;
+
+      },
+      checkCurrentRoute(to, from) {
+        const currentRoute = this.$route.path;
+        const ReferenceRoutes = ['/collections', '/sizes', '/colors'];
+        const BaseRoutes = ['/'];
+        if (!to || !from) {
+          return;
+        }
+
+        const currentRoute1 = to.path; // Текущий URL
+        const previousRoute = from.path; 
+        console.log("previousRoute")
+        console.log(previousRoute)
+        console.log("previousRoute")
+
+        console.log("currentRoute1")
+        console.log(currentRoute1)
+        console.log("currentRoute1")
+
+        if ((ReferenceRoutes.includes(currentRoute1) && BaseRoutes.includes(previousRoute))) {
+          this.toggleReferenceCollapse()
+        }
+      },
+    },
+    mounted() {
+      // Получаем сохраненное состояние из localStorage при загрузке компонента
+      this.checkCurrentRoute();
+    },
+    watch: {
+      // Следим за изменением URL
+      $route(to, from) {
+        this.checkCurrentRoute(to, from);
+      },
+    },
+    beforeDestroy() {
+      // При уничтожении компонента отменяем состояние collapse
+      const multiCollapseReference = new bootstrap.Collapse(document.getElementById('multiCollapseReference'));
+      multiCollapseReference.dispose();
+    },
+    destroyed() {
+      // При уничтожении компонента удаляем обработчики событий, если они были созданы
+      const multiCollapseReference = new bootstrap.Collapse(document.getElementById('multiCollapseReference'));
+      multiCollapseReference.dispose();
+    },
+
 }
 </script>
 

@@ -6,3 +6,4 @@ from .size import router
 from .color import router
 from .product import router
 from .warehouse import router
+from .product_size import router

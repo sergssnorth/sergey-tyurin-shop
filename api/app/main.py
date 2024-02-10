@@ -11,6 +11,7 @@ from app.endpoints import color
 from app.endpoints import size
 from app.endpoints import warehouse
 from app.endpoints import product
+from app.endpoints import product_size
 
 app = FastAPI()
 
@@ -36,6 +37,7 @@ app.include_router(color.router)
 app.include_router(size.router)
 app.include_router(warehouse.router)
 app.include_router(product.router)
+app.include_router(product_size.router)
 
 
 # @app.get("/big_categories", response_model=list[BigCategory])

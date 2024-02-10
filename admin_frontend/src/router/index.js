@@ -12,6 +12,8 @@ import Collection from  '../views/Collection.vue'
 import Size from '../views/Size.vue'
 import Color from '../views/Color.vue'
 
+import Client from '../views/Client.vue'
+
 
 
 const routes = [
@@ -60,6 +62,13 @@ const routes = [
     name: 'Color',
     component: Color
   },
+
+  {
+    path: '/clients',
+    name: 'Client',
+    component: Client
+  },
+
 ]
 
 const router = createRouter({

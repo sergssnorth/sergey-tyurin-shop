@@ -17,6 +17,9 @@ from app.models.color import Color
 from app.models.product import Product
 from app.models.warehouse import Warehouse
 from app.models.product_size import ProductSize
+from app.models.client import Client
+from app.models.order_status import OrderStatus
+from app.models.order import Order
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

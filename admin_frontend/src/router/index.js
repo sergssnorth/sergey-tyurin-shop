@@ -11,6 +11,7 @@ import Product from  '../views/Product.vue'
 import Collection from  '../views/Collection.vue'
 import Size from '../views/Size.vue'
 import Color from '../views/Color.vue'
+import OrderStatus from '../views/OrderStatus.vue'
 
 import Client from '../views/Client.vue'
 
@@ -61,6 +62,11 @@ const routes = [
     path: '/colors',
     name: 'Color',
     component: Color
+  },
+  {
+    path: '/order-status',
+    name: 'OrderStatus',
+    component: OrderStatus
   },
 
   {

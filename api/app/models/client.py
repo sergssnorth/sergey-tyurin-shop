@@ -6,4 +6,4 @@ class Client(SQLModel, table=True):
     name: str
     slug: str
 
-    orders: List["Orders"] = Relationship(back_populates="client")
+    orders: List["Order"] = Relationship(back_populates="client")

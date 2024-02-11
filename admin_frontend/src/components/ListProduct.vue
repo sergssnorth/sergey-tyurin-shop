@@ -1,10 +1,12 @@
 <template>
     <div class="card mb-1">
-            <a href="#collapseIndicatorChevron" class="card-body py-1 px-3 d-flex align-items-center" id="headingExampleTwo" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseIndicatorChevron">
+            <a @click="toggleSeparator" :data-bs-target="'#collapseProduct' + data_product.id" class="card-body py-1 px-3 d-flex align-items-center" id="headingExampleTwo" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseIndicatorChevron">
                 <span>{{ product.color_name }}</span>
                 <!-- <button @click="$router.push(`/categories?big_category_id=${this.category.id}`)" class="btn btn-icon d-inline ms-auto px-2"><i class="bi bi bi-box-seam"></i></button> -->
                 
                 <button  data-bs-toggle="modal" data-bs-target="#editModal" class="btn btn-icon d-inline text-primary ms-auto px-2"><i class="bi bi-pen"></i></button>
+                
+                
                 <!-- <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                     <div class="modal-content">
@@ -31,10 +33,11 @@
 
                 <button @click="deleteBigCategory()" class="btn btn-icon d-inline text-danger px-2"><i class="bi bi-trash3"></i></button>
             </a>
-            <div class="separator-card"></div>
-            <div id="collapseIndicatorChevron" class="collapse" aria-labelledby="headingExampleTwo" data-bs-parent="#collapseIndicatorExampleOne" >
+            <div class="separator-card" v-show="isCollapsed"></div>
+            <div :id="'collapseProduct' + data_product.id" class="collapse" aria-labelledby="headingExampleTwo" data-bs-parent="#collapseIndicatorExampleOne" >
                 <div class="card-body">
-                    <div v-for="size in data_product_sizes" :key="size.id" class="d-flex align-items-center">
+                    <div v-for="(size, index) in data_product_sizes" :key="size.id" class="d-flex align-items-center">
+                        <span style="margin-right: 0.5em;">{{ index + 1 }}.</span>
                         <span>{{ size.size_name }}</span>
                         <button data-bs-toggle="modal" data-bs-target="#editModal" class="btn btn-icon d-inline text-primary ms-auto px-2"><i class="bi bi-pen"></i></button>
                         <button @click="deleteBigCategory()" class="btn btn-icon d-inline text-danger px-2"><i class="bi bi-trash3"></i></button>
@@ -57,6 +60,7 @@ export default {
     },
     data() {
         return {
+            isCollapsed: false,
             data_product: this.product,
             data_product_sizes: []
         }
@@ -107,12 +111,21 @@ export default {
                     console.log(error)
                 })
         },
+        toggleSeparator() {
+            this.isCollapsed = !this.isCollapsed;
+        },
     }
 }
 </script>
 
 <style lang="scss">
 
+.card {
+  a {
+    text-decoration: none; // Убираем подчеркивание
+    cursor: pointer;
+  }
+}
 
 .separator-card {
   display: flex;
@@ -125,7 +138,6 @@ export default {
   content: '';
   flex: 1;
   border-bottom: 1px solid #dee2e6;
-  margin-left: 0.25em;
 }
 
 .separator-card:not(:empty)::before {

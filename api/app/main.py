@@ -12,6 +12,9 @@ from app.endpoints import size
 from app.endpoints import warehouse
 from app.endpoints import product
 from app.endpoints import product_size
+from app.endpoints import order_status
+from app.endpoints import client
+from app.endpoints import order
 
 app = FastAPI()
 
@@ -38,7 +41,9 @@ app.include_router(size.router)
 app.include_router(warehouse.router)
 app.include_router(product.router)
 app.include_router(product_size.router)
-
+app.include_router(order_status.router)
+app.include_router(client.router)
+app.include_router(order.router)
 
 # @app.get("/big_categories", response_model=list[BigCategory])
 # async def get_big_categories(session: AsyncSession = Depends(get_session)):

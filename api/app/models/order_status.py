@@ -6,4 +6,4 @@ class OrderStatus(SQLModel, table=True):
     name: str
     slug: str
     
-    orders: List["Orders"] = Relationship(back_populates="order_status")
+    orders: List["Order"] = Relationship(back_populates="order_status")

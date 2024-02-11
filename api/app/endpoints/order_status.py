@@ -8,13 +8,13 @@ from sqlmodel import select
 router = APIRouter()
 
 
-@router.get("/order_statuses", response_model=list[OrderStatus])
+@router.get("/order-statuses", response_model=list[OrderStatus])
 async def get_order_statuses(session: AsyncSession = Depends(get_session)):
     result = await session.execute(select(OrderStatus))
     order_statuses = result.scalars().all()
     return [OrderStatus(id=order_status.id, name=order_status.name, slug=order_status.slug) for order_status in order_statuses]
 
-@router.post("/order_status")
+@router.post("/order-status")
 async def add_order_status(order_status: OrderStatus, session: AsyncSession = Depends(get_session)):
     new_order_status = OrderStatus(name=order_status.name, slug=order_status.slug)
     session.add(new_order_status)
@@ -22,7 +22,7 @@ async def add_order_status(order_status: OrderStatus, session: AsyncSession = De
     await session.refresh(new_order_status)
     return new_order_status
 
-@router.put("/order_status/{order_status_id}")
+@router.put("/order-status/{order_status_id}")
 async def update_order_status(order_status_id: int, updated_order_status: OrderStatus, session: AsyncSession = Depends(get_session)):
     existing_order_status = await session.get(OrderStatus, order_status_id)
     if existing_order_status is None:
@@ -33,7 +33,7 @@ async def update_order_status(order_status_id: int, updated_order_status: OrderS
     await session.refresh(existing_order_status)
     return existing_order_status
 
-@router.delete("/order_status/{order_status_id}")
+@router.delete("/order-status/{order_status_id}")
 async def delete_big_category(order_status_id: int, session: AsyncSession = Depends(get_session)):
     order_status = await session.get(OrderStatus, order_status_id)
     if order_status is None:

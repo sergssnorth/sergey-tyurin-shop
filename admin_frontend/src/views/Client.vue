@@ -86,7 +86,7 @@
             </div>
         <div class="row">
           <div class="col">
-            <ListModels 
+            <ListClients
               v-for="model in models"
               v-bind:key="model.id"
               v-bind:model="model"

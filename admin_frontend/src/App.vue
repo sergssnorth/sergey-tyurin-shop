@@ -7,18 +7,18 @@
             <!-- Статистика -->
             <li class="mb-2">
               <div class="d-inline-flex gap-1" style="width: 100%;">
-                <button @click=" isClickedStatistics = !isClickedStatistics" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;" data-bs-toggle="collapse" href="#multiCollapseStatistics" role="button" aria-expanded="false" aria-controls="multiCollapseStatistics">
+                <button @click=" isClickedStatistic = !isClickedStatistic" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;" data-bs-toggle="collapse" href="#multiCollapseStatistic" role="button" aria-expanded="false" aria-controls="multiCollapseStatistic">
                   <div>
                     <span><i class="bi bi-bar-chart-fill"></i></span>
                     <span style="padding-left: 1rem;">Статистика</span>
                   </div>
-                  <span><i :class="isClickedStatistics ? 'bi-caret-up-fill' : 'bi-caret-right-fill'"></i></span>
+                  <span><i :class="isClickedStatistic ? 'bi-caret-up-fill' : 'bi-caret-right-fill'"></i></span>
                 </button>
               </div>
               <div class="row">
                 <div class="col">
                   <div class="container">
-                  <div class="collapse multi-collapse" id="multiCollapseStatistics">
+                  <div class="collapse multi-collapse" id="multiCollapseStatistic">
                     <button @click="$router.push('/')" class="btn btn-outline-primary d-flex justify-content-between my-1" style="width: 100%;">
                       <div>
                         <span><i class="bi bi-table"></i></span>
@@ -40,7 +40,7 @@
             <!-- Модели -->
             <li class="mb-2">
               <div class="d-inline-flex gap-1" style="width: 100%;">
-                <button @click="isClickedModel = !isClickedModel" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;" data-bs-toggle="collapse" href="#multiCollapsModel" role="button" aria-expanded="false" aria-controls="multiCollapsModel">
+                <button @click="isClickedModel = !isClickedModel" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;" data-bs-toggle="collapse" href="#multiCollapseModel" role="button" aria-expanded="false" aria-controls="multiCollapseModel">
                   <div>
                     <span><i class="bi bi-box-fill"></i></span>
                     <span style="padding-left: 1rem;">Модели</span>
@@ -51,7 +51,7 @@
               <div class="row">
                 <div class="col">
                   <div class="container">
-                  <div class="collapse multi-collapse" id="multiCollapsModel">
+                  <div class="collapse multi-collapse" id="multiCollapseModel">
                     <button @click="$router.push('/big-categories')" class="btn btn-outline-primary d-flex justify-content-between my-1" style="width: 100%;">
                       <div>
                         <span><i class="bi bi-table"></i></span>
@@ -109,13 +109,18 @@
                         <span style="padding-left: 1rem;">Размеры</span>
                       </div>
                     </button>
-                    <button @click="$router.push('/colors')" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;">
+                    <button @click="$router.push('/colors')" class="btn btn-outline-primary d-flex justify-content-between mb-1" style="width: 100%;">
                       <div>
                         <span><i class="bi bi-table"></i></span>
                         <span style="padding-left: 1rem;">Цвета</span>
                       </div>
                     </button>
-                    
+                    <button @click="$router.push('/order-status')" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;">
+                      <div>
+                        <span><i class="bi bi-table"></i></span>
+                        <span style="padding-left: 1rem;">Статусы заказов</span>
+                      </div>
+                    </button>
                   </div>
                 </div>
                 </div>
@@ -125,18 +130,18 @@
             <!-- Заказы -->
             <li class="mb-2">
               <div class="d-inline-flex gap-1" style="width: 100%;">
-                <button @click="isClickedOrders = !isClickedOrders" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;" data-bs-toggle="collapse" href="#multiCollapseOrders" role="button" aria-expanded="false" aria-controls="multiCollapseOrders">
+                <button @click="isClickedOrder = !isClickedOrder" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;" data-bs-toggle="collapse" href="#multiCollapseOrder" role="button" aria-expanded="false" aria-controls="multiCollapseOrder">
                   <div>
                     <span><i class="bi bi-box-fill"></i></span>
                     <span style="padding-left: 1rem;">Заказы</span>
                   </div>
-                  <span><i :class="isClickedOrders ? 'bi-caret-up-fill' : 'bi-caret-right-fill'"></i></span>
+                  <span><i :class="isClickedOrder ? 'bi-caret-up-fill' : 'bi-caret-right-fill'"></i></span>
                 </button>
               </div>
               <div class="row">
                 <div class="col">
                   <div class="container">
-                  <div class="collapse multi-collapse" id="multiCollapseOrders">
+                  <div class="collapse multi-collapse" id="multiCollapseOrder">
                     <button @click="$router.push('/collections')" class="btn btn-outline-primary d-flex justify-content-between mt-1" style="width: 100%;">
                       <div>
                         <span><i class="bi bi-table"></i></span>
@@ -152,18 +157,18 @@
             <!-- Клиенты -->
             <li class="mb-2">
               <div class="d-inline-flex gap-1" style="width: 100%;">
-                <button @click="isClickedClients = !isClickedClients" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;" data-bs-toggle="collapse" href="#multiCollapseClients" role="button" aria-expanded="false" aria-controls="multiCollapseClients">
+                <button @click="isClickedClient = !isClickedClient" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;" data-bs-toggle="collapse" href="#multiCollapseClient" role="button" aria-expanded="false" aria-controls="multiCollapseClient">
                   <div>
                     <span><i class="bi bi-box-fill"></i></span>
                     <span style="padding-left: 1rem;">Клиенты</span>
                   </div>
-                  <span><i :class="isClickedClients ? 'bi-caret-up-fill' : 'bi-caret-right-fill'"></i></span>
+                  <span><i :class="isClickedClient ? 'bi-caret-up-fill' : 'bi-caret-right-fill'"></i></span>
                 </button>
               </div>
               <div class="row">
                 <div class="col">
                   <div class="container">
-                  <div class="collapse multi-collapse" id="multiCollapseClients">
+                  <div class="collapse multi-collapse" id="multiCollapseClient">
                     <button @click="$router.push('/clients')" class="btn btn-outline-primary d-flex justify-content-between mt-1" style="width: 100%;">
                       <div>
                         <span><i class="bi bi-table"></i></span>
@@ -220,52 +225,115 @@ import bootstrap from 'bootstrap/dist/js/bootstrap.js'
 export default {
     data() {
         return {
-          isClickedStatistics: false,
+          isClickedStatistic: false,
+          multiCollapseStatistic: null,
+
           isClickedModel: false,
+          multiCollapseModel: null,
 
           isClickedReference: false,
           multiCollapseReference: null,
           
-          isClickedOrders: false,
+          isClickedOrder: false,
+          multiCollapseOrder: null,
 
-          isClickedClients: false,
+          isClickedClient: false,
+          multiCollapseClient: null,
 
           isClickedWarehouse: false,
+          multiCollapseWarehouse: null,
         }
     },
     methods: {
-      toggleReferenceCollapse() {
-      // Проверяем, создан ли уже экземпляр collapse
-      if (!this.multiCollapseReference) {
-        // Если нет, создаем его и сохраняем ссылку
-        this.multiCollapseReference = new bootstrap.Collapse(document.getElementById('multiCollapseReference'));
-      }
-      
-      // Теперь можем использовать ссылку на collapse для управления состоянием
-      this.multiCollapseReference.toggle();
-      this.isClickedReference = !this.isClickedReference;
-
+      toggleStatisticCollapse() {
+        if (!this.multiCollapseStatistic) {
+          this.multiCollapseStatistic = new bootstrap.Collapse(document.getElementById('multiCollapseStatistic'));
+        }
+        this.multiCollapseStatistic.toggle();
+        this.isClickedStatistic = !this.isClickedStatistic;
       },
+      toggleModelCollapse() {
+        if (!this.multiCollapseModel) {
+          this.multiCollapseModel = new bootstrap.Collapse(document.getElementById('multiCollapseModel'));
+        }
+        this.multiCollapseModel.toggle();
+        this.isClickedModel = !this.isClickedModel;
+      },
+      toggleReferenceCollapse() {
+        if (!this.multiCollapseReference) {
+          this.multiCollapseReference = new bootstrap.Collapse(document.getElementById('multiCollapseReference'));
+        }
+        this.multiCollapseReference.toggle();
+        this.isClickedReference = !this.isClickedReference;
+      },
+      toggleOrderCollapse() {
+        if (!this.multiCollapseOrder) {
+          this.multiCollapseOrder = new bootstrap.Collapse(document.getElementById('multiCollapseOrder'));
+        }
+        this.multiCollapseOrder.toggle();
+        this.isClickedOrder = !this.isClickedOrder;
+      },
+      toggleClientCollapse() {
+        if (!this.multiCollapseClient) {
+          this.multiCollapseClient = new bootstrap.Collapse(document.getElementById('multiCollapseClient'));
+        }
+        this.multiCollapseClient.toggle();
+        this.isClickedClient = !this.isClickedClient;
+      },
+      toggleWarehouseCollapse() {
+        if (!this.multiCollapseWarehouse) {
+          this.multiCollapseWarehouse = new bootstrap.Collapse(document.getElementById('multiCollapseWarehouse'));
+        }
+        this.multiCollapseWarehouse.toggle();
+        this.isClickedWarehouse = !this.isClickedWarehouse;
+      },
+
+
       checkCurrentRoute(to, from) {
-        const currentRoute = this.$route.path;
-        const ReferenceRoutes = ['/collections', '/sizes', '/colors'];
+        const StatisticRoutes = ['/', '/product-statistics'];
+        const ModelRoutes = ['/big-categories', '/categories', '/models', '/product'];
+        const ReferenceRoutes = ['/collections', '/sizes', '/colors', '/order-status'];
+        const OrdersRoutes = ['/orders'];
+        const ClientsRoutes = ['/clients'];
+        const WarehouseRoutes = ['/warehouse'];
+
         const BaseRoutes = ['/'];
         if (!to || !from) {
           return;
         }
 
-        const currentRoute1 = to.path; // Текущий URL
+        const currentRoute = to.path; // Текущий URL
         const previousRoute = from.path; 
         console.log("previousRoute")
         console.log(previousRoute)
         console.log("previousRoute")
 
         console.log("currentRoute1")
-        console.log(currentRoute1)
+        console.log(currentRoute)
         console.log("currentRoute1")
 
-        if ((ReferenceRoutes.includes(currentRoute1) && BaseRoutes.includes(previousRoute))) {
+        if ((StatisticRoutes.includes(currentRoute) && BaseRoutes.includes(previousRoute))) {
+          this.toggleStatisticCollapse()
+        }
+        
+        if ((ModelRoutes.some(route => currentRoute.startsWith(route)) && BaseRoutes.includes(previousRoute))) {
+          this.toggleModelCollapse()
+        }
+
+        if ((ReferenceRoutes.some(route => currentRoute.startsWith(route)) && BaseRoutes.includes(previousRoute))) {
           this.toggleReferenceCollapse()
+        }
+
+        if ((OrdersRoutes.some(route => currentRoute.startsWith(route)) && BaseRoutes.includes(previousRoute))) {
+          this.toggleOrderCollapse()
+        }
+
+        if ((ClientsRoutes.some(route => currentRoute.startsWith(route)) && BaseRoutes.includes(previousRoute))) {
+          this.toggleClientCollapse()
+        }
+        
+        if ((WarehouseRoutes.some(route => currentRoute.startsWith(route)) && BaseRoutes.includes(previousRoute))) {
+          this.toggleWarehouseCollapse()
         }
       },
     },

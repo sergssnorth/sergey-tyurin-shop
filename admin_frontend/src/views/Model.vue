@@ -85,7 +85,7 @@
             </div>
             </div>
         <div class="row">
-          <div class="col">
+          <div class="col d-flex flex-column" style="max-height: 90vh; overflow-y: auto;">
             <ListModels 
               v-for="model in models"
               v-bind:key="model.id"

@@ -210,7 +210,7 @@
           </ul>
         </div>
       </div>
-      <div class="col-sm-10 d-flex flex-column" style="max-height: 100vh; overflow-y: auto;">
+      <div class="col-sm-10 d-flex flex-column" style="max-height: 100vh;">
         <router-view/>
       </div>
     </div>
@@ -221,7 +221,7 @@
 <script>
 import axios from 'axios'
 import bootstrap from 'bootstrap/dist/js/bootstrap.js'
-
+// overflow-y: auto;
 export default {
     data() {
         return {

@@ -70,6 +70,14 @@ export default {
                     console.log(error)
                 })
         },
+        handleClientDeleted() {
+          this.getClients();
+
+        },
+        handleClientUpdated() {
+          console.log("handleCollectionUpdated")
+          this.getClients();
+        },
     },
     beforeRouteUpdate(to, from, next) {
         console.log('Хук beforeRouteUpdate');

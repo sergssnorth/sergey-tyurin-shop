@@ -1,18 +1,52 @@
-from fastapi import APIRouter, Depends, HTTPException
+from typing import Optional
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.models import Order
+from app.models import Order, OrderStatus
 from app.db import get_session
-from sqlmodel import select
-
+from sqlmodel import select, and_, join
+from pydantic import BaseModel 
 
 router = APIRouter()
 
+class ModelResponse(BaseModel):
+    id: int
+    name: str
+    slug: str
+    client_id: int
+    order_status : str
+    order_status_slug  : str
 
-@router.get("/orders", response_model=list[Order])
-async def get_orders(session: AsyncSession = Depends(get_session)):
-    result = await session.execute(select(Order))
-    orders = result.scalars().all()
-    return [Order(id=order.id, name=order.name, slug=order.slug, client_id=order.client_id, order_status_id = order.order_status_id) for order in orders]
+
+@router.get("/orders")
+async def get_orders(
+    client_id: Optional[int] = None, 
+    session: AsyncSession = Depends(get_session)):
+
+    query = select(Order, OrderStatus).join(OrderStatus)
+
+    if client_id is not None:
+        query = query.filter(Order.client_id == client_id)
+
+    orders = await session.execute(query)
+    orders_list = list(orders)
+    
+
+    result_list = []
+
+    for order, order_status in orders_list:
+        result_list.append(
+            ModelResponse(
+                id = order.id, 
+                name = order.name,
+                slug = order.slug,
+                client_id = order.client_id,
+                order_status = order_status.name,
+                order_status_slug = order_status.slug,
+            )
+        )
+
+    return result_list
+
 
 @router.post("/order")
 async def add_order(order: Order, session: AsyncSession = Depends(get_session)):

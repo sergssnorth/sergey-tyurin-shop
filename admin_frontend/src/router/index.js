@@ -15,6 +15,9 @@ import OrderStatus from '../views/OrderStatus.vue'
 
 import Client from '../views/Client.vue'
 
+import Order from '../views/Order.vue'
+
+
 
 
 const routes = [
@@ -73,6 +76,12 @@ const routes = [
     path: '/clients',
     name: 'Client',
     component: Client
+  },
+
+  {
+    path: '/orders',
+    name: 'Order',
+    component: Order
   },
 
 ]

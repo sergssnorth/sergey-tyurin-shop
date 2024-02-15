@@ -1,5 +1,10 @@
 <template>
-  <div class="container-fluid min-vh-100 d-flex flex-column px-3" style="background-color: rgb(241, 241, 241);">
+  <div class="container-fluid min-vh-100 d-flex flex-column" style="background-color: rgb(241, 241, 241); ">
+    <div class="row" style="background-color: rgb(84, 158, 201);">
+        <div class="col" style="height: 5vh;">
+            <h1> Top Bar </h1>
+        </div>
+    </div>
     <div class="row flex-grow-1">
       <div class="col-sm-2">
         <div class="card text-bg-light p-2" style="min-height: 100%;">
@@ -238,7 +243,7 @@
           </ul>
         </div>
       </div>
-      <div class="col-sm-10 d-flex flex-column" style="max-height: 100vh;">
+      <div class="col-sm-10 d-flex flex-column" style="max-height: 95vh;">
         <router-view/>
       </div>
     </div>

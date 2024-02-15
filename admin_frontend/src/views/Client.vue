@@ -6,7 +6,7 @@
                     <span class="input-group-text" id="basic-addon1"><i class="bi bi-search" style="font-size: 16px;"></i></span>
                     <input v-model="search" type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
                 </div>
-                <div class="d-flex align-items-center m-3">
+                <div class="d-flex align-items-center">
                     
                     <button @click="deleteCategory()" class="btn btn-icon d-inline px-2"><i class="bi bi-filter-circle"></i></button>
                     <button @click="deleteCategory()" class="btn btn-icon d-inline px-2"><i class="bi bi-funnel"></i></button>
@@ -38,8 +38,8 @@
         </div>
         <div class="row">
             <div class="col text-center">
-                <nav aria-label="Page navigation">
-                    <ul class="pagination justify-content-center">
+                <nav class="px-0 py-0" aria-label="Page navigation">
+                    <ul class="my-2 pagination justify-content-center">
                         <!-- Здесь вставьте код для пагинации Bootstrap -->
                         <li class="page-item">
                             <a class="page-link" href="#" aria-label="Previous">

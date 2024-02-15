@@ -64,18 +64,18 @@
                         <span style="padding-left: 1rem;">Категории</span>
                       </div>
                     </button>
-                    <button @click="$router.push('/models?big_category_id=0&category_id=0&collection_id=0')" class="btn btn-outline-primary d-flex justify-content-between mb-1" style="width: 100%;">
+                    <button @click="$router.push('/models?big_category_id=0&category_id=0&collection_id=0')" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;">
                       <div>
                         <span><i class="bi bi-table"></i></span>
                         <span style="padding-left: 1rem;">Модели</span>
                       </div>
                     </button>
-                    <button @click="$router.push('/products')" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;">
+                    <!-- <button @click="$router.push('/products')" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;">
                       <div>
                         <span><i class="bi bi-table"></i></span>
                         <span style="padding-left: 1rem;">Продукты</span>
                       </div>
-                    </button>
+                    </button> -->
                   </div>
                 </div>
                 </div>
@@ -87,7 +87,7 @@
               <div class="d-inline-flex gap-1" style="width: 100%;">
                 <button @click="toggleReferenceCollapse" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;" data-bs-toggle="collapse" data-bs-target="#multiCollapseReference" href="#multiCollapseReference" role="button" aria-expanded="false" aria-controls="multiCollapseReference">
                   <div>
-                    <span><i class="bi bi-box-fill"></i></span>
+                    <span><i class="bi bi-database-fill"></i></span>
                     <span style="padding-left: 1rem;">Справочники</span>
                   </div>
                   <span><i :class="isClickedReference ? 'bi-caret-up-fill' : 'bi-caret-right-fill'"></i></span>
@@ -132,7 +132,7 @@
               <div class="d-inline-flex gap-1" style="width: 100%;">
                 <button @click="isClickedOrder = !isClickedOrder" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;" data-bs-toggle="collapse" href="#multiCollapseOrder" role="button" aria-expanded="false" aria-controls="multiCollapseOrder">
                   <div>
-                    <span><i class="bi bi-box-fill"></i></span>
+                    <span><i class="bi bi-bag-fill"></i></span>
                     <span style="padding-left: 1rem;">Заказы</span>
                   </div>
                   <span><i :class="isClickedOrder ? 'bi-caret-up-fill' : 'bi-caret-right-fill'"></i></span>
@@ -144,7 +144,7 @@
                   <div class="collapse multi-collapse" id="multiCollapseOrder">
                     <button @click="$router.push('/collections')" class="btn btn-outline-primary d-flex justify-content-between mt-1" style="width: 100%;">
                       <div>
-                        <span><i class="bi bi-table"></i></span>
+                        <span><i class="bi bi-bag-fill"></i></span>
                         <span style="padding-left: 1rem;">Все заказы</span>
                       </div>
                     </button>
@@ -159,7 +159,7 @@
               <div class="d-inline-flex gap-1" style="width: 100%;">
                 <button @click="isClickedClient = !isClickedClient" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;" data-bs-toggle="collapse" href="#multiCollapseClient" role="button" aria-expanded="false" aria-controls="multiCollapseClient">
                   <div>
-                    <span><i class="bi bi-box-fill"></i></span>
+                    <span><i class="bi bi-people-fill"></i></span>
                     <span style="padding-left: 1rem;">Клиенты</span>
                   </div>
                   <span><i :class="isClickedClient ? 'bi-caret-up-fill' : 'bi-caret-right-fill'"></i></span>
@@ -171,7 +171,7 @@
                   <div class="collapse multi-collapse" id="multiCollapseClient">
                     <button @click="$router.push('/clients')" class="btn btn-outline-primary d-flex justify-content-between mt-1" style="width: 100%;">
                       <div>
-                        <span><i class="bi bi-table"></i></span>
+                        <span><i class="bi-people-fill"></i></span>
                         <span style="padding-left: 1rem;">Все клиенты</span>
                       </div>
                     </button>
@@ -186,7 +186,7 @@
               <div class="d-inline-flex gap-1" style="width: 100%;">
                 <button @click="isClickedWarehouse = !isClickedWarehouse" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;" data-bs-toggle="collapse" href="#multiCollapseWarehouse" role="button" aria-expanded="false" aria-controls="multiCollapseWarehouse">
                   <div>
-                    <span><i class="bi bi-box-fill"></i></span>
+                    <span><i class="bi bi-house-fill"></i></span>
                     <span style="padding-left: 1rem;">Склад</span>
                   </div>
                   <span><i :class="isClickedWarehouse ? 'bi-caret-up-fill' : 'bi-caret-right-fill'"></i></span>
@@ -198,7 +198,7 @@
                   <div class="collapse multi-collapse" id="multiCollapseWarehouse">
                     <button @click="$router.push('/collections')" class="btn btn-outline-primary d-flex justify-content-between mt-1" style="width: 100%;">
                       <div>
-                        <span><i class="bi bi-table"></i></span>
+                        <span><i class="bi bi-house-fill"></i></span>
                         <span style="padding-left: 1rem;">Все заказы</span>
                       </div>
                     </button>
@@ -207,6 +207,34 @@
                 </div>
               </div>
             </li>
+
+            <!-- Отчеты -->
+            <li class="mb-2">
+              <div class="d-inline-flex gap-1" style="width: 100%;">
+                <button @click="isClickedReport = !isClickedReport" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;" data-bs-toggle="collapse" href="#multiCollapseReport" role="button" aria-expanded="false" aria-controls="multiCollapseReport">
+                  <div>
+                    <span><i class="bi bi-file-text-fill"></i></span>
+                    <span style="padding-left: 1rem;">Отчеты</span>
+                  </div>
+                  <span><i :class="isClickedReport ? 'bi-caret-up-fill' : 'bi-caret-right-fill'"></i></span>
+                </button>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="container">
+                  <div class="collapse multi-collapse" id="multiCollapseReport">
+                    <button @click="$router.push('/collections')" class="btn btn-outline-primary d-flex justify-content-between mt-1" style="width: 100%;">
+                      <div>
+                        <span><i class="bi bi-file-text-fill"></i></span>
+                        <span style="padding-left: 1rem;">Все заказы</span>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+                </div>
+              </div>
+            </li>
+
           </ul>
         </div>
       </div>
@@ -242,6 +270,8 @@ export default {
 
           isClickedWarehouse: false,
           multiCollapseWarehouse: null,
+
+          isClickedReport: false,
         }
     },
     methods: {

@@ -1,34 +1,69 @@
 <template>
     <div class="card mb-1">
-            <a @click="toggleSeparator" :data-bs-target="'#collapseProduct' + data_client.id" class="card-body py-1 px-3 d-flex align-items-center" id="headingExampleTwo" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseIndicatorChevron">
-                <span>{{ data_client.name }}</span>
-                
-                <button  data-bs-toggle="modal" data-bs-target="#editModal" class="btn btn-icon d-inline text-primary ms-auto px-2"><i class="bi bi-pen"></i></button>
+        <a @click="toggleSeparator" :data-bs-target="'#collapseProduct' + data_client.id" class="card-body py-1 px-3 d-flex align-items-center" id="headingExampleTwo" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseIndicatorChevron">
+            <span style="margin-right: 0.5rem;">
+                <i class="bi bi-person-circle"></i>
+            </span>
+            <span>{{ data_client.name }}</span>
+            <!-- <button @click="$router.push(`/categories?big_category_id=${this.category.id}`)" class="btn btn-icon d-inline ms-auto px-2"><i class="bi bi bi-box-seam"></i></button> -->
+            <button  data-bs-toggle="modal" data-bs-target="#editModal" class="btn btn-icon d-inline text-success ms-auto px-2"><i class="bi bi-bag-plus"></i></button>
+            <button  data-bs-toggle="modal" data-bs-target="#editModal" class="btn btn-icon d-inline text-primary px-2"><i class="bi bi-pen"></i></button>
+            
+            
+            <!-- <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Изменить раздел</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-floating mb-3">
+                    <input type="text" class="form-control" placeholder="name@example.com" v-model="category.name">
+                    <label for="floatingInput">Имя</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                    <input type="text" class="form-control" placeholder="Password" v-model="category.slug">
+                    <label for="floatingPassword">Слаг</label>
+                    </div>
+                </div>
+                <div class="modal-footer ">
+                    <button @click="updateBigCategory()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Изменить</button>
+                </div>
+                </div>
+            </div>
+            </div> -->
 
-                <button @click="deleteBigCategory()" class="btn btn-icon d-inline text-danger px-2"><i class="bi bi-trash3"></i></button>
-            </a>
-            <div class="separator-card" v-show="isCollapsed"></div>
-            <div :id="'collapseProduct' + data_client.id" class="collapse" aria-labelledby="headingExampleTwo" data-bs-parent="#collapseIndicatorExampleOne" >
-                <div class="card-body">
+            <button @click="deleteBigCategory()" class="btn btn-icon d-inline text-danger px-2"><i class="bi bi-trash3"></i></button>
+        </a>
+        <div class="separator-card" v-show="isCollapsed"></div>
+        <div :id="'collapseProduct' + data_client.id" class="collapse" aria-labelledby="headingExampleTwo" data-bs-parent="#collapseIndicatorExampleOne" >
+            <div class="card-body">
+                <div v-if="loading">
                     <div class="text-center">
                         <div v-show="loading" class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
                             <span class="visually-hidden">Loading...</span>
                         </div>
                     </div>
-                    <div v-if="!loading">
-                        <div v-for="order in client_orders" :key="order.id" class="d-flex align-items-center">
+                </div>
+
+                <div v-if="!loading">
+                    <div v-if="data_orders.length != 0">
+                        <div v-for="order in data_orders" :key="order.id" class="d-flex align-items-center">
                             <span style="margin-right: 0.5em;">{{ order.id }}.</span>
                             <span>{{ order.name }}</span>
                             <span>{{ order.status }}</span>
                             <button data-bs-toggle="modal" data-bs-target="#editModal" class="btn btn-icon d-inline text-primary ms-auto px-2"><i class="bi bi-pen"></i></button>
                             <button @click="deleteBigCategory()" class="btn btn-icon d-inline text-danger px-2"><i class="bi bi-trash3"></i></button>
                         </div>
-                        <div class="d-flex align-items-center mt-3">
-                            <button class="btn btn-outline-success"><i class="bi bi-plus-circle" style="margin-right: 0.5em;"></i>Добавить размер</button>
-                        </div>
+                    </div>
+                    <div v-else>
+                        <span>Заказов нет</span>
                     </div>
                 </div>
+                
             </div>
+        </div>
     </div>
 </template>
 
@@ -39,13 +74,14 @@ export default {
     name: 'ListClients',
     props: {
         client: Object,
+        orders: Array
     },
     data() {
         return {
             isCollapsed : false,
             data_client : this.client,
-            client_orders : [],
-            loading : true,
+            data_orders : [],
+            loading: true,
         }
     },
     methods: {
@@ -64,7 +100,7 @@ export default {
             if (this.isCollapsed) {
                 try {
                     const orders = await this.getOrders(this.data_client.id);
-                    this.client_orders = orders;
+                    this.data_orders = orders;
                 } catch (error) {
                     console.error("Произошла ошибка при получении заказов:", error);
                     // обработка ошибки
@@ -100,11 +136,10 @@ export default {
                     console.log(error)
                 })
         },
-        toggleSeparator() {
+        async toggleSeparator() {
             this.isCollapsed = !this.isCollapsed;
-            this.loadClientOrders();
-            this.loading = true
-             // Вызываем метод при нажатии на кнопку
+            await this.loadClientOrders()
+            this.loading = false
         },
     }
 }
@@ -116,6 +151,9 @@ export default {
   a {
     text-decoration: none; // Убираем подчеркивание
     cursor: pointer;
+  }
+  a:hover {
+    background-color: rgba(238, 238, 238, 0.637);
   }
 }
 

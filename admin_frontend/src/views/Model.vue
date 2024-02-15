@@ -1,5 +1,5 @@
 <template>
-    <div class="container-fluid text-center">
+    <div class="container-fluid text-center" style="height: 100%; display: flex; flex-direction: column;">
         <div class="row align-items-center mb-3">
             <div class="col-2">
                 <select v-model="filter_big_category_id" class="form-select" aria-label="Default select example" @change="handleBigCategoryFilterChange">
@@ -84,8 +84,8 @@
                 </div>
             </div>
             </div>
-        <div class="row">
-          <div class="col d-flex flex-column" style="max-height: 90vh; overflow-y: auto;">
+        <div class="row flex-grow-1" style="overflow-y: auto;">
+          <div class="col d-flex flex-column" style="flex-grow: 1;">
             <ListModels 
               v-for="model in models"
               v-bind:key="model.id"

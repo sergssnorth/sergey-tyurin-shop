@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import Client
 from app.db import get_session
@@ -9,8 +9,15 @@ router = APIRouter()
 
 
 @router.get("/clients", response_model=list[Client])
-async def get_clients(session: AsyncSession = Depends(get_session)):
-    result = await session.execute(select(Client))
+async def get_clients(
+    page: int = Query(1, gt=0),  # Номер страницы, начиная с 1
+    page_size: int = Query(10, gt=0),
+    session: AsyncSession = Depends(get_session)):
+    
+    start_index = (page - 1) * page_size
+
+    result = await session.execute(select(Client).offset(start_index).limit(page_size))
+
     clients = result.scalars().all()
     return [Client(id=client.id, name=client.name, slug=client.slug) for client in clients]
 

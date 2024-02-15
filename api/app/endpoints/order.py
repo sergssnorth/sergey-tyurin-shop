@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional, Union
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import Order, OrderStatus
@@ -19,8 +19,9 @@ class ModelResponse(BaseModel):
 
 @router.get("/orders")
 async def get_orders(
-    client_id: Optional[int] = None, 
-    session: AsyncSession = Depends(get_session)):
+    client_id: Optional[int] = None,
+    session: AsyncSession = Depends(get_session)
+    ):
 
     query = select(Order, OrderStatus).join(OrderStatus)
 
@@ -29,19 +30,18 @@ async def get_orders(
 
     orders = await session.execute(query)
     orders_list = list(orders)
-    
 
     result_list = []
 
     for order, order_status in orders_list:
         result_list.append(
             ModelResponse(
-                id = order.id, 
-                name = order.name,
-                slug = order.slug,
-                client_id = order.client_id,
-                order_status = order_status.name,
-                order_status_slug = order_status.slug,
+                id=order.id,
+                name=order.name,
+                slug=order.slug,
+                client_id=order.client_id,
+                order_status=order_status.name,
+                order_status_slug=order_status.slug,
             )
         )
 

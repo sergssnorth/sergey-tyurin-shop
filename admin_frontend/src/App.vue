@@ -1,13 +1,18 @@
 <template>
-  <div class="container-fluid min-vh-100 d-flex flex-column" style="background-color: rgb(241, 241, 241); ">
-    <div class="row" style="background-color: rgb(84, 158, 201);">
+  <div class="container-fluid min-vh-100 d-flex flex-column" style="background-color: rgb(245, 245, 249) ">
+    <div class="row">
+        <div class="col d-flex align-items-center justify-content-start" style="height: 1vh;"></div>
+    </div>
+    <!-- <div class="row" style="background-color: #684DFE; border-radius: 1rem 1rem 1rem 1rem; margin-left: 0.15rem; margin-right: 0.15rem;"> -->
+    <div class="row" style="background-color: #684DFE; border-radius: 1rem 1rem 1rem 1rem; margin-left: 0.15rem; margin-right: 0.15rem;">
       <div class="col d-flex align-items-center justify-content-start" style="height: 5vh;">
         <!-- Левая часть (ссылка на главную страницу) -->
-        <a href="/" class="text-light">
-            <img src="@/assets/LogoST.png" width="89" height="28" alt="Home" style=" margin-right: 8px;">
+        <a href="/" class="text-light mx-1" style="text-decoration: none;">
+          <span style="font-family: 'Geologica', sans-serif; font-weight: 400; font-size: 20px;">Сергей Тюрин</span>
+            <!-- <img src="@/assets/LogoST.png" width="89" height="28" alt="Home" style=" margin-right: 8px;"> -->
         </a>
       </div>
-      <div class="col-auto d-flex align-items-center justify-content-end">
+      <div class="col-auto d-flex align-items-center justify-content-end mx-2">
           <!-- Правая часть (иконка уведомлений, dropdown с изображением пользователя и кнопка выхода) -->
           <span class="text-light me-3">
               <!-- Иконка уведомлений системы -->
@@ -271,7 +276,7 @@
           </ul>
         </div>
       </div>
-      <div class="col-sm-10 d-flex flex-column" style="max-height: 93vh;">
+      <div class="col-sm-10 d-flex flex-column" style="max-height: 92vh;">
         <router-view/>
       </div>
     </div>
@@ -429,10 +434,12 @@ export default {
 
 <style lang="scss">
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
+    font-family: "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: #2c3e50;
+    
 }
 
 .custom-dropdown-toggle {

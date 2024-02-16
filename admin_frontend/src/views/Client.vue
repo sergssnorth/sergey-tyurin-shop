@@ -1,10 +1,11 @@
 <template>
     <div class="container-fluid text-center" style="height: 100%; display: flex; flex-direction: column;">
         <div class="row mb-3">
+            
             <div class="d-flex align-items-center flex-grow-1">
                 <div class="input-group align-items-center">
-                    <span class="input-group-text" id="basic-addon1"><i class="bi bi-search" style="font-size: 16px;"></i></span>
-                    <input v-model="search" type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+                    <span class="input-group-text" id="basic-addon1" style="border-radius: 1.5rem 0 0 1.5rem;"><i class="bi bi-search" style="font-size: 16px;"></i></span>
+                    <input v-model="search" type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1" style="border-radius: 0 1.5rem 1.5rem 0;">
                 </div>
                 <div class="d-flex align-items-center">
                     

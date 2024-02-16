@@ -1,0 +1,59 @@
+// Import Bootstrap functions, vars and mixins
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+
+// Import our map amends
+// Go here to run any Sass map amends on Bootstrap Sass maps
+
+// Import our utility overrides
+// Go here to amend or set custom utilities using the Bootstrap API
+
+// Bootstrap main import
+@import "~bootstrap/scss/bootstrap";
+
+/* ------- customize primary buttons -------- */   
+$basecolor:#03c3ec;
+$secondcolor:#696cff;
+
+// .btn-primary {
+//     @include button-variant(
+//         $background: $basecolor,
+//         $border: darken($basecolor, 7.5%),
+//         $color: white,
+//         $hover-background: darken($basecolor, 10%),
+//         $hover-border: lighten($basecolor, 5%),
+//         $hover-color: white,
+//         $active-background: lighten($basecolor, 10%),
+//         $active-border: darken($basecolor, 30%),
+//         $active-color: white
+//     );
+// }   
+
+// .btn-navigation {
+//     @include button-variant(
+//         $background: $white,
+//         $border: $white,
+//         $color: $secondcolor,
+//         $hover-background: $white,
+//         $hover-border: $white,
+//         $hover-color: $secondcolor,
+//         $active-background: white,
+//         $active-border: white,
+//         $active-color: $secondcolor
+//     );
+// }
+
+.btn-navigation {
+    @include button-variant(
+        $background: $white,
+        $border: $secondcolor,
+        $color: $secondcolor,
+        $hover-background: $secondcolor,
+        $hover-border: $secondcolor,
+        $hover-color: $white,
+        $active-background: $secondcolor,
+        $active-border: $secondcolor,
+        $active-color: $white
+    );
+}

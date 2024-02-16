@@ -5,6 +5,7 @@ import store from './store'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap/dist/js/bootstrap.js'
 import 'bootstrap-icons/font/bootstrap-icons.css'
+import './custom.scss';
 import axios from 'axios'
 import VueApexCharts from "vue3-apexcharts";
 

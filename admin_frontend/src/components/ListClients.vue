@@ -1,5 +1,5 @@
 <template>
-    <div class="card mb-1">
+    <div class="card mb-1" style="border-radius: 1.5rem;">
         <a @click="toggleSeparator" :data-bs-target="'#collapseProduct' + data_client.id" class="card-body py-1 px-3 d-flex align-items-center" id="headingExampleTwo" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseIndicatorChevron">
             <span style="margin-right: 0.5rem;">
                 <i class="bi bi-person-circle"></i>

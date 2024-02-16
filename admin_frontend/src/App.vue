@@ -1,12 +1,40 @@
 <template>
   <div class="container-fluid min-vh-100 d-flex flex-column" style="background-color: rgb(241, 241, 241); ">
     <div class="row" style="background-color: rgb(84, 158, 201);">
-        <div class="col" style="height: 5vh;">
-            <h1> Top Bar </h1>
-        </div>
+      <div class="col d-flex align-items-center justify-content-start" style="height: 5vh;">
+        <!-- Левая часть (ссылка на главную страницу) -->
+        <a href="/" class="text-light">
+            <img src="@/assets/LogoST.png" width="89" height="28" alt="Home" style=" margin-right: 8px;">
+        </a>
+      </div>
+      <div class="col-auto d-flex align-items-center justify-content-end">
+          <!-- Правая часть (иконка уведомлений, dropdown с изображением пользователя и кнопка выхода) -->
+          <span class="text-light me-3">
+              <!-- Иконка уведомлений системы -->
+              <i class="bi bi-bell"></i>
+          </span>
+
+          <span class="text-light me-3">
+              <!-- Иконка уведомлений заказов -->
+              <i class="bi bi-cart"></i>
+          </span>
+
+          <div class="dropdown">
+              <!-- Кружок с изображением пользователя и кнопка выхода внутри dropdown -->
+              <a class="text-light custom-dropdown-toggle" href="#" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <img src="@/assets/57.webp" alt="User" style="width: 24px; height: 24px; border-radius: 50%;">
+              </a>
+              <div class="dropdown-menu" aria-labelledby="userDropdown">
+                  <button class="dropdown-item" @click="handleLogout">Выйти</button>
+              </div>
+          </div>
+      </div>
+    </div>
+    <div class="row">
+        <div class="col d-flex align-items-center justify-content-start" style="height: 1vh;"></div>
     </div>
     <div class="row flex-grow-1">
-      <div class="col-sm-2">
+      <div class="col-sm-2" >
         <div class="card text-bg-light p-2" style="min-height: 100%;">
           <ul class="nav nav-pills flex-sm-column flex-row mb-auto justify-content-between text-truncate">
             <!-- Статистика -->
@@ -243,9 +271,12 @@
           </ul>
         </div>
       </div>
-      <div class="col-sm-10 d-flex flex-column" style="max-height: 95vh;">
+      <div class="col-sm-10 d-flex flex-column" style="max-height: 93vh;">
         <router-view/>
       </div>
+    </div>
+    <div class="row">
+        <div class="col d-flex align-items-center justify-content-start" style="height: 1vh;"></div>
     </div>
   </div>
 </template>
@@ -403,6 +434,11 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
 }
+
+.custom-dropdown-toggle {
+    cursor: pointer;
+    text-decoration: none; /* Если нужно убрать подчеркивание */
+  }
 
 
 nav {

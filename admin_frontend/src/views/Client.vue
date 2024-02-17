@@ -9,9 +9,51 @@
                 </div>
                 <div class="d-flex align-items-center">
                     
-                    <button @click="deleteCategory()" class="btn btn-icon d-inline px-2"><i class="bi bi-filter-circle"></i></button>
-                    <button @click="deleteCategory()" class="btn btn-icon d-inline px-2"><i class="bi bi-funnel"></i></button>
-                    <button @click="deleteCategory()" class="btn btn-icon d-inline text-success px-2"><i class="bi bi-person-add" style="font-size: 18px;"></i></button>    
+                    <button @click="" class="btn btn-icon d-inline mx-1 px-2 custom-dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="bi bi-filter-circle"></i>
+                    </button>
+
+                    <div class="dropdown-menu" aria-labelledby="userDropdown" style="width: 20rem;">
+                        <div class="row">
+                            <div class="col">
+                                <div class="separator mx-3 mb-2">Сортировка</div>
+                                <div class="form-check form-switch mx-3 mb-2">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                    <label class="form-check-label" for="flexSwitchCheckDefault">По ID</label>
+                                </div>
+                                <div class="form-check form-switch mx-3">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                    <label class="form-check-label" for="flexSwitchCheckDefault">По Имени</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button @click="" class="btn btn-icon d-inline mx-1 px-2 custom-dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="bi bi-funnel"></i>
+                    </button>
+
+                    <div class="dropdown-menu" aria-labelledby="userDropdown" style="width: 20rem;">
+                        <div class="row">
+                            <div class="col">
+                                <div class="separator mx-3 mb-2">Фильтры</div>
+                                <select class="form-select mx-3 mb-2" style="width: 91%;" required aria-label="select example">
+                                    <option value="">Open</option>
+                                    <option value="1">One</option>
+                                    <option value="2">Two</option>
+                                    <option value="3">Three</option>
+                                </select>
+                                <select class="form-select mx-3 mb-2" style="width: 91%;" required aria-label="select example">
+                                    <option value="">Open</option>
+                                    <option value="1">One</option>
+                                    <option value="2">Two</option>
+                                    <option value="3">Three</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button @click="deleteCategory()" class="btn btn-icon d-inline text-success mx-1" style="padding: 0.25rem;"><i class="bi bi-person-add" style="font-size: 18px;"></i></button>    
                 </div>
             </div>
         </div>
@@ -145,4 +187,31 @@ export default {
 i {
     font-size: 18px;
 }
+
+.separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+.separator::before,
+.separator::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #b4b4b4;
+}
+
+.separator:not(:empty)::before {
+  margin-right: 1rem;
+}
+
+.separator:not(:empty)::after {
+  margin-left: 1rem;
+}
+
+button.btn {
+    border-radius: 0.75rem;
+}
+
+
 </style>

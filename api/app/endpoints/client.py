@@ -1,25 +1,44 @@
+from math import ceil
+from typing import List
 from fastapi import APIRouter, Depends, HTTPException, Query
+from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import Client
 from app.db import get_session
-from sqlmodel import select
+from sqlmodel import select, func
 
 
 router = APIRouter()
 
+class ClientResponseModel(BaseModel):
+    total_count: int
+    total_pages: int
+    clients: List[Client]
 
-@router.get("/clients", response_model=list[Client])
+@router.get("/clients", response_model=ClientResponseModel)
 async def get_clients(
-    page: int = Query(1, gt=0),  # Номер страницы, начиная с 1
-    page_size: int = Query(10, gt=0),
-    session: AsyncSession = Depends(get_session)):
-    
-    start_index = (page - 1) * page_size
+    offset: int = Query(0, ge=0),
+    limit: int = Query(50, gt=0),
+    session: AsyncSession = Depends(get_session)
+):
 
-    result = await session.execute(select(Client).offset(start_index).limit(page_size))
+    total_count_query = select(func.count(Client.id))
+    total_count_result = await session.execute(total_count_query)
+    total_count = total_count_result.scalar()
 
-    clients = result.scalars().all()
-    return [Client(id=client.id, name=client.name, slug=client.slug) for client in clients]
+    total_pages = ceil(total_count / limit)
+
+    clients_query = select(Client).offset(offset).limit(limit)
+    clients_result = await session.execute(clients_query)
+    clients = clients_result.scalars().all()
+
+    response_model = ClientResponseModel(
+        total_count=total_count,
+        total_pages=total_pages,
+        clients=clients
+    )
+    return response_model
+
 
 @router.post("/client")
 async def add_client(client: Client, session: AsyncSession = Depends(get_session)):

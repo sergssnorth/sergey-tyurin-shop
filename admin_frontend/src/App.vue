@@ -83,7 +83,7 @@
             <!-- Модели -->
             <li class="mb-2">
               <div class="d-inline-flex gap-1" style="width: 100%;">
-                <button @click="isClickedModel = !isClickedModel" class="btn btn-navigation d-flex justify-content-between" style="width: 100%; border-radius: 1.5rem;" data-bs-toggle="collapse" href="#multiCollapseModel" role="button" aria-expanded="false" aria-controls="multiCollapseModel">
+                <button @click="isClickedModel = !isClickedModel" :class="{'active': isClickedModel}" class="btn btn-navigation d-flex justify-content-between" style="width: 100%; border-radius: 1.5rem;" data-bs-toggle="collapse" href="#multiCollapseModel" role="button" aria-expanded="false" aria-controls="multiCollapseModel">
                   <div>
                     <span><i class="bi bi-box-fill"></i></span>
                     <span style="padding-left: 1rem;">Модели</span>
@@ -128,7 +128,7 @@
              <!-- Справочники -->
             <li class="mb-2">
               <div class="d-inline-flex gap-1" style="width: 100%;">
-                <button @click="toggleReferenceCollapse" class="btn btn-navigation d-flex justify-content-between" style="width: 100%; border-radius: 1.5rem;" data-bs-toggle="collapse" data-bs-target="#multiCollapseReference" href="#multiCollapseReference" role="button" aria-expanded="false" aria-controls="multiCollapseReference">
+                <button @click="toggleReferenceCollapse"  :class="{'active': isClickedReference}" class="btn btn-navigation d-flex justify-content-between" style="width: 100%; border-radius: 1.5rem;" data-bs-toggle="collapse" data-bs-target="#multiCollapseReference" href="#multiCollapseReference" role="button" aria-expanded="false" aria-controls="multiCollapseReference">
                   <div>
                     <span><i class="bi bi-database-fill"></i></span>
                     <span style="padding-left: 1rem;">Справочники</span>
@@ -173,7 +173,7 @@
             <!-- Заказы -->
             <li class="mb-2">
               <div class="d-inline-flex gap-1" style="width: 100%;">
-                <button @click="isClickedOrder = !isClickedOrder" class="btn btn-navigation d-flex justify-content-between" style="width: 100%; border-radius: 1.5rem;" data-bs-toggle="collapse" href="#multiCollapseOrder" role="button" aria-expanded="false" aria-controls="multiCollapseOrder">
+                <button @click="isClickedOrder = !isClickedOrder" :class="{'active': isClickedOrder}" class="btn btn-navigation d-flex justify-content-between" style="width: 100%; border-radius: 1.5rem;" data-bs-toggle="collapse" href="#multiCollapseOrder" role="button" aria-expanded="false" aria-controls="multiCollapseOrder">
                   <div>
                     <span><i class="bi bi-bag-fill"></i></span>
                     <span style="padding-left: 1rem;">Заказы</span>
@@ -200,7 +200,7 @@
             <!-- Клиенты -->
             <li class="mb-2">
               <div class="d-inline-flex gap-1" style="width: 100%;">
-                <button @click="isClickedClient = !isClickedClient" class="btn btn-navigation d-flex justify-content-between" style="width: 100%; border-radius: 1.5rem;" data-bs-toggle="collapse" href="#multiCollapseClient" role="button" aria-expanded="false" aria-controls="multiCollapseClient">
+                <button @click="isClickedClient = !isClickedClient" :class="{'active': isClickedClient}" class="btn btn-navigation d-flex justify-content-between" style="width: 100%; border-radius: 1.5rem;" data-bs-toggle="collapse" href="#multiCollapseClient" role="button" aria-expanded="false" aria-controls="multiCollapseClient">
                   <div>
                     <span><i class="bi bi-people-fill"></i></span>
                     <span style="padding-left: 1rem;">Клиенты</span>
@@ -227,7 +227,7 @@
             <!-- Склад -->
             <li class="mb-2">
               <div class="d-inline-flex gap-1" style="width: 100%;">
-                <button @click="isClickedWarehouse = !isClickedWarehouse" class="btn btn-navigation d-flex justify-content-between" style="width: 100%; border-radius: 1.5rem;" data-bs-toggle="collapse" href="#multiCollapseWarehouse" role="button" aria-expanded="false" aria-controls="multiCollapseWarehouse">
+                <button @click="isClickedWarehouse = !isClickedWarehouse" :class="{'active': isClickedWarehouse}" class="btn btn-navigation d-flex justify-content-between" style="width: 100%; border-radius: 1.5rem;" data-bs-toggle="collapse" href="#multiCollapseWarehouse" role="button" aria-expanded="false" aria-controls="multiCollapseWarehouse">
                   <div>
                     <span><i class="bi bi-house-fill"></i></span>
                     <span style="padding-left: 1rem;">Склад</span>
@@ -254,7 +254,7 @@
             <!-- Отчеты -->
             <li class="mb-2">
               <div class="d-inline-flex gap-1" style="width: 100%; border-radius: 1.5rem;">
-                <button @click="isClickedReport = !isClickedReport" class="btn btn-navigation d-flex justify-content-between" style="width: 100%; border-radius: 1.5rem;" data-bs-toggle="collapse" href="#multiCollapseReport" role="button" aria-expanded="false" aria-controls="multiCollapseReport">
+                <button @click="isClickedReport = !isClickedReport" :class="{'active': isClickedReport}" class="btn btn-navigation d-flex justify-content-between" style="width: 100%; border-radius: 1.5rem;" data-bs-toggle="collapse" href="#multiCollapseReport" role="button" aria-expanded="false" aria-controls="multiCollapseReport">
                   <div>
                     <span><i class="bi bi-file-text-fill"></i></span>
                     <span style="padding-left: 1rem;">Отчеты</span>
@@ -478,6 +478,5 @@ nav {
 .nav-links[data-toggle]:not(.collapsed):after {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-arrow-up-circle' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-7.5 3.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707z'/%3E%3C/svg%3E");
 }
-
 
 </style>

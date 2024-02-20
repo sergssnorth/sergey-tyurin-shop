@@ -57,7 +57,7 @@
                 </div>
             </div>
         </div>
-        <div class="row flex-grow-1" style="overflow-y: auto;">
+        <div class="row flex-grow-1" id="clientlist">
             <div class="col d-flex flex-column" style="flex-grow: 1;">
             
                 <div v-if="loading">
@@ -83,17 +83,16 @@
             <div class="col text-center">
                 <nav class="px-0 py-0" aria-label="Page navigation">
                     <ul class="my-2 pagination justify-content-center">
-                        <!-- Здесь вставьте код для пагинации Bootstrap -->
-                        <li class="page-item">
-                            <a class="page-link" href="#" aria-label="Previous">
+                        <li class="page-item" v-if="clients.total_pages > 1 && clients.current_page > 1">
+                            <a class="page-link" @click="changePage(clients.current_page - 1)" aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
-                        <li class="page-item"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item">
-                            <a class="page-link" href="#" aria-label="Next">
+                        <li class="page-item" v-for="page in Array.from({ length: clients.total_pages }, (_, i) => i + 1)">
+                            <a class="page-link" @click="changePage(page)" :class="{ 'active': page === clients.current_page }">{{ page }}</a>
+                        </li>
+                        <li class="page-item" v-if="clients.total_pages > 1 && clients.current_page < clients.total_pages">
+                            <a class="page-link" @click="changePage(clients.current_page + 1)" aria-label="Next">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
                         </li>
@@ -113,14 +112,18 @@ export default {
     data() {
         return {
             search: '',
-            clients : [],
+            clients : {
+                total_count: 0,
+                total_pages: 0,
+                clients: []
+            },
             loading : true
         }
     },
     computed: {
         filteredClients() {
             console.log("filteredClients")
-            const clients =  this.clients.filter((client) => client.name.includes(this.search.toLowerCase()));
+            const clients =  this.clients.clients.filter((client) => client.name.includes(this.search.toLowerCase()));
             return clients
       }
     },
@@ -128,20 +131,32 @@ export default {
         ListClients
     },
     async mounted() {
-        await this.getClients()
+        let clientPage = localStorage.getItem('clientPage');
+
+        if (!clientPage) {
+            clientPage = 1;
+            localStorage.setItem('clientPage', clientPage);
+        }
+
+        await this.getClients(clientPage);
     },
 
     methods: {
-        async getClients() {
+        async getClients(page) {
             try {
-                const response = await axios.get(`/clients`);
+                const response = await axios.get(`/clients?offset=${(page - 1) * 50}`);
                 this.clients = response.data;
                 console.log(this.clients);
+                localStorage.setItem('clientPage', page);
             } catch (error) {
                 console.log(error);
             } finally {
-                this.loading = false; // Установите loading в false после успешной загрузки или ошибки
+                this.loading = false;
             }
+        },
+        changePage(page) {
+            this.loading = true;
+            this.getClients(page);
         },
         async getOrders() {
             await axios
@@ -213,5 +228,22 @@ button.btn {
     border-radius: 0.75rem;
 }
 
+#clientlist {
+    overflow-y: auto;
+}
 
+#clientlist::-webkit-scrollbar {
+    width: 8px;
+}
+
+#clientlist::-webkit-scrollbar-track {
+    border-radius: 8px;
+    background-color: #e7e7e7;
+    border: 1px solid #cacaca;
+}
+
+#clientlist::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background-color: #696cff;
+}
 </style>

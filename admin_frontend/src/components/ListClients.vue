@@ -6,7 +6,10 @@
             </span>
             <span>{{ data_client.name }}</span>
             <!-- <button @click="$router.push(`/categories?big_category_id=${this.category.id}`)" class="btn btn-icon d-inline ms-auto px-2"><i class="bi bi bi-box-seam"></i></button> -->
-            <button  data-bs-toggle="modal" data-bs-target="#editModal" class="btn btn-icon d-inline text-success ms-auto px-2"><i class="bi bi-bag-plus"></i></button>
+            <span class="ms-auto" style="color: grey; margin-right: 0rem;"><i class="bi bi-hash"></i></span>
+            <span class="" style="color: grey; margin-right: 1.5rem;">{{ data_client.id }}</span>
+            <div class="vr" style="margin-right: 1.15rem;"></div>
+            <button  data-bs-toggle="modal" data-bs-target="#editModal" class="btn btn-icon d-inline text-success px-2"><i class="bi bi-bag-plus"></i></button>
             <button  data-bs-toggle="modal" data-bs-target="#editModal" class="btn btn-icon d-inline text-primary px-2"><i class="bi bi-pen"></i></button>
             
             
@@ -152,8 +155,13 @@ export default {
     text-decoration: none; // Убираем подчеркивание
     cursor: pointer;
   }
-  a:hover {
+  a[aria-expanded="false"]:hover {
     background-color: rgba(238, 238, 238, 0.637);
+    border-radius: 1.5rem;
+  }
+  a[aria-expanded="true"]:hover {
+    background-color: rgba(238, 238, 238, 0.637);
+    border-radius: 1.5rem 1.5rem 0 0;
   }
 }
 

@@ -4,8 +4,8 @@
             
             <div class="d-flex align-items-center flex-grow-1">
                 <div class="input-group align-items-center">
-                    <span class="input-group-text" id="basic-addon1" style="border-radius: 1.5rem 0 0 1.5rem;"><i class="bi bi-search" style="font-size: 16px;"></i></span>
-                    <input v-model="search" type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1" style="border-radius: 0 1.5rem 1.5rem 0;">
+                    <span @click="searchClients" class="input-group-text" id="basic-addon1" style="border-radius: 1.5rem 0 0 1.5rem;"><i class="bi bi-search" style="font-size: 16px;"></i></span>
+                    <input v-model="search" @keyup.enter="searchClients" type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1" style="border-radius: 0 1.5rem 1.5rem 0;">
                 </div>
                 <div class="d-flex align-items-center">
                     
@@ -70,7 +70,7 @@
                 <div v-if="!loading">
                     <div class="col d-flex flex-column" style="flex-grow: 1;"></div>
                     <ListClients
-                    v-for="client in filteredClients"
+                    v-for="client in clients.clients"
                     v-bind:key="client.id"
                     v-bind:client="client"
                     @clientDeleted="handleClientDeleted" 
@@ -120,13 +120,6 @@ export default {
             loading : true
         }
     },
-    computed: {
-        filteredClients() {
-            console.log("filteredClients")
-            const clients =  this.clients.clients.filter((client) => client.name.includes(this.search.toLowerCase()));
-            return clients
-      }
-    },
     components: {
         ListClients
     },
@@ -143,6 +136,7 @@ export default {
 
     methods: {
         async getClients(page) {
+            console.log("getClients")
             try {
                 const response = await axios.get(`/clients?offset=${(page - 1) * 50}`);
                 this.clients = response.data;
@@ -157,6 +151,28 @@ export default {
         changePage(page) {
             this.loading = true;
             this.getClients(page);
+        },
+        async searchClients() {
+            try {
+                if (this.search.trim() !== '') {
+                    this.loading = true;
+                    const response = await axios.get(`/clients?search=${this.search}`);
+                    this.clients = response.data;
+                } else {
+                    let clientPage = localStorage.getItem('clientPage');
+
+                    if (!clientPage) {
+                        clientPage = 1;
+                        localStorage.setItem('clientPage', clientPage);
+                    }
+
+                    await this.getClients(clientPage);
+                }
+            } catch (error) {
+                console.error('Ошибка при выполнении поиска клиентов:', error);
+            } finally {
+                this.loading = false;
+            }
         },
         async getOrders() {
             await axios
@@ -245,5 +261,18 @@ button.btn {
 #clientlist::-webkit-scrollbar-thumb {
     border-radius: 8px;
     background-color: #696cff;
+}
+
+input {
+    border-radius: 0;
+}
+
+.input-group-text:hover {
+    cursor: pointer;
+}
+
+input:focus,
+input:active {
+    box-shadow: none !important;
 }
 </style>

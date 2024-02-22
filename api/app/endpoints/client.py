@@ -19,16 +19,32 @@ class ClientResponseModel(BaseModel):
 async def get_clients(
     offset: int = Query(0, ge=0),
     limit: int = Query(50, gt=0),
+    search: str = Query(None),
     session: AsyncSession = Depends(get_session)
 ):
 
-    total_count_query = select(func.count(Client.id))
+    # Если предоставлен поиск, фильтруем клиентов по критериям поиска
+    if search:
+        total_count_query = (
+            select(func.count(Client.id))
+            .where(Client.name.ilike(f"%{search}%"))  # Измените это условие в соответствии с вашей моделью Client
+        )
+        clients_query = (
+            select(Client)
+            .where(Client.name.ilike(f"%{search}%"))  # Измените это условие в соответствии с вашей моделью Client
+            .offset(offset)
+            .limit(limit)
+        )
+    else:
+        # Если нет критериев поиска, получаем всех клиентов
+        total_count_query = select(func.count(Client.id))
+        clients_query = select(Client).offset(offset).limit(limit)
+
     total_count_result = await session.execute(total_count_query)
     total_count = total_count_result.scalar()
 
     total_pages = ceil(total_count / limit)
 
-    clients_query = select(Client).offset(offset).limit(limit)
     clients_result = await session.execute(clients_query)
     clients = clients_result.scalars().all()
 

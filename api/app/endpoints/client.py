@@ -23,15 +23,14 @@ async def get_clients(
     session: AsyncSession = Depends(get_session)
 ):
 
-    # Если предоставлен поиск, фильтруем клиентов по критериям поиска
     if search:
         total_count_query = (
             select(func.count(Client.id))
-            .where(Client.name.ilike(f"%{search}%"))  # Измените это условие в соответствии с вашей моделью Client
+            .where(Client.name.ilike(f"%{search}%"))
         )
         clients_query = (
             select(Client)
-            .where(Client.name.ilike(f"%{search}%"))  # Измените это условие в соответствии с вашей моделью Client
+            .where(Client.name.ilike(f"%{search}%"))
             .offset(offset)
             .limit(limit)
         )

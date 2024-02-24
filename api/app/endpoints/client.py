@@ -20,6 +20,7 @@ async def get_clients(
     offset: int = Query(0, ge=0),
     limit: int = Query(50, gt=0),
     search: str = Query(None),
+    client_id: int = Query(None),
     session: AsyncSession = Depends(get_session)
 ):
 

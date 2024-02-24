@@ -1,9 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import BigCategory
 from app.db import get_session
+
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlmodel import select, func
 from typing import List
+from math import ceil
+from pydantic import BaseModel
 
 router = APIRouter()
 
@@ -14,39 +18,30 @@ class BigCategoryResponseModel(BaseModel):
 
 
 @router.get("/big_categories", response_model=BigCategoryResponseModel)
-async def get_big_categories(
-    offset: int = Query(0, ge=0),
-    limit: int = Query(50, gt=0),
-    search: str = Query(None),
-    session: AsyncSession = Depends(get_session)):
+async def get_big_categories(offset: int = Query(0, ge=0),
+                            limit: int = Query(50, gt=0),
+                            search: str = Query(None),
+                            session: AsyncSession = Depends(get_session)):
+    base_query = select(BigCategory)
 
     if search:
-        total_count_query = (
-            select(func.count(BigCategory.id))
-            .where(BigCategory.name.ilike(f"%{search}%"))
-        )
-        big_categories_query = (
-            select(BigCategory)
-            .where(BigCategory.name.ilike(f"%{search}%"))
-            .offset(offset)
-            .limit(limit)
-        )
-    else:
-        total_count_query = select(func.count(BigCategory.id))
-        big_categories_query = select(BigCategory).offset(offset).limit(limit)
+        base_query = base_query.where(BigCategory.name.ilike(f"%{search}%"))
 
+    base_query = base_query.offset(offset).limit(limit)
+
+    total_count_query = select(func.count(BigCategory.id)).where(base_query)
     total_count_result = await session.execute(total_count_query)
     total_count = total_count_result.scalar()
 
     total_pages = ceil(total_count / limit)
 
-    big_categories_result = await session.execute(big_categories_query)
-    big_categories = big_categories_result.scalars().all()
+    big_category_result = await session.execute(base_query)
+    big_category = big_category_result.scalars().all()
 
     response_model = BigCategoryResponseModel(
         total_count=total_count,
         total_pages=total_pages,
-        big_categories=big_categories
+        big_categories=big_category
     )
 
     return response_model

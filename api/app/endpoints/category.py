@@ -1,32 +1,57 @@
-from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import Category
 from app.db import get_session
-from sqlmodel import select
-from typing import List, Optional
+
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlmodel import select, func, or_
+from typing import List,  Optional
+from math import ceil
+from pydantic import BaseModel
 
 router = APIRouter()
 
+class CategoryResponseModel(BaseModel):
+    total_count: int
+    total_pages: int
+    categories: List[Category]
 
-@router.get("/categories", response_model=List[Category])
-async def get_categories(big_category_id: Optional[int] = None, session: AsyncSession = Depends(get_session)):
+
+@router.get("/categories", response_model=CategoryResponseModel)
+async def get_categories(offset: int = Query(0, ge=0),
+                        limit: int = Query(50, gt=0),
+                        search: str = Query(None),
+                        big_category_id: Optional[int] = None, 
+                        session: AsyncSession = Depends(get_session)):
+    
+        
     query = select(Category)
 
-    # Если задан big_category_id, добавляем условие фильтрации
     if big_category_id is not None:
         query = query.filter(Category.big_category_id == big_category_id)
 
-    result = await session.execute(query)
-    categories = result.scalars().all()
+    if search:
+        query = query.filter(or_(
+            Category.name.ilike(f"%{search}%")
+        ))
 
-    return [
-        Category(
-            id=category.id,
-            name=category.name,
-            slug=category.slug,
-            big_category_id=category.big_category_id
-        ) for category in categories
-    ]
+    total_count = await session.scalar(select(func.count()).select_from(query.alias()))
+    total_pages = ceil(total_count / limit)
+    categories_result = await session.execute(query)
+    categories = categories_result.scalars().all()
+
+    return CategoryResponseModel(
+        total_count=total_count,
+        total_pages=total_pages,
+        categories=[
+            Category(
+                id=category.id,
+                name=category.name,
+                slug=category.slug,
+                big_category_id=category.big_category_id
+            ) for category in categories
+        ]
+    )
+
 
 @router.post("/category")
 async def add_category(category: Category, session: AsyncSession = Depends(get_session)):

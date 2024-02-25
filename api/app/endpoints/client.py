@@ -16,13 +16,11 @@ class ClientResponseModel(BaseModel):
     clients: List[Client]
 
 @router.get("/clients", response_model=ClientResponseModel)
-async def get_clients(
-    offset: int = Query(0, ge=0),
-    limit: int = Query(50, gt=0),
-    search: str = Query(None),
-    client_id: int = Query(None),
-    session: AsyncSession = Depends(get_session)
-):
+async def get_clients(offset: int = Query(0, ge=0),
+                      limit: int = Query(50, gt=0),
+                      search: str = Query(None),
+                      client_id: int = Query(None),
+                      session: AsyncSession = Depends(get_session)):
 
     if search:
         total_count_query = (

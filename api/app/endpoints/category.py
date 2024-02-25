@@ -20,13 +20,12 @@ class CategoryResponseModel(BaseModel):
 async def get_categories(offset: int = Query(0, ge=0),
                         limit: int = Query(50, gt=0),
                         search: str = Query(None),
-                        big_category_id: Optional[int] = None, 
+                        big_category_id: int = Query(None), 
                         session: AsyncSession = Depends(get_session)):
     
-        
     query = select(Category)
 
-    if big_category_id is not None:
+    if big_category_id:
         query = query.filter(Category.big_category_id == big_category_id)
 
     if search:
@@ -34,10 +33,15 @@ async def get_categories(offset: int = Query(0, ge=0),
             Category.name.ilike(f"%{search}%")
         ))
 
-    total_count = await session.scalar(select(func.count()).select_from(query.alias()))
+    total_count_query = select(func.count()).select_from(query)
+    total_count_result = await session.execute(total_count_query)
+    total_count = total_count_result.scalar()
     total_pages = ceil(total_count / limit)
+
+
+    query = query.offset(offset).limit(limit)
     categories_result = await session.execute(query)
-    categories = categories_result.scalars().all()
+    categories = categories_result .scalars().all()
 
     return CategoryResponseModel(
         total_count=total_count,

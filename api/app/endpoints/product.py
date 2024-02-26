@@ -1,46 +1,65 @@
 from typing import Optional
-from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import Product, Color
 from app.db import get_session
-from sqlmodel import select, join
-from pydantic import BaseModel 
 
+
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlmodel import select, and_, join, or_, func
+from typing import List
+from math import ceil
+from pydantic import BaseModel
 router = APIRouter()
 
-class ModelResponse(BaseModel):
+class ProductResponseModel(BaseModel):
     id: int
     model_id: int
     color_id: int
     color_name: str
 
+class ProductsResponseModel(BaseModel):
+    total_count: int
+    total_pages: int
+    products: List[ProductResponseModel]
 
 
-
-@router.get("/products", response_model=list[ModelResponse])
-async def get_products(
-    model_id: Optional[int] = None, 
-    session: AsyncSession = Depends(get_session)):
+@router.get("/products", response_model=ProductsResponseModel)
+async def get_products(offset: int = Query(0, ge=0),
+                       limit: int = Query(50, gt=0),
+                       search: str = Query(None),
+                       model_id: Optional[int] = None, 
+                       session: AsyncSession = Depends(get_session)):
 
     query = select(Product, Color).join(Color)
+
+    if search:
+        query = query.filter(or_(
+            Product.color.name.ilike(f"%{search}%")
+        ))    
+
     if model_id is not None:
         query = query.filter(Product.model_id == model_id)
                    
-    products = await session.execute(query)
-    product_list = list(products)
+    total_count_query = select(func.count()).select_from(query)
+    total_count_result = await session.execute(total_count_query)
+    total_count = total_count_result.scalar()
+    total_pages = ceil(total_count / limit)
 
-    print(product_list)
-    result_list = []
-    for product,color in product_list:
-        result_list.append(
-            ModelResponse(
-                id = product.id, 
-                model_id = product.model_id,
-                color_id = product.color_id,
-                color_name= color.name,
-            )
-        )
-    return result_list
+    query = query.offset(offset).limit(limit)
+    products_and_colors = await session.execute(query)
+
+    products = [ProductResponseModel(
+            id = product.id, 
+            model_id = product.model_id,
+            color_id = product.color_id,
+            color_name= color.name,
+        ) for product, color in products_and_colors]
+
+    return ProductsResponseModel(
+        total_count=total_count,
+        total_pages=total_pages,
+        products=products
+    )
 
 
 @router.post("/product")

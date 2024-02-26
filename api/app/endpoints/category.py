@@ -10,13 +10,13 @@ from pydantic import BaseModel
 
 router = APIRouter()
 
-class CategoryResponseModel(BaseModel):
+class CategoriesResponseModel(BaseModel):
     total_count: int
     total_pages: int
     categories: List[Category]
 
 
-@router.get("/categories", response_model=CategoryResponseModel)
+@router.get("/categories", response_model=CategoriesResponseModel)
 async def get_categories(offset: int = Query(0, ge=0),
                         limit: int = Query(50, gt=0),
                         search: str = Query(None),
@@ -25,13 +25,13 @@ async def get_categories(offset: int = Query(0, ge=0),
     
     query = select(Category)
 
-    if big_category_id:
-        query = query.filter(Category.big_category_id == big_category_id)
-
     if search:
         query = query.filter(or_(
             Category.name.ilike(f"%{search}%")
         ))
+
+    if big_category_id:
+        query = query.filter(Category.big_category_id == big_category_id)
 
     total_count_query = select(func.count()).select_from(query)
     total_count_result = await session.execute(total_count_query)
@@ -41,9 +41,9 @@ async def get_categories(offset: int = Query(0, ge=0),
 
     query = query.offset(offset).limit(limit)
     categories_result = await session.execute(query)
-    categories = categories_result .scalars().all()
+    categories = categories_result.scalars().all()
 
-    return CategoryResponseModel(
+    return CategoriesResponseModel(
         total_count=total_count,
         total_pages=total_pages,
         categories=[

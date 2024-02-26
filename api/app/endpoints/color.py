@@ -1,17 +1,53 @@
-from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import Color
 from app.db import get_session
-from sqlmodel import select
+
+
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlmodel import select, func, or_
+from typing import List
+from math import ceil
+from pydantic import BaseModel
 
 
 router = APIRouter()
 
-@router.get("/colors", response_model=list[Color])
-async def get_colors(session: AsyncSession = Depends(get_session)):
-    result = await session.execute(select(Color))
-    colors = result.scalars().all()
-    return [Color(id=color.id, name=color.name, slug=color.slug) for color in colors]
+class ColorsResponseModel(BaseModel):
+    total_count: int
+    total_pages: int
+    colors: List[Color]
+
+@router.get("/colors", response_model=ColorsResponseModel)
+async def get_colors(offset: int = Query(0, ge=0),
+                     limit: int = Query(50, gt=0),
+                     search: str = Query(None),
+                     session: AsyncSession = Depends(get_session)):
+    query = select(Color)
+
+    if search:
+        query = query.where(Color.name.ilike(f"%{search}%"))
+
+    total_count_query = select(func.count()).select_from(query)
+    total_count_result = await session.execute(total_count_query)
+    total_count = total_count_result.scalar()
+    total_pages = ceil(total_count / limit)
+
+    query = query.offset(offset).limit(limit)
+    colors_result = await session.execute(query)
+    colors = colors_result.scalars().all()
+
+    return ColorsResponseModel(
+        total_count=total_count,
+        total_pages=total_pages,
+        colors=[
+            Color(
+                id=color.id,
+                name=color.name,
+                slug=color.slug,
+            ) for color in colors
+        ]
+    )
+
 
 @router.post("/color")
 async def add_color(color: Color, session: AsyncSession = Depends(get_session)):

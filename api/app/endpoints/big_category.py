@@ -11,13 +11,13 @@ from pydantic import BaseModel
 
 router = APIRouter()
 
-class BigCategoryResponseModel(BaseModel):
+class BigCategoriesResponseModel(BaseModel):
     total_count: int
     total_pages: int
     big_categories: List[BigCategory]
 
 
-@router.get("/big_categories", response_model=BigCategoryResponseModel)
+@router.get("/big_categories", response_model=BigCategoriesResponseModel)
 async def get_big_categories(offset: int = Query(0, ge=0),
                             limit: int = Query(50, gt=0),
                             search: str = Query(None),
@@ -37,7 +37,7 @@ async def get_big_categories(offset: int = Query(0, ge=0),
     big_category_result = await session.execute(query)
     big_category = big_category_result.scalars().all()
 
-    response_model = BigCategoryResponseModel(
+    response_model = BigCategoriesResponseModel(
         total_count=total_count,
         total_pages=total_pages,
         big_categories=big_category

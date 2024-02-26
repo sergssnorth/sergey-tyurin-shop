@@ -1,57 +1,61 @@
 from math import ceil
-from typing import List
-from fastapi import APIRouter, Depends, HTTPException, Query
-from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import Client
 from app.db import get_session
-from sqlmodel import select, func
+
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlmodel import select, func, or_
+from typing import List
+from math import ceil
+from pydantic import BaseModel
 
 
 router = APIRouter()
 
-class ClientResponseModel(BaseModel):
+class ClientsResponseModel(BaseModel):
     total_count: int
     total_pages: int
     clients: List[Client]
 
-@router.get("/clients", response_model=ClientResponseModel)
+@router.get("/clients", response_model=ClientsResponseModel)
 async def get_clients(offset: int = Query(0, ge=0),
                       limit: int = Query(50, gt=0),
                       search: str = Query(None),
                       client_id: int = Query(None),
                       session: AsyncSession = Depends(get_session)):
 
-    if search:
-        total_count_query = (
-            select(func.count(Client.id))
-            .where(Client.name.ilike(f"%{search}%"))
-        )
-        clients_query = (
-            select(Client)
-            .where(Client.name.ilike(f"%{search}%"))
-            .offset(offset)
-            .limit(limit)
-        )
-    else:
-        # Если нет критериев поиска, получаем всех клиентов
-        total_count_query = select(func.count(Client.id))
-        clients_query = select(Client).offset(offset).limit(limit)
+    query = select(Client)
 
+    if search:
+        query = query.filter(or_(
+            Client.name.ilike(f"%{search}%")
+        ))
+
+    if client_id:
+        query = query.filter(Client.id == client_id)
+
+    total_count_query = select(func.count()).select_from(query)
     total_count_result = await session.execute(total_count_query)
     total_count = total_count_result.scalar()
-
     total_pages = ceil(total_count / limit)
 
-    clients_result = await session.execute(clients_query)
-    clients = clients_result.scalars().all()
 
-    response_model = ClientResponseModel(
+    query = query.offset(offset).limit(limit)
+    client_result = await session.execute(query)
+    clients = client_result.scalars().all()
+
+    return ClientsResponseModel(
         total_count=total_count,
         total_pages=total_pages,
-        clients=clients
+        clients=[
+            Client(
+                id=client.id,
+                name=client.name,
+                slug=client.slug,
+            ) for client in clients
+        ]
     )
-    return response_model
+
 
 
 @router.post("/client")

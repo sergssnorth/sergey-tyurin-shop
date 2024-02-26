@@ -12,31 +12,36 @@ from pydantic import BaseModel
 
 router = APIRouter()
 
-class CollectionResponseModel(BaseModel):
+class CollectionsResponseModel(BaseModel):
     total_count: int
     total_pages: int
     collections: List[Collection]
 
 
-@router.get("/collections", response_model=CollectionResponseModel)
+@router.get("/collections", response_model=CollectionsResponseModel)
 async def get_collections(offset: int = Query(0, ge=0),
                           limit: int = Query(50, gt=0),
                           search: str = Query(None),
                           session: AsyncSession = Depends(get_session)):
     
-    query = select(Collection).offset(offset).limit(limit)
-    
+    query = select(Collection)
+
     if search:
         query = query.filter(or_(
             Collection.name.ilike(f"%{search}%")
         ))
 
-    total_count = await session.scalar(select(func.count()).select_from(query.alias()))
+    total_count_query = select(func.count()).select_from(query)
+    total_count_result = await session.execute(total_count_query)
+    total_count = total_count_result.scalar()
     total_pages = ceil(total_count / limit)
-    collections_result = await session.execute(query)
-    collections = collections_result.scalars().all()
 
-    return CollectionResponseModel(
+
+    query = query.offset(offset).limit(limit)
+    collection_result = await session.execute(query)
+    collections = collection_result.scalars().all()
+
+    return CollectionsResponseModel(
         total_count=total_count,
         total_pages=total_pages,
         collections=[

@@ -1,14 +1,19 @@
 from typing import Optional
-from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import Model, Category, BigCategory
 from app.db import get_session
-from sqlmodel import select, and_, join
-from pydantic import BaseModel 
+
+
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlmodel import select, and_, join, or_, func
+from typing import List
+from math import ceil
+from pydantic import BaseModel
+
 
 router = APIRouter()
 
-class ModelResponse(BaseModel):
+class ModelResponseModel(BaseModel):
     id: int
     name: str
     slug: str
@@ -17,17 +22,29 @@ class ModelResponse(BaseModel):
     big_category_id: int
     category_id: int
 
+class ModelsResponseModel(BaseModel):
+    total_count: int
+    total_pages: int
+    models: List[ModelResponseModel]
 
-@router.get("/models")
-async def get_models(
-    big_category_id: Optional[int] = None, 
-    category_id: Optional[int] = None, 
-    collection_id: Optional[int] = None, 
-    model_id: Optional[int] = None, 
-    session: AsyncSession = Depends(get_session)):
+
+@router.get("/models", response_model=ModelsResponseModel)
+async def get_models(offset: int = Query(0, ge=0),
+                     limit: int = Query(50, gt=0),
+                     search: str = Query(None),
+                     big_category_id: Optional[int] = None, 
+                     category_id: Optional[int] = None, 
+                     collection_id: Optional[int] = None, 
+                     model_id: Optional[int] = None, 
+                     session: AsyncSession = Depends(get_session)):
 
     query = select(Model, Category).join(Category)
 
+    if search:
+        query = query.filter(or_(
+            Model.name.ilike(f"%{search}%")
+        ))    
+    
     if big_category_id is not None:
         query = query.filter(Category.big_category_id == big_category_id)
 
@@ -40,26 +57,31 @@ async def get_models(
     if model_id is not None:
         query = query.filter(Model.id == model_id)
 
+
+    total_count_query = select(func.count()).select_from(query)
+    total_count_result = await session.execute(total_count_query)
+    total_count = total_count_result.scalar()
+    total_pages = ceil(total_count / limit)
+
+    query = query.offset(offset).limit(limit)
     models_and_categories = await session.execute(query)
-    models_and_categories_list = list(models_and_categories)
+
+
+    models = [ModelResponseModel(
+            id=model.id, 
+            name=model.name,
+            slug=model.slug,
+            description=model.description,
+            collection_id=model.collection_id,
+            big_category_id=category.big_category_id,
+            category_id=model.category_id,
+        ) for model, category in models_and_categories]
     
-
-    result_list = []
-
-    for model, category in models_and_categories_list:
-        result_list.append(
-            ModelResponse(
-                id=model.id, 
-                name=model.name,
-                slug= model.slug,
-                description=model.description,
-                collection_id = model.collection_id,
-                big_category_id = category.big_category_id,
-                category_id = model.category_id,
-            )
-        )
-
-    return result_list
+    return ModelsResponseModel(
+        total_count=total_count,
+        total_pages=total_pages,
+        models=models
+    )
     
 
 @router.post("/model")

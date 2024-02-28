@@ -1,46 +1,65 @@
 from typing import Optional
-from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel
+
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import ProductSize, Size
 from app.db import get_session
-from sqlmodel import select
+
+
+
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlmodel import select, func, or_
+from typing import List
+from math import ceil
+from pydantic import BaseModel
 
 
 router = APIRouter()
-
-class ModelResponse(BaseModel):
+class ProductSizeResponseModel(BaseModel):
     product_size_id: int
     product_id: int
     size_id: int
     size_name: str
 
+class ProductSizesResponseModel(BaseModel):
+    total_count: int
+    total_pages: int
+    product_sizes: List[ProductSizeResponseModel]
 
-@router.get("/product-sizes", response_model=list[ModelResponse])
-async def get_products_sizes(
-    product_id: Optional[int] = None, 
-    session: AsyncSession = Depends(get_session)):
+@router.get("/product-sizes", response_model = ProductSizesResponseModel)
+async def get_products_sizes(offset: int = Query(0, ge=0),
+                             limit: int = Query(50, gt=0),
+                             search: str = Query(None),
+                             product_id: Optional[int] = None, 
+                             session: AsyncSession = Depends(get_session)):
 
     query = select(ProductSize, Size).join(Size)
+
+    if search:
+        query = query.where(Size.name.ilike(f"%{search}%"))
+
     if product_id is not None:
         query = query.filter(ProductSize.product_id == product_id)
-                   
-    products = await session.execute(query)
-    product_list = list(products)
 
-    print(product_list)
-    result_list = []
-    for product_size,size in product_list:
-        result_list.append(
-            ModelResponse(
-                product_size_id = product_size.id,
-                product_id = product_size.product_id,
-                size_id = product_size.size_id,
-                size_name = size.name,
-            )
-        )
-    return result_list
+    total_count_query = select(func.count()).select_from(query)
+    total_count_result = await session.execute(total_count_query)
+    total_count = total_count_result.scalar()
+    total_pages = ceil(total_count / limit)
 
+    query = query.offset(offset).limit(limit)
+    product_sizes = await session.execute(query)
+
+    product_sizes = [ProductSizeResponseModel(
+            product_size_id = product_size.id,
+            product_id = product_size.product_id,
+            size_id = product_size.size_id,
+            size_name = size.name,
+        ) for product_size,size in product_sizes]
+    
+    return ProductSizesResponseModel(
+        total_count=total_count,
+        total_pages=total_pages,
+        product_sizes=product_sizes
+    )
 
 @router.post("/product-size")
 async def add_product_size(product_size: ProductSize, session: AsyncSession = Depends(get_session)):

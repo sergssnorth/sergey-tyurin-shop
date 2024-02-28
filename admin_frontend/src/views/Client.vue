@@ -83,15 +83,15 @@
             <div class="col text-center">
                 <nav class="px-0 py-0" aria-label="Page navigation">
                     <ul class="my-2 pagination justify-content-center">
-                        <li class="page-item" v-if="clients.total_pages > 1 && clients.current_page > 1">
+                        <li class="page-item page-item-pointer" v-if="clients.total_pages > 1 && clients.current_page > 1">
                             <a class="page-link" @click="changePage(clients.current_page - 1)" aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
-                        <li class="page-item" v-for="page in Array.from({ length: clients.total_pages }, (_, i) => i + 1)">
+                        <li class="page-item page-item-pointer" v-for="page in Array.from({ length: clients.total_pages }, (_, i) => i + 1)">
                             <a class="page-link" @click="changePage(page)" :class="{ 'active': page === clients.current_page }">{{ page }}</a>
                         </li>
-                        <li class="page-item" v-if="clients.total_pages > 1 && clients.current_page < clients.total_pages">
+                        <li class="page-item page-item-pointer" v-if="clients.total_pages > 1 && clients.current_page < clients.total_pages">
                             <a class="page-link" @click="changePage(clients.current_page + 1)" aria-label="Next">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
@@ -136,9 +136,18 @@ export default {
 
     methods: {
         async getClients(page) {
-            console.log("getClients")
+            const offset = (page - 1) * 50
+            let params
+            if (this.search == "") {
+                params = {offset: offset,
+                                limit: 50 }
+            } else {
+                params = {search: this.search,
+                                offset: offset,
+                                limit: 50 }
+            }
             try {
-                const response = await axios.get(`/clients?offset=${(page - 1) * 50}`);
+                const response = await axios.get(`/clients`, { params });
                 this.clients = response.data;
                 console.log(this.clients);
                 localStorage.setItem('clientPage', page);
@@ -174,17 +183,6 @@ export default {
                 this.loading = false;
             }
         },
-        async getOrders() {
-            await axios
-                .get(`/clients`)
-                .then(response => {
-                    this.clients = response.data
-                    console.log(this.clients)
-                })
-                .catch(error => {
-                    console.log(error)
-                })
-        },
         handleClientDeleted() {
           this.getClients();
 
@@ -218,6 +216,14 @@ export default {
 i {
     font-size: 18px;
 }
+
+.page-item-pointer{ 
+    cursor: pointer;
+}
+.page-item-pointer{ 
+    cursor: pointer;
+}
+
 
 .separator {
   display: flex;

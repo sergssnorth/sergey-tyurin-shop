@@ -1,16 +1,51 @@
-from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import Size
 from app.db import get_session
-from sqlmodel import select
+
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlmodel import select, func, or_
+from typing import List
+from math import ceil
+from pydantic import BaseModel
+
 
 router = APIRouter()
 
-@router.get("/sizes", response_model=list[Size])
-async def get_sizes(session: AsyncSession = Depends(get_session)):
-    result = await session.execute(select(Size))
-    sizes = result.scalars().all()
-    return [Size(id=size.id, name=size.name, slug=size.slug) for size in sizes]
+class SizesResponseModel(BaseModel):
+    total_count: int
+    total_pages: int
+    sizrs: List[Size]
+
+
+@router.get("/sizes", response_model=SizesResponseModel)
+async def get_sizes(offset: int = Query(0, ge=0),
+                    limit: int = Query(50, gt=0),
+                    search: str = Query(None),
+                    session: AsyncSession = Depends(get_session)):
+    query = select(Size)
+
+    if search:
+        query = query.where(Size.name.ilike(f"%{search}%"))
+
+    total_count_query = select(func.count()).select_from(query)
+    total_count_result = await session.execute(total_count_query)
+    total_count = total_count_result.scalar()
+    total_pages = ceil(total_count / limit)
+
+    query = query.offset(offset).limit(limit)
+    sizes_result = await session.execute(query)
+    sizes = sizes_result.scalars().all()
+
+    return SizesResponseModel(
+        total_count=total_count,
+        total_pages=total_pages,
+        sizes=[
+            Size(
+                id=size.id,
+                name=size.name,
+                slug=size.slug,
+            ) for size in sizes]
+    )
 
 @router.post("/size")
 async def add_color(size: Size, session: AsyncSession = Depends(get_session)):

@@ -1,51 +1,69 @@
-from typing import List, Optional, Union
-from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import Order, OrderStatus
 from app.db import get_session
-from sqlmodel import select, and_, join
-from pydantic import BaseModel 
+
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlmodel import select, and_, join, or_, func
+from typing import List
+from math import ceil
+from pydantic import BaseModel
+
 
 router = APIRouter()
 
-class ModelResponse(BaseModel):
+class OrderResponseModel(BaseModel):
     id: int
     name: str
     slug: str
     client_id: int
-    order_status : str
-    order_status_slug  : str
+    order_status: str
+    order_status_slug: str
+
+class OrdersResponseModel(BaseModel):
+    total_count: int
+    total_pages: int
+    orders: List[OrderResponseModel]
 
 
-@router.get("/orders")
-async def get_orders(
-    client_id: Optional[int] = None,
-    session: AsyncSession = Depends(get_session)
-    ):
+@router.get("/orders", response_model=OrdersResponseModel)
+async def get_orders(offset: int = Query(0, ge=0),
+                     limit: int = Query(50, gt=0),
+                     search: str = Query(None),
+                     client_id: int = Query(None),
+                     session: AsyncSession = Depends(get_session)):
 
     query = select(Order, OrderStatus).join(OrderStatus)
 
-    if client_id is not None:
+    if search:
+        query = query.filter(or_(
+            Order.id.ilike(f"%{search}%")
+        ))    
+
+    if client_id:
         query = query.filter(Order.client_id == client_id)
 
-    orders = await session.execute(query)
-    orders_list = list(orders)
+    total_count_query = select(func.count()).select_from(query)
+    total_count_result = await session.execute(total_count_query)
+    total_count = total_count_result.scalar()
+    total_pages = ceil(total_count / limit)
 
-    result_list = []
+    query = query.offset(offset).limit(limit)
+    orders_and_order_status = await session.execute(query)
 
-    for order, order_status in orders_list:
-        result_list.append(
-            ModelResponse(
-                id=order.id,
-                name=order.name,
-                slug=order.slug,
-                client_id=order.client_id,
-                order_status=order_status.name,
-                order_status_slug=order_status.slug,
-            )
-        )
+    orders = [OrderResponseModel(
+            id=order.id,
+            name=order.name,
+            slug=order.slug,
+            client_id=order.client_id,
+            order_status=order_status.name,
+            order_status_slug=order_status.slug,
+        ) for order, order_status in orders_and_order_status]
 
-    return result_list
+    return OrdersResponseModel(
+        total_count=total_count,
+        total_pages=total_pages,
+        orders=orders
+    )
 
 
 @router.post("/order")

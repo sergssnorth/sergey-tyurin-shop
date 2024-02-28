@@ -89,13 +89,15 @@ export default {
     },
     methods: {
         async getOrders(client_id) {
-            const params = { client_id: client_id}
+            const params = { client_id: client_id,
+                            offset: 0,
+                            limit: 5 }
             try {
                 const response = await axios.get(`/orders`, { params });
-                return response.data;  // Вернуть данные из успешного запроса
+                return response.data.orders;
             } catch (error) {
                 console.error(error);
-                throw error;  // Перехватывать и пробрасывать ошибку
+                throw error;
             }
         },
 
@@ -106,9 +108,8 @@ export default {
                     this.data_orders = orders;
                 } catch (error) {
                     console.error("Произошла ошибка при получении заказов:", error);
-                    // обработка ошибки
                 } finally {
-                    this.loading = false; // Установите loading в false после загрузки данных (успешно или с ошибкой)
+                    this.loading = false;
                 }
             }
         },

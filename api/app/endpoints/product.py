@@ -34,7 +34,7 @@ async def get_products(offset: int = Query(0, ge=0),
 
     if search:
         query = query.filter(or_(
-            Product.color.name.ilike(f"%{search}%")
+            Color.name.ilike(f"%{search}%")
         ))    
 
     if model_id is not None:

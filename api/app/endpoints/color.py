@@ -44,8 +44,7 @@ async def get_colors(offset: int = Query(0, ge=0),
                 id=color.id,
                 name=color.name,
                 slug=color.slug,
-            ) for color in colors
-        ]
+            ) for color in colors]
     )
 
 

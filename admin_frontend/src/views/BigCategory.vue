@@ -158,7 +158,14 @@ export default {
     name: 'BigCategory',
     data() {
         return {
-            big_categories: [],
+            search: '',
+            big_categories : {
+                total_count: 0,
+                total_pages: 0,
+                big_categories: []
+            },
+            loading : true,
+            
             name: '',
             slug: '',
         }
@@ -166,7 +173,16 @@ export default {
     components: {
         ListBigCategories
     },
-    mounted() {
+    async mounted() {
+        let bigCategoryPage = localStorage.getItem('bigCategoryPage');
+
+        if (!bigCategoryPage) {
+            bigCategoryPage = 1;
+            localStorage.setItem('bigCategoryPage', bigCategoryPage);
+        }
+
+        await this.getClients(clientPage);
+
         this.getBigCategories() 
     },
     methods: {

@@ -83,16 +83,16 @@
             <div class="col text-center">
                 <nav class="px-0 py-0" aria-label="Page navigation">
                     <ul class="my-2 pagination justify-content-center">
-                        <li class="page-item page-item-pointer" v-if="clients.total_pages > 1 && clients.current_page > 1">
-                            <a class="page-link" @click="changePage(clients.current_page - 1)" aria-label="Previous">
+                        <li class="page-item page-item-pointer" v-if="clients.total_pages > 1 && current_page > 1">
+                            <a class="page-link" @click="changePage(current_page - 1)" aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
-                        <li class="page-item page-item-pointer" v-for="page in Array.from({ length: clients.total_pages }, (_, i) => i + 1)">
-                            <a class="page-link" @click="changePage(page)" :class="{ 'active': page === clients.current_page }">{{ page }}</a>
+                        <li class="page-item page-item-pointer" v-for="page in Array.from({ length: clients.total_pages }, (_, i) => i + 1)" :key="page">
+                            <a class="page-link" @click="changePage(page)" :class="{ 'active': page == current_page }">{{ page }}</a>
                         </li>
-                        <li class="page-item page-item-pointer" v-if="clients.total_pages > 1 && clients.current_page < clients.total_pages">
-                            <a class="page-link" @click="changePage(clients.current_page + 1)" aria-label="Next">
+                        <li class="page-item page-item-pointer" v-if="clients.total_pages > 1 && current_page < clients.total_pages">
+                            <a class="page-link" @click="changePage(current_page + 1)" aria-label="Next">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
                         </li>
@@ -112,11 +112,14 @@ export default {
     data() {
         return {
             search: '',
+            current_page: 0,
+
             clients : {
                 total_count: 0,
                 total_pages: 0,
                 clients: []
             },
+
             loading : true
         }
     },
@@ -124,14 +127,14 @@ export default {
         ListClients
     },
     async mounted() {
-        let clientPage = localStorage.getItem('clientPage');
+        this.current_page = localStorage.getItem('clientCurrentPage');
 
-        if (!clientPage) {
-            clientPage = 1;
-            localStorage.setItem('clientPage', clientPage);
+        if (!this.current_page) {
+            this.current_page = 1;
+            localStorage.setItem('clientCurrentPage', this.current_page);
         }
 
-        await this.getClients(clientPage);
+        await this.getClients(this.current_page);
     },
 
     methods: {
@@ -143,14 +146,13 @@ export default {
                                 limit: 50 }
             } else {
                 params = {search: this.search,
-                                offset: offset,
-                                limit: 50 }
+                        offset: offset,
+                        limit: 50 }
             }
             try {
                 const response = await axios.get(`/clients`, { params });
                 this.clients = response.data;
                 console.log(this.clients);
-                localStorage.setItem('clientPage', page);
             } catch (error) {
                 console.log(error);
             } finally {
@@ -158,8 +160,9 @@ export default {
             }
         },
         changePage(page) {
-            this.loading = true;
             this.getClients(page);
+            localStorage.setItem('clientCurrentPage', page);
+            this.current_page = page
         },
         async searchClients() {
             try {
@@ -168,11 +171,11 @@ export default {
                     const response = await axios.get(`/clients?search=${this.search}`);
                     this.clients = response.data;
                 } else {
-                    let clientPage = localStorage.getItem('clientPage');
+                    let clientPage = localStorage.getItem('clientCurrentPage');
 
                     if (!clientPage) {
                         clientPage = 1;
-                        localStorage.setItem('clientPage', clientPage);
+                        localStorage.setItem('clientCurrentPage', clientPage);
                     }
 
                     await this.getClients(clientPage);

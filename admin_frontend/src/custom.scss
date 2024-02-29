@@ -61,6 +61,11 @@ $secondcolor:#696cff;
 li.page-item a {
     cursor: pointer;
     color: $secondcolor;
+
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
   }
   
   li.page-item a.active {

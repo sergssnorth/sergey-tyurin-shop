@@ -166,20 +166,9 @@ export default {
         },
         async searchClients() {
             try {
-                if (this.search.trim() !== '') {
-                    this.loading = true;
-                    const response = await axios.get(`/clients?search=${this.search}`);
-                    this.clients = response.data;
-                } else {
-                    let clientPage = localStorage.getItem('clientCurrentPage');
-
-                    if (!clientPage) {
-                        clientPage = 1;
-                        localStorage.setItem('clientCurrentPage', clientPage);
-                    }
-
-                    await this.getClients(clientPage);
-                }
+                this.current_page = 1;
+                localStorage.setItem('clientCurrentPage',  this.current_page);
+                await this.getClients(this.current_page);
             } catch (error) {
                 console.error('Ошибка при выполнении поиска клиентов:', error);
             } finally {

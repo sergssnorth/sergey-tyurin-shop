@@ -58,24 +58,55 @@ $secondcolor:#696cff;
     );
 }
 
-li.page-item a {
-    cursor: pointer;
-    color: $secondcolor;
+.btn-second {
+  @include button-variant(
+      $background: $secondcolor,
+      $border: $secondcolor,
+      $color: $white,
+      $hover-background: #{shade-color($secondcolor, 15%)},
+      $hover-border: #{shade-color($secondcolor, 15%)},
+      $hover-color: $white,
+      $active-background: $basecolor,
+      $active-border: $basecolor,
+      $active-color: $white
+  );
+}
 
+.form-floating .form-control:focus {
+  border-color: $secondcolor;
+}
+
+li.page-item span {
+    cursor: pointer;
     -moz-user-select: none;
     -khtml-user-select: none;
     -webkit-user-select: none;
     user-select: none;
   }
+
+li.page-item a {
+  cursor: pointer;
+  color: $secondcolor;
+
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
   
-  li.page-item a.active {
-    background-color: $secondcolor;
-    color: #fff;
-    border-color: $secondcolor;
-  }
+li.page-item a.active {
+  background-color: $secondcolor;
+  color: #fff;
+  border-color: $secondcolor;
+}
   
-  li.page-item a:hover {
-    background-color: $secondcolor;
-    color: #fff;
-    border-color: $secondcolor;
-  }
+li.page-item a:hover {
+  background-color: $secondcolor;
+  color: #fff;
+  border-color: $secondcolor;
+}
+
+div.form-check input.form-check-input:checked {
+  background-color: $secondcolor;
+  border-color: $secondcolor;
+}

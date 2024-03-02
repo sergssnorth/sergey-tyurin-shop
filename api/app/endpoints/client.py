@@ -19,10 +19,12 @@ class ClientsResponseModel(BaseModel):
 
 @router.get("/clients", response_model=ClientsResponseModel)
 async def get_clients(offset: int = Query(0, ge=0),
-                      limit: int = Query(50, gt=0),
-                      search: str = Query(None),
-                      client_id: int = Query(None),
-                      session: AsyncSession = Depends(get_session)):
+                    limit: int = Query(50, gt=0),
+                    search: str = Query(None),
+                    client_id: int = Query(None),
+                    sort_by: str = Query(None, description="Sort by 'name' or 'id'."),
+                    order: str = Query("desc", description="Sort order: 'asc' or 'desc'."),
+                    session: AsyncSession = Depends(get_session)):
 
     query = select(Client)
 
@@ -33,6 +35,14 @@ async def get_clients(offset: int = Query(0, ge=0),
 
     if client_id:
         query = query.filter(Client.id == client_id)
+
+    if sort_by and order:
+        if sort_by == "name":
+            query = query.order_by(Client.name.desc() if order == "desc" else Client.name.asc())
+        elif sort_by == "id":
+            query = query.order_by(Client.id.desc() if order == "desc" else Client.id.asc())
+    else:
+        query = query.order_by(Client.id.desc() if order == "desc" else Client.id.asc())
 
     total_count_query = select(func.count()).select_from(query)
     total_count_result = await session.execute(total_count_query)

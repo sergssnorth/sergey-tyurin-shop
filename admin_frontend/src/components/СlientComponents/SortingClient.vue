@@ -1,4 +1,4 @@
-<!-- Filters.vue -->
+
 <template>
     <div class="dropdown-menu" aria-labelledby="userDropdown" style="width: 20rem;">
         <div class="row">
@@ -85,7 +85,7 @@
   
 <script>
   export default {
-    name: 'FiltersClient',
+    name: 'SortingClient',
     data() {
         return {
             

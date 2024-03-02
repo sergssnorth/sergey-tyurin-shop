@@ -14,88 +14,8 @@
                         <i v-else class="bi bi-filter-circle-fill" style="color: #696cff;"></i>
                     </button>
 
-                    <div class="dropdown-menu" aria-labelledby="userDropdown" style="width: 20rem;">
-                        <div class="row">
-                            <div class="col">
-                                <div class="separator mx-3 mb-2">Сортировка</div>
-                                <div class="form-check mx-3 mb-2">
-                                    <input
-                                        class="form-check-input"
-                                        type="radio"
-                                        name="exampleRadios"
-                                        id="exampleRadios0"
-                                        value="none"
-                                        v-model="selectedSort"
-                                        @change="changeSort"
-                                    />
-                                    <label class="form-check-label" for="exampleRadios0">Отсутствует</label>
-                                </div>
-                                <div class="form-check mx-3 mb-2">
-                                    <input
-                                        class="form-check-input"
-                                        type="radio"
-                                        name="exampleRadios"
-                                        id="exampleRadios1"
-                                        value="name-asc"
-                                        v-model="selectedSort"
-                                        @change="changeSort"
-                                    />
-                                    <label class="form-check-label d-flex align-middle" for="exampleRadios1">
-                                        <i class="bi bi-sort-up align-middle" style="margin-right: 0.25rem;"></i>
-                                        <span>По имени</span>
-                                    </label>
-                                </div>
-                                <div class="form-check mx-3 mb-2">
-                                    <input
-                                        class="form-check-input"
-                                        type="radio"
-                                        name="exampleRadios"
-                                        id="exampleRadios2"
-                                        value="name-desc"
-                                        v-model="selectedSort"
-                                        @change="changeSort"
-                                    />
-                                    <label class="form-check-label d-flex align-middle" for="exampleRadios2">
-                                        <i class="bi bi-sort-down align-middle" style="margin-right: 0.25rem;"></i>
-                                        <span>По имени</span>
-                                    </label>
-                                </div>
-                                <div class="form-check mx-3 mb-2">
-                                    <input
-                                        ref="selectedSortInputId"
-                                        class="form-check-input"
-                                        type="radio"
-                                        name="exampleRadios"
-                                        id="exampleRadios3"
-                                        value="id-asc"
-                                        v-model="selectedSort"
-                                        @change="changeSort"
-                                    />
-                                    <label class="form-check-label d-flex align-middle" for="exampleRadios3">
-                                        <i class="bi bi-sort-up align-middle" style="margin-right: 0.25rem;"></i>
-                                        <span>По id</span>
-                                    </label>
-                                </div>
-                                <div class="form-check mx-3 mb-2">
-                                    <input
-                                        ref="selectedSortInputId"
-                                        class="form-check-input"
-                                        type="radio"
-                                        name="exampleRadios"
-                                        id="exampleRadios4"
-                                        value="id-desc"
-                                        v-model="selectedSort"
-                                        @change="changeSort"
-                                    />
-                                    <label class="form-check-label d-flex align-middle" for="exampleRadios4">
-                                        <i class="bi bi-sort-down align-middle" style="margin-right: 0.25rem;"></i>
-                                        <span>По id</span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
+                    <SortingClient/>
+
                     <button @click="" class="btn btn-icon d-inline mx-1 px-2 custom-dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="bi bi-funnel"></i>            
                     </button>
@@ -120,6 +40,8 @@
                         </div>
                     </div>
                     
+
+
                     <button class="btn btn-icon mx-1 px-2 d-inline text-success" data-bs-toggle="modal" data-bs-target="#сreateUserModal">
                         <i class="bi bi-person-add" style="font-size: 18px;"></i>
                     </button>
@@ -226,7 +148,7 @@
 import axios from 'axios'
 
 import CreateClientModal from '@/components/СlientComponents/CreateClientModal.vue'
-import FiltersClient from '@/components/СlientComponents/FiltersClient.vue'
+import SortingClient from '@/components/СlientComponents/SortingClient.vue'
 import ToastClient from '@/components/СlientComponents/ToastClient.vue'
 import ListClients from '@/components/ListClients.vue'
 
@@ -250,7 +172,7 @@ export default {
     },
     components: {
         CreateClientModal,
-        FiltersClient,
+        SortingClient,
         ToastClient,
         ListClients,
     },

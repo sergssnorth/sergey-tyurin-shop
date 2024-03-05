@@ -2,7 +2,7 @@
     <div class="container-fluid text-center" style="height: 100%; display: flex; flex-direction: column;">
         <div class="row mb-3">
             
-            <div class="d-flex align-items-center flex-grow-1">
+            <div class="d-flex align-items-center flex-grow-1" >
                 <div class="input-group align-items-center">
                     <span @click="searchClients" class="input-group-text" id="basic-addon1" style="border-radius: 1.5rem 0 0 1.5rem;"><i class="bi bi-search" style="font-size: 16px;"></i></span>
                     <input v-model="search" @keyup.enter="searchClients" type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1" style="border-radius: 0 1.5rem 1.5rem 0;">
@@ -14,7 +14,87 @@
                         <i v-else class="bi bi-filter-circle-fill" style="color: #696cff;"></i>
                     </button>
 
-                    <SortingClient/>
+                    <div class="dropdown-menu" aria-labelledby="userDropdown" style="width: 20rem;">
+                        <div class="row">
+                            <div class="col">
+                                <div class="separator mx-3 mb-2">Сортировка</div>
+                                <div class="form-check mx-3 mb-2">
+                                    <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="exampleRadios"
+                                        id="exampleRadios0"
+                                        value="none"
+                                        v-model="selectedSort"
+                                        @change="changeSort"
+                                    />
+                                    <label class="form-check-label" for="exampleRadios0">Отсутствует</label>
+                                </div>
+                                <div class="form-check mx-3 mb-2">
+                                    <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="exampleRadios"
+                                        id="exampleRadios1"
+                                        value="name-asc"
+                                        v-model="selectedSort"
+                                        @change="changeSort"
+                                    />
+                                    <label class="form-check-label d-flex align-middle" for="exampleRadios1">
+                                        <i class="bi bi-sort-up align-middle" style="margin-right: 0.25rem;"></i>
+                                        <span>По имени</span>
+                                    </label>
+                                </div>
+                                <div class="form-check mx-3 mb-2">
+                                    <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="exampleRadios"
+                                        id="exampleRadios2"
+                                        value="name-desc"
+                                        v-model="selectedSort"
+                                        @change="changeSort"
+                                    />
+                                    <label class="form-check-label d-flex align-middle" for="exampleRadios2">
+                                        <i class="bi bi-sort-down align-middle" style="margin-right: 0.25rem;"></i>
+                                        <span>По имени</span>
+                                    </label>
+                                </div>
+                                <div class="form-check mx-3 mb-2">
+                                    <input
+                                        ref="selectedSortInputId"
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="exampleRadios"
+                                        id="exampleRadios3"
+                                        value="id-asc"
+                                        v-model="selectedSort"
+                                        @change="changeSort"
+                                    />
+                                    <label class="form-check-label d-flex align-middle" for="exampleRadios3">
+                                        <i class="bi bi-sort-up align-middle" style="margin-right: 0.25rem;"></i>
+                                        <span>По id</span>
+                                    </label>
+                                </div>
+                                <div class="form-check mx-3 mb-2">
+                                    <input
+                                        ref="selectedSortInputId"
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="exampleRadios"
+                                        id="exampleRadios4"
+                                        value="id-desc"
+                                        v-model="selectedSort"
+                                        @change="changeSort"
+                                    />
+                                    <label class="form-check-label d-flex align-middle" for="exampleRadios4">
+                                        <i class="bi bi-sort-down align-middle" style="margin-right: 0.25rem;"></i>
+                                        <span>По id</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <button @click="" class="btn btn-icon d-inline mx-1 px-2 custom-dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="bi bi-funnel"></i>            
@@ -89,7 +169,8 @@
                     v-bind:key="client.id"
                     v-bind:client="client"
                     @clientDeleted="handleClientDeleted" 
-                    @clientUpdated="handleClientUpdated"/>
+                    @clientUpdated="handleClientUpdated"
+                    :showErrorToast="showErrorToast"/>
                 </div>
 
             </div>
@@ -120,7 +201,7 @@
                 </nav>
             </div>
         </div>
-        <!-- <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div class="toast-container position-fixed bottom-0 end-0 p-3">
             <div id="successfulCreationСlientToast" class="toast text-bg-success" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="1500">
                 <div class="d-flex">
                     <div class="toast-body">
@@ -139,17 +220,15 @@
                     <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
             </div>
-        </div> -->
-        <ToastClient />
+        </div>
     </div>
 </template>
 
 <script>
 import axios from 'axios'
+import { Toast } from 'bootstrap/dist/js/bootstrap.js'
 
-import CreateClientModal from '@/components/СlientComponents/CreateClientModal.vue'
-import SortingClient from '@/components/СlientComponents/SortingClient.vue'
-import ToastClient from '@/components/СlientComponents/ToastClient.vue'
+
 import ListClients from '@/components/ListClients.vue'
 
 export default {
@@ -159,6 +238,9 @@ export default {
             search: '',
             isActiveFilter: true,
             selectedSort: '',
+
+            newClientName: '',
+            newClientSlug: '',
 
             clients : {
                 total_count: 0,
@@ -171,9 +253,6 @@ export default {
         }
     },
     components: {
-        CreateClientModal,
-        SortingClient,
-        ToastClient,
         ListClients,
     },
     computed: {
@@ -296,6 +375,7 @@ export default {
             try {
                 this.current_page = 1;
                 localStorage.setItem('clientCurrentPage',  this.current_page);
+                localStorage.setItem('clientSelectedSort',  this.selectedSort);
                 await this.getClients(this.current_page, this.selectedSort);
             } catch (error) {
                 this.showErrorToast(error.code, error.message);
@@ -304,24 +384,22 @@ export default {
                 this.loading = false;
             }
         },
-        handleClientDeleted() {
-          this.getClients();
-
+        showSuccessfulCreationСlientToast() {
+            const successfulCreation = new Toast(document.getElementById('successfulCreationСlientToast'))
+            successfulCreation.show()
         },
-        handleClientUpdated() {
-          console.log("handleCollectionUpdated")
-          this.getClients();
+        showErrorToast(errorCode, errorMessage) {
+            const errorCreation = new Toast(document.getElementById('errorToast'));
+            const errorBody = document.getElementById('errorToastBody');
+            errorBody.textContent = 'Ошибка, ' + errorCode + ', ' + errorMessage;
+            errorCreation.show();
         },
-        // showSuccessfulCreationСlientToast() {
-        //     const successfulCreation = new Toast(document.getElementById('successfulCreationСlientToast'))
-        //     successfulCreation.show()
-        // },
-        // showErrorToast(errorCode, errorMessage) {
-        //     const errorCreation = new Toast(document.getElementById('errorToast'));
-        //     const errorBody = document.getElementById('errorToastBody');
-        //     errorBody.textContent = 'Ошибка, ' + errorCode + ', ' + errorMessage;
-        //     errorCreation.show();
-        // },
+        async handleClientDeleted() {
+            await this.getClients(this.current_page, this.selectedSort);
+        },
+        async handleClientUpdated() {
+            await this.getClients(this.current_page, this.selectedSort);
+        }
     },
     beforeRouteUpdate(to, from, next) {
         console.log('Хук beforeRouteUpdate');
@@ -417,4 +495,16 @@ input:focus,
 input:active {
     box-shadow: none !important;
 }
+
+input.form-control:focus,
+input.form-control:active {
+    border-color: #696cff;
+}
+
+input.form-control:focus + .input-group-text,
+input.form-control:active + .input-group-text {
+    border-color: #696cff;
+}
+
+
 </style>

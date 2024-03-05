@@ -6,6 +6,7 @@
             <button @click="$router.push(`/categories?big_category_id=${this.data_big_category.id}`)" class="btn btn-icon d-inline ms-auto px-2"><i class="bi bi bi-box-seam"></i></button>
             
             <button data-bs-toggle="modal" :data-bs-target="'#editModal_' + data_big_category.id" class="btn btn-icon d-inline text-primary px-2"><i class="bi bi-pen"></i></button>
+            
             <div class="modal fade" :id="'editModal_' + data_big_category.id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
               <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content">

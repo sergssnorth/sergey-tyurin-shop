@@ -110,3 +110,57 @@ div.form-check input.form-check-input:checked {
   background-color: $secondcolor;
   border-color: $secondcolor;
 }
+
+//
+.card {
+  .elementList {
+    text-decoration: none; // Убираем подчеркивание
+    cursor: pointer;
+
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+
+  }
+  .elementList:hover {
+    background-color: rgba(238, 238, 238, 0.637);
+    border-radius: 1.5rem;
+  }
+
+}
+// .card .card-body {
+//   text-decoration: none; // Убираем подчеркивание
+//   cursor: pointer;
+// }
+
+// .card .card-body:hover {
+//   background-color: rgba(238, 238, 238, 0.637);
+//   border-radius: 1.5rem;
+// }
+
+
+//
+
+//
+.separator-card {
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+.separator-card::before,
+.separator-card::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.separator-card:not(:empty)::before {
+  margin-right: 2em;
+}
+
+.separator-card:not(:empty)::after {
+  margin-left: 2em;
+}
+//

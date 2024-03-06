@@ -20,7 +20,7 @@ class CategoriesResponseModel(BaseModel):
 async def get_categories(offset: int = Query(0, ge=0),
                         limit: int = Query(50, gt=0),
                         search: str = Query(None),
-                        big_category_id: int = Query(None), 
+                        big_category_id: int = Query(None),
                         session: AsyncSession = Depends(get_session)):
     
     query = select(Category)

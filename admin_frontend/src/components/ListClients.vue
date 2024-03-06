@@ -85,7 +85,7 @@ export default {
     name: 'ListClients',
     props: {
         client: Object,
-        orders: Array,
+        // orders: Array,
         showErrorToast: Function,
     },
     data() {
@@ -143,45 +143,20 @@ export default {
         async loadClientOrders() {
             if (this.isCollapsed) {
                 try {
-                    const orders = await this.getOrders(this.dataClient.id);
-                    this.dataOrders = orders;
+                    this.loading = true;
+                    const response = await this.getOrders(this.dataClient.id);
+                    this.dataOrders = response;
                 } catch (error) {
-                    console.error("Произошла ошибка при получении заказов:", error);
+                    this.showErrorToast(error.code, error.message);
+                    console.error(error);
                 } finally {
                     this.loading = false;
                 }
             }
         },
 
-        async deleteClient() {
-            await axios
-                .delete(`/client/${this.dataClient.id}`)
-                .then(response => {
-                    console.log(response.data)
-                    this.$emit('clientDeleted', this.dataClient.id);
-                })
-                .catch(error => {
-                    console.log(error)
-                })
-        },
-        async updateClient() {
-            const formData = {
-                name: this.updatedClient.name,
-                slug: this.updatedClient.slug
-            }
-            await axios
-                .put(`/client/${this.dataClient.id}`, formData)
-                .then(response => {
-                    console.log(response.data)
-                    this.$emit('clientUpdated', this.dataClient.id);
-                    
-                })
-                .catch(error => {
-                    console.log(error)
-                })
-        },
-
         async toggleSeparator(event) {
+            this.loading = true;
             console.log("toggleSeparator")
             console.log(this.isCollapsed)
             console.log("toggleSeparator")
@@ -192,10 +167,8 @@ export default {
             const collapseTarget = document.getElementById('collapseProduct' + this.dataClient.id);
 
             if (!this.isCollapsed) {
-                // Развернуть коллапс
                 new Collapse(collapseTarget, { toggle: false }).show();
             } else {
-                // Свернуть коллапс
                 new Collapse(collapseTarget, { toggle: false }).hide();
             }
             this.isCollapsed = !this.isCollapsed;

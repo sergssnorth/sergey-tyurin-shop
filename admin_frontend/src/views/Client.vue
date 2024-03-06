@@ -135,11 +135,11 @@
                             </div>
                             <div class="modal-body">
                                 <div class="form-floating mt-2 mb-3">
-                                    <input type="text" class="form-control" placeholder="name@example.com" v-model="newClientName">
+                                    <input type="text" class="form-control" placeholder="name@example.com" v-model="newClient.name">
                                     <label for="floatingInput">Имя</label>
                                 </div>
                                 <div class="form-floating mb-2">
-                                    <input type="text" class="form-control" placeholder="Password" v-model="newClientSlug">
+                                    <input type="text" class="form-control" placeholder="Password" v-model="newClient.slug">
                                     <label for="floatingPassword">Слаг</label>
                                 </div>
                             </div>
@@ -179,8 +179,8 @@
             <div class="col text-center">
                 <nav class="px-0 py-0" aria-label="Навигация по страницам">
                     <ul class="my-2 pagination justify-content-center">
-                        <li class="page-item page-item-pointer" v-if="clients.total_pages > 1 && current_page > 1">
-                            <a class="page-link" @click="changePage(current_page - 1)" aria-label="Предыдущая">
+                        <li class="page-item page-item-pointer" v-if="clients.totalPages > 1 && currentPage > 1">
+                            <a class="page-link" @click="changePage(currentPage - 1)" aria-label="Предыдущая">
                             <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
@@ -189,11 +189,11 @@
                             <span class="page-link">...</span>
                             </template>
                             <template v-else>
-                            <a class="page-link" @click="changePage(page)" :class="{ 'active': page == current_page }">{{ page }}</a>
+                            <a class="page-link" @click="changePage(page)" :class="{ 'active': page == currentPage }">{{ page }}</a>
                             </template>
                         </li>
-                        <li class="page-item page-item-pointer" v-if="clients.total_pages > 1 && current_page < clients.total_pages">
-                            <a class="page-link" @click="changePage(current_page + 1)" aria-label="Следующая">
+                        <li class="page-item page-item-pointer" v-if="clients.totalPages > 1 && currentPage < clients.totalPages">
+                            <a class="page-link" @click="changePage(currentPage + 1)" aria-label="Следующая">
                             <span aria-hidden="true">&raquo;</span>
                             </a>
                         </li>
@@ -202,7 +202,7 @@
             </div>
         </div>
         <div class="toast-container position-fixed bottom-0 end-0 p-3">
-            <div id="successfulCreationСlientToast" class="toast text-bg-success" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="1500">
+            <div id="successfulCreationСlientToast" class="toast text-bg-success" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
                 <div class="d-flex">
                     <div class="toast-body">
                         Пользователь успешно создан!
@@ -236,20 +236,21 @@ export default {
     data() {
         return {
             search: '',
-            isActiveFilter: true,
             selectedSort: '',
 
-            newClientName: '',
-            newClientSlug: '',
+            newClient: {
+                name: '',
+                slug: '',
+            },
 
             clients : {
-                total_count: 0,
-                total_pages: 0,
+                totalCount: 0,
+                totalPages: 0,
                 clients: []
             },
 
             loading : true,
-            current_page: 1,
+            currentPage: 1,
         }
     },
     components: {
@@ -258,8 +259,8 @@ export default {
     computed: {
         displayedPages() {
             const totalDisplayPages = 5;
-            const startPage = Math.max(1, this.current_page - 2);
-            const endPage = Math.min(this.clients.total_pages, startPage + totalDisplayPages - 1);
+            const startPage = Math.max(1, this.currentPage - 2);
+            const endPage = Math.min(this.clients.totalPages, startPage + totalDisplayPages - 1);
 
             let pages = [];
 
@@ -271,19 +272,19 @@ export default {
             pages.push(i);
             }
 
-            if (endPage < this.clients.total_pages) {
-            pages.push('...', this.clients.total_pages);
+            if (endPage < this.clients.totalPages) {
+            pages.push('...', this.clients.totalPages);
             }
 
             return pages;
         }
     },
     async mounted() {
-        this.current_page = localStorage.getItem('clientCurrentPage');
+        this.currentPage = localStorage.getItem('clientCurrentPage');
 
-        if (!this.current_page) {
-            this.current_page = 1;
-            localStorage.setItem('clientCurrentPage', this.current_page);
+        if (!this.currentPage) {
+            this.currentPage = 1;
+            localStorage.setItem('clientCurrentPage', this.currentPage);
         }
 
         this.selectedSort = localStorage.getItem('clientSelectedSort');
@@ -293,7 +294,7 @@ export default {
             localStorage.setItem('clientSelectedSort', this.selectedSort);
         }
 
-        await this.getClients(this.current_page, this.selectedSort);
+        await this.getClients(this.currentPage, this.selectedSort);
     },
     methods: {
         async getClients(page, selectedSort) {
@@ -319,7 +320,14 @@ export default {
                     this.showErrorToast(response.status, response.data)
                     console.log(response);
                 }
-                this.clients = response.data;
+                const { total_count, total_pages, clients } = response.data;
+                const transformedData = {
+                    totalCount: total_count,
+                    totalPages: total_pages,
+                    clients: clients
+                };
+
+                this.clients = transformedData;
                 console.log(this.clients);
             } catch (error) {
                 this.showErrorToast(error.code, error.message);
@@ -330,8 +338,8 @@ export default {
         },
         async addClient() {
             const formData = {
-                name: this.newClientName,
-                slug: this.newClientSlug
+                name: this.newClient.name,
+                slug: this.newClient.slug
             }
             try {
                 this.loading = true;
@@ -343,7 +351,7 @@ export default {
                     this.showErrorToast(response.status, response.data)
                     console.log(response);
                 }
-                await this.getClients(this.current_page, this.selectedSort);
+                await this.getClients(this.currentPage, this.selectedSort);
             } catch (error) {
                 this.showErrorToast(error.code, error.message);
                 console.log(error);
@@ -353,9 +361,9 @@ export default {
         },
         async searchClients() {
             try {
-                this.current_page = 1;
-                localStorage.setItem('clientCurrentPage',  this.current_page);
-                await this.getClients(this.current_page, this.selectedSort);
+                this.currentPage = 1;
+                localStorage.setItem('clientCurrentPage',  this.currentPage);
+                await this.getClients(this.currentPage, this.selectedSort);
             } catch (error) {
                 this.showErrorToast(error.code, error.message);
                 console.log(error);
@@ -366,17 +374,17 @@ export default {
         async changePage(page) {
             this.loading = true;
             localStorage.setItem('clientCurrentPage', page);
-            this.current_page = page
+            this.currentPage = page
             await this.getClients(page, this.selectedSort);
             this.loading = false;
         },
         async changeSort() {
             this.loading = true;
             try {
-                this.current_page = 1;
-                localStorage.setItem('clientCurrentPage',  this.current_page);
+                this.currentPage = 1;
+                localStorage.setItem('clientCurrentPage',  this.currentPage);
                 localStorage.setItem('clientSelectedSort',  this.selectedSort);
-                await this.getClients(this.current_page, this.selectedSort);
+                await this.getClients(this.currentPage, this.selectedSort);
             } catch (error) {
                 this.showErrorToast(error.code, error.message);
                 console.log(error);
@@ -395,70 +403,17 @@ export default {
             errorCreation.show();
         },
         async handleClientDeleted() {
-            await this.getClients(this.current_page, this.selectedSort);
+            await this.getClients(this.currentPage, this.selectedSort);
         },
         async handleClientUpdated() {
-            await this.getClients(this.current_page, this.selectedSort);
+            await this.getClients(this.currentPage, this.selectedSort);
         }
-    },
-    beforeRouteUpdate(to, from, next) {
-        console.log('Хук beforeRouteUpdate');
-        const big_category_filterId = to.query.big_category_id;
-        const category_filterId = to.query.category_id;
-        const collection_filterId = to.query.collection_id;
-
-        this.filter_big_category_id = to.query.big_category_id;
-        this.filter_category_id = to.query.category_id;
-        this.filter_collection_id = to.query.collection_id;
-
-        this.getCategories(big_category_filterId)
-        this.getModels(big_category_filterId, category_filterId, collection_filterId)
-
-        next();
     },
 }   
 
 </script>
 
 <style lang="scss">
-
-i {
-    font-size: 18px;
-}
-
-.custom-badge {
-    font-size: 14px; 
-    color: #333;
-}
-
-.page-item-pointer{ 
-    cursor: pointer;
-}
-.page-item-pointer{ 
-    cursor: pointer;
-}
-
-
-.separator {
-  display: flex;
-  align-items: center;
-  text-align: center;
-}
-
-.separator::before,
-.separator::after {
-  content: '';
-  flex: 1;
-  border-bottom: 1px solid #b4b4b4;
-}
-
-.separator:not(:empty)::before {
-  margin-right: 1rem;
-}
-
-.separator:not(:empty)::after {
-  margin-left: 1rem;
-}
 
 button.btn {
     border-radius: 0.75rem;
@@ -489,21 +444,6 @@ input {
 
 .input-group-text:hover {
     cursor: pointer;
-}
-
-input:focus,
-input:active {
-    box-shadow: none !important;
-}
-
-input.form-control:focus,
-input.form-control:active {
-    border-color: #696cff;
-}
-
-input.form-control:focus + .input-group-text,
-input.form-control:active + .input-group-text {
-    border-color: #696cff;
 }
 
 

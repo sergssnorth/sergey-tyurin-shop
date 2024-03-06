@@ -164,3 +164,51 @@ div.form-check input.form-check-input:checked {
   margin-left: 2em;
 }
 //
+
+.separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+.separator::before,
+.separator::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #b4b4b4;
+}
+
+.separator:not(:empty)::before {
+  margin-right: 1rem;
+}
+
+.separator:not(:empty)::after {
+  margin-left: 1rem;
+}
+
+
+
+i {
+  font-size: 18px;
+}
+
+.page-item-pointer{ 
+  cursor: pointer;
+}
+
+input:focus,
+input:active {
+    box-shadow: none !important;
+}
+
+input.form-control:focus,
+input.form-control:active {
+    border-color: #696cff;
+}
+
+input.form-control:focus + .input-group-text,
+input.form-control:active + .input-group-text {
+    border-color: #696cff;
+}
+
+

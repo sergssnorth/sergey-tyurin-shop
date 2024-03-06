@@ -1,63 +1,131 @@
 <template>
     <div class="container-fluid text-center" style="height: 100%; display: flex; flex-direction: column;">
         <div class="row mb-3">
-            
-            <div class="d-flex align-items-center flex-grow-1">
+            <div class="d-flex align-items-center flex-grow-1" >
                 <div class="input-group align-items-center">
-                    <span @click="searchBigCategories" class="input-group-text" id="basic-addon1" style="border-radius: 1.5rem 0 0 1.5rem;"><i class="bi bi-search" style="font-size: 16px;"></i></span>
-                    <input v-model="search" @keyup.enter="searchBigCategories" type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1" style="border-radius: 0 1.5rem 1.5rem 0;">
+                    <span @click="searchClients" class="input-group-text" id="basic-addon1" style="border-radius: 1.5rem 0 0 1.5rem;"><i class="bi bi-search" style="font-size: 16px;"></i></span>
+                    <input v-model="search" @keyup.enter="searchClients" type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1" style="border-radius: 0 1.5rem 1.5rem 0;">
                 </div>
                 <div class="d-flex align-items-center">
                     
                     <button @click="" class="btn btn-icon d-inline mx-1 px-2 custom-dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="bi bi-filter-circle"></i>
+                        <i v-if="selectedSort == 'none'" class="bi bi-filter-circle"></i>
+                        <i v-else class="bi bi-filter-circle-fill" style="color: #696cff;"></i>
                     </button>
 
                     <div class="dropdown-menu" aria-labelledby="userDropdown" style="width: 20rem;">
                         <div class="row">
                             <div class="col">
                                 <div class="separator mx-3 mb-2">Сортировка</div>
-                                <div class="form-check form-switch mx-3 mb-2">
-                                    <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
-                                    <label class="form-check-label" for="flexSwitchCheckDefault">По ID</label>
+                                <div class="form-check mx-3 mb-2">
+                                    <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="exampleRadios"
+                                        id="exampleRadios0"
+                                        value="none"
+                                        v-model="selectedSort"
+                                        @change="changeSort"
+                                    />
+                                    <label class="form-check-label" for="exampleRadios0">Отсутствует</label>
                                 </div>
-                                <div class="form-check form-switch mx-3">
-                                    <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
-                                    <label class="form-check-label" for="flexSwitchCheckDefault">По Имени</label>
+                                <div class="form-check mx-3 mb-2">
+                                    <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="exampleRadios"
+                                        id="exampleRadios1"
+                                        value="name-asc"
+                                        v-model="selectedSort"
+                                        @change="changeSort"
+                                    />
+                                    <label class="form-check-label d-flex align-middle" for="exampleRadios1">
+                                        <i class="bi bi-sort-up align-middle" style="margin-right: 0.25rem;"></i>
+                                        <span>По имени</span>
+                                    </label>
+                                </div>
+                                <div class="form-check mx-3 mb-2">
+                                    <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="exampleRadios"
+                                        id="exampleRadios2"
+                                        value="name-desc"
+                                        v-model="selectedSort"
+                                        @change="changeSort"
+                                    />
+                                    <label class="form-check-label d-flex align-middle" for="exampleRadios2">
+                                        <i class="bi bi-sort-down align-middle" style="margin-right: 0.25rem;"></i>
+                                        <span>По имени</span>
+                                    </label>
+                                </div>
+                                <div class="form-check mx-3 mb-2">
+                                    <input
+                                        ref="selectedSortInputId"
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="exampleRadios"
+                                        id="exampleRadios3"
+                                        value="id-asc"
+                                        v-model="selectedSort"
+                                        @change="changeSort"
+                                    />
+                                    <label class="form-check-label d-flex align-middle" for="exampleRadios3">
+                                        <i class="bi bi-sort-up align-middle" style="margin-right: 0.25rem;"></i>
+                                        <span>По id</span>
+                                    </label>
+                                </div>
+                                <div class="form-check mx-3 mb-2">
+                                    <input
+                                        ref="selectedSortInputId"
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="exampleRadios"
+                                        id="exampleRadios4"
+                                        value="id-desc"
+                                        v-model="selectedSort"
+                                        @change="changeSort"
+                                    />
+                                    <label class="form-check-label d-flex align-middle" for="exampleRadios4">
+                                        <i class="bi bi-sort-down align-middle" style="margin-right: 0.25rem;"></i>
+                                        <span>По id</span>
+                                    </label>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <button @click="" class="btn btn-icon d-inline mx-1 px-2 custom-dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="bi bi-funnel"></i>
-                    </button>
+                    </div>                    
 
-                    <div class="dropdown-menu" aria-labelledby="userDropdown" style="width: 20rem;">
-                        <div class="row">
-                            <div class="col">
-                                <div class="separator mx-3 mb-2">Фильтры</div>
-                                <select class="form-select mx-3 mb-2" style="width: 91%;" required aria-label="select example">
-                                    <option value="">Open</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                </select>
-                                <select class="form-select mx-3 mb-2" style="width: 91%;" required aria-label="select example">
-                                    <option value="">Open</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                </select>
+                    <button class="btn btn-icon mx-1 px-2 d-inline text-success" data-bs-toggle="modal" data-bs-target="#сreateBigCategoryModal">
+                        <i class="bi bi-person-add" style="font-size: 18px;"></i>
+                    </button>
+                    
+                    <div class="modal fade" id="сreateBigCategoryModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                            <div class="modal-content">
+                            <div class="modal-header text-center">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Создание раздела</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-floating mt-2 mb-3">
+                                    <input type="text" class="form-control" placeholder="name@example.com" v-model="newBigCategory.name">
+                                    <label for="floatingInput">Имя</label>
+                                </div>
+                                <div class="form-floating mb-2">
+                                    <input type="text" class="form-control" placeholder="Password" v-model="newBigCategory.slug">
+                                    <label for="floatingPassword">Слаг</label>
+                                </div>
+                            </div>
+                            <div class="modal-footer ">
+                                <button @click="addBigCategory()" type="button" class="btn btn-second w-100" data-bs-dismiss="modal">Cоздать</button>
+                            </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <button @click="deleteCategory()" class="btn btn-icon d-inline text-success mx-1" style="padding: 0.25rem;"><i class="bi bi-plus-square" style="font-size: 18px;"></i></button>    
                 </div>
             </div>
         </div>
-        <div class="row flex-grow-1" id="clientlist">
+        <div class="row flex-grow-1" id="big-category-list">
             <div class="col d-flex flex-column" style="flex-grow: 1;">
             
                 <div v-if="loading">
@@ -69,89 +137,72 @@
                 </div>
                 <div v-if="!loading">
                     <div class="col d-flex flex-column" style="flex-grow: 1;"></div>
-                    <ListBigCategories 
-                      v-for="big_category in big_categories"
-                      v-bind:key="big_category.id"
-                      v-bind:big_category="big_category"
-                      @bigCategoryDeleted="handleBigCategoryDeleted" 
-                      @bigCategoryUpdated="handleBigCategoryUpdated"/>
-          
+                    
+                    <ListBigCategories
+                    v-for="bigCategory in bigCategories.bigCategories"
+                    v-bind:key="bigCategory.id"
+                    v-bind:bigCategory="bigCategory"
+                    @bigCategoryDeleted="handleBigCategoryDeleted" 
+                    @bigCategoryUpdated="handleBigCategoryUpdated"
+                    :showErrorToast="showErrorToast"/>
                 </div>
 
             </div>
         </div>
         <div class="row">
             <div class="col text-center">
-                <nav class="px-0 py-0" aria-label="Page navigation">
+                <nav class="px-0 py-0" aria-label="Навигация по страницам">
                     <ul class="my-2 pagination justify-content-center">
-                        <li class="page-item" v-if="clients.total_pages > 1 && clients.current_page > 1">
-                            <a class="page-link" @click="changePage(clients.current_page - 1)" aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
+                        <li class="page-item page-item-pointer" v-if="bigCategories.totalPages > 1 && currentPage > 1">
+                            <a class="page-link" @click="changePage(currentPage - 1)" aria-label="Предыдущая">
+                            <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
-                        <li class="page-item" v-for="page in Array.from({ length: clients.total_pages }, (_, i) => i + 1)">
-                            <a class="page-link" @click="changePage(page)" :class="{ 'active': page === clients.current_page }">{{ page }}</a>
+                        <li class="page-item page-item-pointer" v-for="page in displayedPages" :key="page">
+                            <template v-if="page === '...'">
+                            <span class="page-link">...</span>
+                            </template>
+                            <template v-else>
+                            <a class="page-link" @click="changePage(page)" :class="{ 'active': page == currentPage }">{{ page }}</a>
+                            </template>
                         </li>
-                        <li class="page-item" v-if="clients.total_pages > 1 && clients.current_page < clients.total_pages">
-                            <a class="page-link" @click="changePage(clients.current_page + 1)" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
+                        <li class="page-item page-item-pointer" v-if="bigCategories.totalPages > 1 && currentPage < bigCategories.totalPages">
+                            <a class="page-link" @click="changePage(currentPage + 1)" aria-label="Следующая">
+                            <span aria-hidden="true">&raquo;</span>
                             </a>
                         </li>
                     </ul>
                 </nav>
             </div>
         </div>
-    </div>
-    <!-- <div class="container-fluid text-center">
-        <div class="row align-items-center mb-3">
-          <div class="col-11">
-            <div class="input-group align-items-center">
-              <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
-              <input type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
-            </div>
-          </div>
-          <div class="col-1">
-            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bi bi-file-earmark-plus" style="font-size: 20px"></i></button>
-            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-              <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                <div class="modal-content">
-                  <div class="modal-header text-center">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Создать раздел</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                    <div class="form-floating mb-3">
-                      <input type="text" class="form-control" placeholder="name@example.com" v-model="name">
-                      <label for="floatingInput">Имя</label>
+        <div class="toast-container position-fixed bottom-0 end-0 p-3">
+            <div id="successfulCreationBigCategoryToast" class="toast text-bg-success" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        Раздел успешно создан!
                     </div>
-                    <div class="form-floating mb-3">
-                      <input type="text" class="form-control" placeholder="Password" v-model="slug">
-                      <label for="floatingPassword">Слаг</label>
-                    </div>
-                  </div>
-                  <div class="modal-footer ">
-                    <button @click="addBigCategory()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Cоздать</button>
-                  </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
-              </div>
             </div>
-          </div>
         </div>
-        <div class="row">
-          <div class="col">
-            <ListBigCategories 
-              v-for="big_category in big_categories"
-              v-bind:key="big_category.id"
-              v-bind:big_category="big_category"
-              @bigCategoryDeleted="handleBigCategoryDeleted" 
-              @bigCategoryUpdated="handleBigCategoryUpdated"/>
-          </div>
+        <div class="toast-container position-fixed bottom-0 end-0 p-3">
+            <div id="errorToast" class="toast text-bg-danger" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="7000">
+                <div class="d-flex">
+                    <div class="toast-body" id="errorToastBody">
+                        Ошибка при создании пользователя.
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
         </div>
-    </div> -->
+    </div>
+
 </template>
 
 <script>
 import axios from 'axios'
+import { Toast } from 'bootstrap/dist/js/bootstrap.js'
+
 import ListBigCategories from '@/components/ListBigCategories'
 
 export default {
@@ -159,67 +210,219 @@ export default {
     data() {
         return {
             search: '',
-            big_categories : {
-                total_count: 0,
-                total_pages: 0,
-                big_categories: []
+            selectedSort: '',
+
+            newBigCategory: {
+                name: '',
+                slug: '',
             },
+
+            bigCategories : {
+                totalCount: 0,
+                totalPages: 0,
+                bigCategories: []
+            },
+
             loading : true,
-            
-            name: '',
-            slug: '',
+            currentPage: 1,
         }
     },
     components: {
-        ListBigCategories
+        ListBigCategories,
+    },
+    computed: {
+        displayedPages() {
+            const totalDisplayPages = 5;
+            const startPage = Math.max(1, this.currentPage - 2);
+            const endPage = Math.min(this.bigCategories.totalPages, startPage + totalDisplayPages - 1);
+
+            let pages = [];
+
+            if (startPage > 1) {
+            pages.push(1, '...');
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+            pages.push(i);
+            }
+
+            if (endPage < this.bigCategories.totalPages) {
+            pages.push('...', this.bigCategories.totalPages);
+            }
+
+            return pages;
+        }
     },
     async mounted() {
-        let bigCategoryPage = localStorage.getItem('bigCategoryPage');
+        this.currentPage = localStorage.getItem('BigCategoryCurrentPage');
 
-        if (!bigCategoryPage) {
-            bigCategoryPage = 1;
-            localStorage.setItem('bigCategoryPage', bigCategoryPage);
+        if (!this.currentPage) {
+            this.currentPage = 1;
+            localStorage.setItem('BigCategoryCurrentPage', this.currentPage);
         }
 
-        await this.getClients(clientPage);
+        this.selectedSort = localStorage.getItem('BigCategorySelectedSort');
 
-        this.getBigCategories() 
+        if (!this.selectedSort) {
+            this.selectedSort = 'none';
+            localStorage.setItem('BigCategorySelectedSort', this.selectedSort);
+        }
+
+        await this.getBigCategories(this.currentPage, this.selectedSort);
     },
     methods: {
-        async getBigCategories() {
-            await axios
-                .get(`/big_categories`)
-                .then(response => {
-                    this.big_categories = response.data
-                    console.log(this.big_categories)
-                })
-                .catch(error => {
-                    console.log(error)
-                })
+        async getBigCategories(page, selectedSort) {
+            const offset = (page - 1) * 50
+            let params = {
+                offset: offset,
+                limit: 50
+            };
+            if (this.search !== "") {
+                params.search = this.search;
+            }
+            if (selectedSort !== "none") {
+                console.log(selectedSort)
+                const [sortBy, order] = selectedSort.split("-");
+                params.sort_by = sortBy;
+                params.order = order;
+            }
+
+            try {
+                this.loading = true;
+                const response = await axios.get(`/big-categories`, { params });
+                if (!response.status == 200) {
+                    this.showErrorToast(response.status, response.data)
+                    console.log(response);
+                }
+                const { total_count, total_pages, big_categories } = response.data;
+
+                // Преобразование ключей totalCount и totalPages
+                const transformedData = {
+                    totalCount: total_count,
+                    totalPages: total_pages,
+                    bigCategories: big_categories
+                };
+
+                this.bigCategories = transformedData;
+                console.log(this.bigCategories);
+            } catch (error) {
+                this.showErrorToast(error.code, error.message);
+                console.log(error);
+            } finally {
+                this.loading = false;
+            }
         },
         async addBigCategory() {
             const formData = {
-                name: this.name,
-                slug: this.slug
+                name: this.newBigCategory.name,
+                slug: this.newBigCategory.slug
             }
-            await axios
-                .post(`/big_category`, formData)
-                .then(response => {
-                    console.log(response.data)
-                    this.getBigCategories();
-                })
-                .catch(error => {
-                    console.log(error)
-                })
+            try {
+                this.loading = true;
+                const response = await axios.post(`/big-category`, formData);
+                if (response.status == 200) {
+                    this.showSuccessfulCreationBigCategoryToast()
+                }
+                else {
+                    this.showErrorToast(response.status, response.data)
+                    console.log(response);
+                }
+                await this.getBigCategories(this.currentPage, this.selectedSort);
+            } catch (error) {
+                this.showErrorToast(error.code, error.message);
+                console.log(error);
+            } finally {
+                this.loading = false;
+            }
         },
-        handleBigCategoryDeleted() {
-          this.getBigCategories();
+        async searchBigCategories() {
+            try {
+                this.currentPage = 1;
+                localStorage.setItem('BigCategoryCurrentPage',  this.currentPage);
+                await this.getBigCategories(this.currentPage, this.selectedSort);
+            } catch (error) {
+                this.showErrorToast(error.code, error.message);
+                console.log(error);
+            } finally {
+                this.loading = false;
+            }
         },
-        handleBigCategoryUpdated() {
-        // Обновляем список категорий после обновления
-          this.getBigCategories();
+        async changePage(page) {
+            this.loading = true;
+            localStorage.setItem('BigCategoryCurrentPage', page);
+            this.currentPage = page
+            await this.getBigCategories(page, this.selectedSort);
+            this.loading = false;
         },
-    }
+        async changeSort() {
+            this.loading = true;
+            try {
+                this.currentPage = 1;
+                localStorage.setItem('BigCategoryCurrentPage',  this.currentPage);
+                localStorage.setItem('BigCategorySelectedSort',  this.selectedSort);
+                await this.getBigCategories(this.currentPage, this.selectedSort);
+            } catch (error) {
+                this.showErrorToast(error.code, error.message);
+                console.log(error);
+            } finally {
+                this.loading = false;
+            }
+        },
+        showSuccessfulCreationBigCategoryToast() {
+            const successfulCreation = new Toast(document.getElementById('successfulCreationBigCategoryToast'))
+            successfulCreation.show()
+        },
+        showErrorToast(errorCode, errorMessage) {
+            const errorCreation = new Toast(document.getElementById('errorToast'));
+            const errorBody = document.getElementById('errorToastBody');
+            errorBody.textContent = 'Ошибка, ' + errorCode + ', ' + errorMessage;
+            errorCreation.show();
+        },
+        async handleBigCategoryDeleted() {
+            await this.getBigCategories(this.currentPage, this.selectedSort);
+        },
+        async handleBigCategoryUpdated() {
+            await this.getBigCategories(this.currentPage, this.selectedSort);
+        }
+    },
 }   
 
 </script>
+
+
+<style lang="scss">
+
+button.btn {
+    border-radius: 0.75rem;
+}
+
+#big-category-list {
+    overflow-y: auto;
+}
+
+#big-category-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+#big-category-list::-webkit-scrollbar-track {
+    border-radius: 8px;
+    background-color: #e7e7e7;
+    border: 1px solid #cacaca;
+}
+
+#big-category-list::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background-color: #696cff;
+}
+
+input {
+    border-radius: 0;
+}
+
+.input-group-text:hover {
+    cursor: pointer;
+}
+
+
+</style>
+

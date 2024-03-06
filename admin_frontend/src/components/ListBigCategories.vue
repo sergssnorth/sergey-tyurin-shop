@@ -1,94 +1,179 @@
 <template>
-    <div class="card mb-1">
-        <div class="card-body py-1 px-3">
-        <div class="d-flex align-items-center">
-            <span>{{ data_big_category.name }}</span>
-            <button @click="$router.push(`/categories?big_category_id=${this.data_big_category.id}`)" class="btn btn-icon d-inline ms-auto px-2"><i class="bi bi bi-box-seam"></i></button>
+    <div class="card mb-1" style="border-radius: 1.5rem;">
+        <div class="card-body elementList py-1 px-3 d-flex" id="headingExampleTwo" aria-controls="collapseIndicatorChevron"
+        :style="cardBodyStyles">
             
-            <button data-bs-toggle="modal" :data-bs-target="'#editModal_' + data_big_category.id" class="btn btn-icon d-inline text-primary px-2"><i class="bi bi-pen"></i></button>
-            
-            <div class="modal fade" :id="'editModal_' + data_big_category.id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-              <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                <div class="modal-content">
-                  <div class="modal-header text-center">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Изменить раздел, {{ data_big_category.name }}</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                    <div class="form-floating mb-3">
-                      <input type="text" class="form-control" placeholder="name@example.com" v-model="update_data_big_category.name">
-                      <label for="floatingInput">Имя</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                      <input type="text" class="form-control" placeholder="Password" v-model="update_data_big_category.slug">
-                      <label for="floatingPassword">Слаг</label>
-                    </div>
-                  </div>
-                  <div class="modal-footer ">
-                    <button @click="updateBigCategory()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Изменить</button>
-                  </div>
-                </div>
-              </div>
+            <div class="flex-grow-1 d-flex  align-items-center" @click="toggleSeparator" style="">
+                <span style="margin-right: 0.5rem;">
+                <i class="bi bi-person-circle"></i>
+                </span>
+                <span>{{ dataBigCategory.name }}</span>
+                <span class="ms-auto" style="color: grey; margin-right: 0rem;"><i class="bi bi-hash"></i></span>
+                <span class="" style="color: grey; margin-right: 1.5rem;">{{ dataBigCategory.id }}</span>
             </div>
+            
+            <div class="vr" style="margin-right: 1.15rem;"></div>
+            <div class="123123">
+                <button data-bs-toggle="modal" data-bs-target="#edi" class="btn btn-icon d-inline text-success px-2"><i class="bi bi-bag-plus"></i></button>
 
-            <button @click="deleteBigCategory()" class="btn btn-icon d-inline text-danger px-2"><i class="bi bi-trash3"></i></button>
+                <button data-bs-toggle="modal" :data-bs-target="'#editModal_' + dataBigCategory.id" class="btn btn-icon d-inline text-primary px-2"><i class="bi bi-pen"></i></button>
+                
+                
+                <div class="modal fade" :id="'editModal_' + dataBigCategory.id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header text-center">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Изменение клиента</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-floating mb-3">
+                                <input type="text" class="form-control" placeholder="name@example.com" v-model="updatedBigCategory.name">
+                                <label for="floatingInput">Имя</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                <input type="text" class="form-control" placeholder="Password" v-model="updatedBigCategory.slug">
+                                <label for="floatingPassword">Слаг</label>
+                                </div>
+                            </div>
+                            <div class="modal-footer ">
+                                <button @click="updateClient()" type="button" class="btn btn-second w-100" data-bs-dismiss="modal">Изменить</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button @click="deleteClient()" class="btn btn-icon d-inline text-danger px-2"><i class="bi bi-trash3"></i></button>
+            </div>
         </div>
+        <div class="separator-card" v-show="isCollapsed"></div>
+        <div :id="'collapseProduct' + dataBigCategory.id" class="collapse" aria-labelledby="headingExampleTwo" data-bs-parent="#collapseIndicatorExampleOne" >
+            <div class="card-body">
+                <div v-if="loading">
+                    <div class="text-center">
+                        <div v-show="loading" class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-if="!loading">
+                    <div v-if="dataCategories.categories.length != 0">
+                        <div v-for="category in dataCategories.categories" :key="category.id" class="d-flex align-items-center">
+                            <span style="margin-right: 0.5em;">{{ category.id }}.</span>
+                            <span>{{ category.name }}</span>
+                            <button data-bs-toggle="modal" data-bs-target="#editModal" class="btn btn-icon d-inline text-primary ms-auto px-2"><i class="bi bi-pen"></i></button>
+                            <button @click="deleteBigCategory()" class="btn btn-icon d-inline text-danger px-2"><i class="bi bi-trash3"></i></button>
+                        </div>
+                    </div>
+                    <div v-else>
+                        <span>Категорий нет</span>
+                    </div>
+                </div>
+                
+            </div>
         </div>
     </div>
 </template>
 
 <script>
 import axios from 'axios'
+import { Collapse } from 'bootstrap/dist/js/bootstrap.js'
 
 export default {
     name: 'ListBigCategories',
     props: {
-        big_category: Object,
+        bigCategory: Object,
+        orders: Array,
+        showErrorToast: Function,
     },
     data() {
         return {
-            data_big_category: this.big_category,
-            update_data_big_category: {
+            isCollapsed : false,
+            
+            dataBigCategory : this.bigCategory,
+            updatedBigCategory: {
                 name: '',
                 slug: '',
             },
+            
+            dataCategories : {
+                totalCount: 0,
+                totalPages: 0,
+                categories: []
+            },
+            
+            loading: true,
         }
     },
+    computed: {
+        cardBodyStyles() {
+            if (this.isCollapsed) {
+                return {
+                backgroundColor: 'rgba(238, 238, 238, 0.637)',
+                borderRadius: '1.5rem 1.5rem  0 0',
+                };
+            } else {
+                return {};
+            }
+        },
+    },
     created() {
-      this.update_data_big_category = { ...this.big_category };
+        this.updatedBigCategory = { ...this.bigCategory };
     },
     methods: {
-        async deleteBigCategory() {
-            await axios
-                .delete(`/big_category/${this.data_big_category.id}`)
-                .then(response => {
-                    console.log(response.data)
-                    this.$emit('bigCategoryDeleted');
-                })
-                .catch(error => {
-                    console.log(error)
-                })
-        },
-        async updateBigCategory() {
-            const formData = {
-                name: this.update_data_big_category.name,
-                slug: this.update_data_big_category.slug
+        async getCategories(bigCategoryId) {
+            this.loading = true;
+            const params = { big_category_id: bigCategoryId,
+                            offset: 0,
+                            limit: 20 }
+            try {
+                const response = await axios.get(`/categories`, { params });
+                if (!response.status == 200) {
+                    this.showErrorToast(response.status, response.data)
+                    console.log(response);
+                }
+                const { total_count, total_pages, categories } = response.data;
+
+                // Преобразование ключей totalCount и totalPages
+                const transformedData = {
+                    totalCount: total_count,
+                    totalPages: total_pages,
+                    categories: categories
+                };
+                this.dataCategories = transformedData;
+            } catch (error) {
+                this.showErrorToast(error.code, error.message);
+                console.error(error);
+            } finally {
+                this.loading = false;
             }
-            await axios
-                .put(`/big_category/${this.data_big_category.id}`, formData)
-                .then(response => {
-                    console.log(response.data)
-                    this.data_big_category = { ...this.update_data_big_category }
-                    this.$emit('bigCategoryUpdated');
-                })
-                .catch(error => {
-                    console.log(error)
-                })
+        },
+
+        async toggleSeparator(event) {
+            console.log("toggleSeparator")
+            console.log(this.isCollapsed)
+            console.log("toggleSeparator")
+
+            // Подождем, чтобы Vue успел обновить isCollapsed
+            await this.$nextTick();
+
+            const collapseTarget = document.getElementById('collapseProduct' + this.dataBigCategory.id);
+
+            if (!this.isCollapsed) {
+                new Collapse(collapseTarget, { toggle: false }).show();
+            } else {
+                new Collapse(collapseTarget, { toggle: false }).hide();
+            }
+
+            this.isCollapsed = !this.isCollapsed;
+
+            if (this.isCollapsed) {
+              await this.getCategories(this.dataBigCategory.id);
+            }          
         },
     }
 }
+
 </script>
 
-<style scoped>
-
-</style>

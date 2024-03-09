@@ -43,3 +43,14 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=foo
   
+  telegram_bot:
+    build: 
+      context: ./telegram_bot
+      dockerfile: Dockerfile
+    container_name: telegram_bot
+    restart: always
+    environment:
+      - BOT_TOKEN=6596250297:AAG-iR6R5bu3NqRQGLINEjVYecTsBltrZMs
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/foo
+    depends_on:
+      - db

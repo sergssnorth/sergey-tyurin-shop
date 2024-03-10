@@ -3,8 +3,8 @@
         <div class="row mb-3">
             <div class="d-flex align-items-center flex-grow-1" >
                 <div class="input-group align-items-center">
-                    <span @click="searchClients" class="input-group-text" id="basic-addon1" style="border-radius: 1.5rem 0 0 1.5rem;"><i class="bi bi-search" style="font-size: 16px;"></i></span>
-                    <input v-model="search" @keyup.enter="searchClients" type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1" style="border-radius: 0 1.5rem 1.5rem 0;">
+                    <span @click="searchBigCategories" class="input-group-text" id="basic-addon1" style="border-radius: 1.5rem 0 0 1.5rem;"><i class="bi bi-search" style="font-size: 16px;"></i></span>
+                    <input v-model="search" @keyup.enter="searchBigCategories" type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1" style="border-radius: 0 1.5rem 1.5rem 0;">
                 </div>
                 <div class="d-flex align-items-center">
                     

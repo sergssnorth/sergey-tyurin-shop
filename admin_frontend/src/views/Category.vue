@@ -127,14 +127,14 @@
                         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                             <div class="modal-content">
                             <div class="modal-header text-center">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">Создание раздела</h1>
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Создание категории</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <select v-model="newCategory.big_category_id" class="form-select py-3" aria-label="Default select example">
+                                <select v-model="newCategory.bigCategoryId" class="form-select py-3" aria-label="Default select example">
                                     <option :value="0">Выберите раздел</option>
-                                    <option v-for="big_category in big_categories" :key="big_category.id" :value="big_category.id">
-                                        {{ big_category.name }}
+                                    <option v-for="bigCategory in bigCategories" :key="bigCategory.id" :value="bigCategory.id">
+                                        {{ bigCategory.name }}
                                     </option>
                                 </select>
                                 <div class="form-floating mt-2 mb-3">
@@ -169,12 +169,12 @@
                 <div v-if="!loading">
                     <div class="col d-flex flex-column" style="flex-grow: 1;"></div>
                     
-                    <ListBigCategories
-                    v-for="bigCategory in categories.categories"
-                    v-bind:key="bigCategory.id"
-                    v-bind:bigCategory="bigCategory"
-                    @bigCategoryDeleted="handleBigCategoryDeleted" 
-                    @bigCategoryUpdated="handleBigCategoryUpdated"
+                    <ListCategories
+                    v-for="category in categories.categories"
+                    v-bind:key="category.id"
+                    v-bind:category="category"
+                    @categoryDeleted="handlecategoryDeleted" 
+                    @categoryUpdated="handlecategoryUpdated"
                     :showErrorToast="showErrorToast"/>
                 </div>
 
@@ -305,9 +305,15 @@ export default {
             selectedFilter: '',
 
             newCategory: {
-                big_category_id: 0,
+                bigCategoryId: 0,
                 name: '',
                 slug: '',
+            },
+
+            bigCategories : {
+                totalCount: 0,
+                totalPages: 0,
+                bigCategories: []
             },
 
             categories : {
@@ -362,8 +368,51 @@ export default {
         }
 
         await this.getCategories(this.currentPage, this.selectedSort);
+        await this.getBigCategories(1, "none")
     },
     methods: {
+        async getBigCategories(page, selectedSort) {
+            const offset = (page - 1) * 50
+            let params = {
+                offset: offset,
+                limit: 50
+            };
+            if (this.search !== "") {
+                params.search = this.search;
+            }
+            if (selectedSort !== "none") {
+                console.log(selectedSort)
+                const [sortBy, order] = selectedSort.split("-");
+                params.sort_by = sortBy;
+                params.order = order;
+            }
+
+            try {
+                this.loading = true;
+                const response = await axios.get(`/big-categories`, { params });
+                if (!response.status == 200) {
+                    this.showErrorToast(response.status, response.data)
+                    console.log(response);
+                }
+                const { total_count, total_pages, big_categories } = response.data;
+
+                // Преобразование ключей totalCount и totalPages
+                const transformedData = {
+                    totalCount: total_count,
+                    totalPages: total_pages,
+                    bigCategories: big_categories
+                };
+
+                this.bigCategories = transformedData;
+                console.log(this.bigCategories);
+            } catch (error) {
+                this.showErrorToast(error.code, error.message);
+                console.log(error);
+            } finally {
+                this.loading = false;
+            }
+        },
+
         async getCategories(page, selectedSort) {
             const offset = (page - 1) * 50
             let params = {
@@ -387,13 +436,13 @@ export default {
                     this.showErrorToast(response.status, response.data)
                     console.log(response);
                 }
-                const { total_count, total_pages, big_categories } = response.data;
+                const { total_count, total_pages, categories } = response.data;
 
                 // Преобразование ключей totalCount и totalPages
                 const transformedData = {
                     totalCount: total_count,
                     totalPages: total_pages,
-                    categories: big_categories
+                    categories: categories
                 };
 
                 this.categories = transformedData;
@@ -471,10 +520,10 @@ export default {
             errorBody.textContent = 'Ошибка, ' + errorCode + ', ' + errorMessage;
             errorCreation.show();
         },
-        async handleBigCategoryDeleted() {
+        async handlecategoryDeleted() {
             await this.getCategories(this.currentPage, this.selectedSort);
         },
-        async handleBigCategoryUpdated() {
+        async handlecategoryUpdated() {
             await this.getCategories(this.currentPage, this.selectedSort);
         }
     },

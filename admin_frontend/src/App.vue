@@ -101,12 +101,18 @@
                         <span style="padding-left: 1rem;">Разделы</span>
                       </div>
                     </button>
-                    <button @click="$router.push('/categories?big_category_id=0')" class="btn btn-navigation d-flex justify-content-between mb-1" style="width: 100%; border-radius: 1.5rem;">
+                    <button @click="$router.push('/categories')" class="btn btn-navigation d-flex justify-content-between mb-1" style="width: 100%; border-radius: 1.5rem;">
                       <div>
                         <span><i class="bi bi-box-seam-fill"></i></span>
                         <span style="padding-left: 1rem;">Категории</span>
                       </div>
                     </button>
+                    <!-- <button @click="$router.push('/categories?big_category_id=0')" class="btn btn-navigation d-flex justify-content-between mb-1" style="width: 100%; border-radius: 1.5rem;">
+                      <div>
+                        <span><i class="bi bi-box-seam-fill"></i></span>
+                        <span style="padding-left: 1rem;">Категории</span>
+                      </div>
+                    </button> -->
                     <button @click="$router.push('/models?big_category_id=0&category_id=0&collection_id=0')" class="btn btn-navigation d-flex justify-content-between" style="width: 100%; border-radius: 1.5rem;">
                       <div>
                         <span><i class="bi bi-boxes"></i></span>

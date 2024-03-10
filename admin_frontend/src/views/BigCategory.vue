@@ -96,7 +96,7 @@
                     </div>                    
 
                     <button class="btn btn-icon mx-1 px-2 d-inline text-success" data-bs-toggle="modal" data-bs-target="#сreateBigCategoryModal">
-                        <i class="bi bi-person-add" style="font-size: 18px;"></i>
+                        <i class="bi bi-box" style="font-size: 18px;"></i>
                     </button>
                     
                     <div class="modal fade" id="сreateBigCategoryModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

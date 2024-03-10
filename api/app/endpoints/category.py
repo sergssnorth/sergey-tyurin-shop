@@ -21,6 +21,10 @@ async def get_categories(offset: int = Query(0, ge=0),
                         limit: int = Query(50, gt=0),
                         search: str = Query(None),
                         big_category_id: int = Query(None),
+
+                        sort_by: str = Query(None, description="Sort by 'name' or 'id'."),
+                        order: str = Query("desc", description="Sort order: 'asc' or 'desc'."),
+
                         session: AsyncSession = Depends(get_session)):
     
     query = select(Category)
@@ -32,6 +36,15 @@ async def get_categories(offset: int = Query(0, ge=0),
 
     if big_category_id:
         query = query.filter(Category.big_category_id == big_category_id)
+
+    if sort_by and order:
+        if sort_by == "name":
+            query = query.order_by(Category.name.desc() if order == "desc" else BigCategory.name.asc())
+        elif sort_by == "id":
+            query = query.order_by(Category.id.desc() if order == "desc" else BigCategory.id.asc())
+    else:
+        #Сортировака по умолчанию
+        query = query.order_by(Category.id.desc() if order == "desc" else BigCategory.id.asc())
 
     total_count_query = select(func.count()).select_from(query)
     total_count_result = await session.execute(total_count_query)

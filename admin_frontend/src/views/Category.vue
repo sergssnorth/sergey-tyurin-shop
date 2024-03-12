@@ -363,6 +363,8 @@ export default {
         } else {
             localStorage.setItem('categorySelectedFilter', 'big-category:none');
         }
+
+        
     },
     async mounted() {
         this.currentPage = localStorage.getItem('categoryCurrentPage');
@@ -553,7 +555,16 @@ export default {
     },
     watch: {
         async '$route'(to, from) {
-            console.log("Url изменился")
+            const bigCategory = this.$route.query['big-category'];
+            if (bigCategory) {
+                console.log('big-category:', bigCategory);
+
+                localStorage.setItem('categorySelectedFilter', 'big-category:' + bigCategory);
+            } else {
+                localStorage.setItem('categorySelectedFilter', 'big-category:none');
+            }
+            this.selectedFilter = localStorage.getItem('categorySelectedFilter');
+
             await this.getCategories(this.currentPage, this.selectedSort, this.selectedFilter);
             await this.getBigCategories(1, "none")
         }

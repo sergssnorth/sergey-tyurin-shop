@@ -1,5 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.models import Category
+from app.models import Category, BigCategory
 from app.db import get_session
 
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -27,7 +27,8 @@ async def get_categories(offset: int = Query(0, ge=0),
 
                         session: AsyncSession = Depends(get_session)):
     
-    query = select(Category)
+    query = select(Category, BigCategory).join(BigCategory)
+    
 
     if search:
         query = query.filter(or_(
@@ -39,12 +40,12 @@ async def get_categories(offset: int = Query(0, ge=0),
 
     if sort_by and order:
         if sort_by == "name":
-            query = query.order_by(Category.name.desc() if order == "desc" else BigCategory.name.asc())
+            query = query.order_by(Category.name.desc() if order == "desc" else Category.name.asc())
         elif sort_by == "id":
-            query = query.order_by(Category.id.desc() if order == "desc" else BigCategory.id.asc())
+            query = query.order_by(Category.id.desc() if order == "desc" else Category.id.asc())
     else:
         #Сортировака по умолчанию
-        query = query.order_by(Category.id.desc() if order == "desc" else BigCategory.id.asc())
+        query = query.order_by(Category.id.desc() if order == "desc" else Category.id.asc())
 
     total_count_query = select(func.count()).select_from(query)
     total_count_result = await session.execute(total_count_query)

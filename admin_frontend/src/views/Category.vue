@@ -96,7 +96,9 @@
                     </div>                    
 
                     <button @click="" class="btn btn-icon d-inline mx-1 px-2 custom-dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="bi bi-funnel"></i>            
+                        <i v-if="selectedFilter.includes('big-category:none')" class="bi bi-funnel"></i>
+                        <i v-else class="bi bi-funnel-fill" style="color: #696cff;"></i>
+ 
                     </button>
 
                     <div class="dropdown-menu" aria-labelledby="userDropdown" style="width: 20rem;">
@@ -120,7 +122,7 @@
                     </div>
 
                     <button class="btn btn-icon mx-1 px-2 d-inline text-success" data-bs-toggle="modal" data-bs-target="#сreateCategoryModal">
-                        <i class="bi bi-box" style="font-size: 18px;"></i>
+                        <i class="bi bi-box-seam" style="font-size: 18px;"></i>
                     </button>
                     
                     <div class="modal fade" id="сreateCategoryModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -173,6 +175,7 @@
                     v-for="category in categories.categories"
                     v-bind:key="category.id"
                     v-bind:category="category"
+                    v-bind:bigCategories="bigCategories"
                     @categoryDeleted="handlecategoryDeleted" 
                     @categoryUpdated="handlecategoryUpdated"
                     :showErrorToast="showErrorToast"/>
@@ -352,6 +355,15 @@ export default {
             return pages;
         }
     },
+    created() {
+        const bigCategory = this.$route.query['big-category'];
+        if (bigCategory) {
+            console.log('big-category:', bigCategory);
+            localStorage.setItem('categorySelectedFilter', 'big-category:' + bigCategory);
+        } else {
+            localStorage.setItem('categorySelectedFilter', 'big-category:none');
+        }
+    },
     async mounted() {
         this.currentPage = localStorage.getItem('categoryCurrentPage');
 
@@ -367,7 +379,14 @@ export default {
             localStorage.setItem('categorySelectedSort', this.selectedSort);
         }
 
-        await this.getCategories(this.currentPage, this.selectedSort);
+        this.selectedFilter = localStorage.getItem('categorySelectedFilter');
+
+        if (!this.selectedFilter) {
+            this.selectedFilter = 'none';
+            localStorage.setItem('categorySelectedFilter', this.selectedSort);
+        }
+
+        await this.getCategories(this.currentPage, this.selectedSort, this.selectedFilter);
         await this.getBigCategories(1, "none")
     },
     methods: {
@@ -413,7 +432,7 @@ export default {
             }
         },
 
-        async getCategories(page, selectedSort) {
+        async getCategories(page, selectedSort, selectedFilter) {
             const offset = (page - 1) * 50
             let params = {
                 offset: offset,
@@ -427,6 +446,11 @@ export default {
                 const [sortBy, order] = selectedSort.split("-");
                 params.sort_by = sortBy;
                 params.order = order;
+            }
+            if (selectedFilter !== "big-category:none") {
+                console.log(selectedFilter)
+                const [filterBy, id] = selectedFilter.split(":");
+                params.big_category_id = id;
             }
 
             try {
@@ -469,7 +493,7 @@ export default {
                     this.showErrorToast(response.status, response.data)
                     console.log(response);
                 }
-                await this.getCategories(this.currentPage, this.selectedSort);
+                await this.getCategories(this.currentPage, this.selectedSort, this.selectedFilter);
             } catch (error) {
                 this.showErrorToast(error.code, error.message);
                 console.log(error);
@@ -481,7 +505,7 @@ export default {
             try {
                 this.currentPage = 1;
                 localStorage.setItem('categoryCurrentPage',  this.currentPage);
-                await this.getCategories(this.currentPage, this.selectedSort);
+                await this.getCategories(this.currentPage, this.selectedSort, this.selectedFilter);
             } catch (error) {
                 this.showErrorToast(error.code, error.message);
                 console.log(error);
@@ -493,7 +517,7 @@ export default {
             this.loading = true;
             localStorage.setItem('categoryCurrentPage', page);
             this.currentPage = page
-            await this.getCategories(page, this.selectedSort);
+            await this.getCategories(page, this.selectedSort, this.selectedFilter);
             this.loading = false;
         },
         async changeSort() {
@@ -502,7 +526,7 @@ export default {
                 this.currentPage = 1;
                 localStorage.setItem('categoryCurrentPage',  this.currentPage);
                 localStorage.setItem('categorySelectedSort',  this.selectedSort);
-                await this.getCategories(this.currentPage, this.selectedSort);
+                await this.getCategories(this.currentPage, this.selectedSort, this.selectedFilter);
             } catch (error) {
                 this.showErrorToast(error.code, error.message);
                 console.log(error);
@@ -521,13 +545,19 @@ export default {
             errorCreation.show();
         },
         async handlecategoryDeleted() {
-            await this.getCategories(this.currentPage, this.selectedSort);
+            await this.getCategories(this.currentPage, this.selectedSort, this.selectedFilter);
         },
         async handlecategoryUpdated() {
-            await this.getCategories(this.currentPage, this.selectedSort);
+            await this.getCategories(this.currentPage, this.selectedSort, this.selectedFilter);
         }
     },
-
+    watch: {
+        async '$route'(to, from) {
+            console.log("Url изменился")
+            await this.getCategories(this.currentPage, this.selectedSort, this.selectedFilter);
+            await this.getBigCategories(1, "none")
+        }
+    }
 
     
     

@@ -113,12 +113,19 @@
                         <span style="padding-left: 1rem;">Категории</span>
                       </div>
                     </button> -->
-                    <button @click="$router.push('/models?big_category_id=0&category_id=0&collection_id=0')" class="btn btn-navigation d-flex justify-content-between" style="width: 100%; border-radius: 1.5rem;">
+                    <button @click="$router.push('/models')" class="btn btn-navigation d-flex justify-content-between" style="width: 100%; border-radius: 1.5rem;">
+                      <div>
+                        <span><i class="bi bi-layers-fill"></i></span>
+                        <span style="padding-left: 1rem;">Модели</span>
+                      </div>
+                    </button>
+
+                    <!-- <button @click="$router.push('/models?big_category_id=0&category_id=0&collection_id=0')" class="btn btn-navigation d-flex justify-content-between" style="width: 100%; border-radius: 1.5rem;">
                       <div>
                         <span><i class="bi bi-boxes"></i></span>
                         <span style="padding-left: 1rem;">Модели</span>
                       </div>
-                    </button>
+                    </button> -->
                     <!-- <button @click="$router.push('/products')" class="btn btn-outline-primary d-flex justify-content-between" style="width: 100%;">
                       <div>
                         <span><i class="bi bi-table"></i></span>
@@ -193,7 +200,7 @@
                   <div class="collapse multi-collapse" id="multiCollapseOrder">
                     <button @click="$router.push('/collections')" class="btn btn-navigation d-flex justify-content-between mt-1" style="width: 100%; border-radius: 1.5rem;">
                       <div>
-                        <span><i class="bi bi-bag-fill"></i></span>
+                        <span><i class="bi bi-bag"></i></span>
                         <span style="padding-left: 1rem;">Все заказы</span>
                       </div>
                     </button>
@@ -220,7 +227,7 @@
                   <div class="collapse multi-collapse" id="multiCollapseClient">
                     <button @click="$router.push('/clients')" class="btn btn-navigation d-flex justify-content-between mt-1" style="width: 100%; border-radius: 1.5rem;">
                       <div>
-                        <span><i class="bi-people-fill"></i></span>
+                        <span><i class="bi-people"></i></span>
                         <span style="padding-left: 1rem;">Все клиенты</span>
                       </div>
                     </button>
@@ -247,7 +254,7 @@
                   <div class="collapse multi-collapse" id="multiCollapseWarehouse">
                     <button @click="$router.push('/collections')" class="btn btn-navigation d-flex justify-content-between mt-1" style="width: 100%; border-radius: 1.5rem;">
                       <div>
-                        <span><i class="bi bi-house-fill"></i></span>
+                        <span><i class="bi bi-house"></i></span>
                         <span style="padding-left: 1rem;">Все заказы</span>
                       </div>
                     </button>
@@ -274,7 +281,7 @@
                   <div class="collapse multi-collapse" id="multiCollapseReport">
                     <button @click="$router.push('/collections')" class="btn btn-navigation d-flex justify-content-between mt-1" style="width: 100%; border-radius: 1.5rem;">
                       <div>
-                        <span><i class="bi bi-file-text-fill"></i></span>
+                        <span><i class="bi bi-file-text"></i></span>
                         <span style="padding-left: 1rem;">Все заказы</span>
                       </div>
                     </button>

@@ -18,8 +18,6 @@
                     <i class="bi bi-box-seam" style="font-size: 18px;"></i>
                 </button>
 
-                <button data-bs-toggle="modal" data-bs-target="#edi" class="btn btn-icon d-inline text-success px-2"><i class="bi bi-bag-plus"></i></button>
-
                 <button data-bs-toggle="modal" :data-bs-target="'#editModal_' + dataBigCategory.id" class="btn btn-icon d-inline text-primary px-2"><i class="bi bi-pen"></i></button>
                 
                 

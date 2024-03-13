@@ -96,26 +96,19 @@
                     </div>                    
 
                     <button @click="" class="btn btn-icon d-inline mx-1 px-2 custom-dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i v-if="selectedFilter.includes('big-category:none')" class="bi bi-funnel"></i>
+                        <i v-if="filterBigCategory == 0" class="bi bi-funnel"></i>
                         <i v-else class="bi bi-funnel-fill" style="color: #696cff;"></i>
- 
                     </button>
 
-                    <div class="dropdown-menu" aria-labelledby="userDropdown" style="width: 20rem;">
+                    <div id="dropdown-menu-filter" class="dropdown-menu" aria-labelledby="userDropdown" style="width: 20rem;">
                         <div class="row">
                             <div class="col">
                                 <div class="separator mx-3 mb-2">Фильтры</div>
-                                <select class="form-select mx-3 mb-2" style="width: 91%;" required aria-label="select example">
-                                    <option value="">Open</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                </select>
-                                <select class="form-select mx-3 mb-2" style="width: 91%;" required aria-label="select example">
-                                    <option value="">Open</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
+                                <select @change="handleBigCategoryChange" v-model="filterBigCategory" class="form-select mx-3 mb-2 py-2" style="width: 91%;" aria-label="Default select example">
+                                    <option :value="0">Выберите категорию</option>
+                                    <option v-for="bigCategory in bigCategories.bigCategories" :key="bigCategory.id" :value="bigCategory.id">
+                                        {{ bigCategory.name }}
+                                    </option>
                                 </select>
                             </div>
                         </div>
@@ -134,8 +127,8 @@
                             </div>
                             <div class="modal-body">
                                 <select v-model="newCategory.bigCategoryId" class="form-select py-3" aria-label="Default select example">
-                                    <option :value="0">Выберите раздел</option>
-                                    <option v-for="bigCategory in bigCategories" :key="bigCategory.id" :value="bigCategory.id">
+                                    <option :value="0">Создание категории</option>
+                                    <option v-for="bigCategory in bigCategories.bigCategories" :key="bigCategory.id" :value="bigCategory.id">
                                         {{ bigCategory.name }}
                                     </option>
                                 </select>
@@ -218,7 +211,7 @@
             <div id="successfulCreationCategoryToast" class="toast text-bg-success" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
                 <div class="d-flex">
                     <div class="toast-body">
-                        Раздел успешно создан!
+                        Категория успешно создана!
                     </div>
                     <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
@@ -235,72 +228,13 @@
             </div>
         </div>
     </div>
-
-    <!-- <div class="container-fluid text-center">
-        <div class="row align-items-center mb-3">
-            <div class="col-2">
-                <select v-model="filter_big_category_id" class="form-select" aria-label="Default select example" @change="handleFilterChange">
-                    <option :value="0">Все разделы</option>
-                    <option v-for="big_category in big_categories" :key="big_category.id" :value="big_category.id">
-                        {{ big_category.name }}
-                    </option>
-                </select>
-            </div>
-          <div class="col-9">
-            <div class="input-group align-items-center">
-              <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
-              <input type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
-            </div>
-          </div>
-          <div class="col-1">
-            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bi bi-file-earmark-plus" style="font-size: 20px"></i></button>
-            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-              <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                <div class="modal-content">
-                  <div class="modal-header text-center">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Создать раздел</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                    <div class="form-floating mb-3">
-                      <input type="text" class="form-control" placeholder="name@example.com" v-model="name">
-                      <label for="floatingInput">Имя</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                      <input type="text" class="form-control" placeholder="Password" v-model="slug">
-                      <label for="floatingPassword">Слаг</label>
-                    </div>
-                    <select v-model="big_category_id" class="form-select py-3" aria-label="Default select example">
-                        <option :value="0">Выберите раздел</option>
-                        <option v-for="big_category in big_categories" :key="big_category.id" :value="big_category.id">
-                            {{ big_category.name }}
-                        </option>
-                    </select>
-                  </div>
-                  <div class="modal-footer ">
-                    <button @click="addCategory()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Cоздать</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <ListCategories 
-              v-for="category in categories"
-              v-bind:key="category.id"
-              v-bind:category="category"
-              v-bind:big_categories="big_categories"
-              @categoryDeleted="handleCategoryDeleted" 
-              @categoryUpdated="handleCategoryUpdated"/>
-          </div>
-        </div>
-    </div> -->
 </template>
 
 <script>
 import axios from 'axios'
+import { Toast } from 'bootstrap/dist/js/bootstrap.js'
+
+
 import ListCategories from '@/components/ListCategories'
 
 export default {
@@ -310,7 +244,7 @@ export default {
         return {
             search: '',
             selectedSort: '',
-            selectedFilter: '',
+            filterBigCategory: 0,
 
             newCategory: {
                 bigCategoryId: 0,
@@ -364,12 +298,10 @@ export default {
         const bigCategory = this.$route.query['big-category'];
         if (bigCategory) {
             console.log('big-category:', bigCategory);
-            localStorage.setItem('categorySelectedFilter', 'big-category:' + bigCategory);
+            localStorage.setItem('categoryFilterBigCategory', bigCategory);
         } else {
-            localStorage.setItem('categorySelectedFilter', 'big-category:none');
+            localStorage.setItem('categoryFilterBigCategory', 0);
         }
-
-        
     },
     async mounted() {
         this.currentPage = localStorage.getItem('categoryCurrentPage');
@@ -386,14 +318,14 @@ export default {
             localStorage.setItem('categorySelectedSort', this.selectedSort);
         }
 
-        this.selectedFilter = localStorage.getItem('categorySelectedFilter');
+        this.filterBigCategory = localStorage.getItem('categoryFilterBigCategory');
 
-        if (!this.selectedFilter) {
-            this.selectedFilter = 'none';
-            localStorage.setItem('categorySelectedFilter', this.selectedSort);
+        if (!this.filterBigCategory) {
+            this.filterBigCategory = 0;
+            localStorage.setItem('categoryFilterBigCategory', this.filterBigCategory);
         }
 
-        await this.getCategories(this.currentPage, this.selectedSort, this.selectedFilter);
+        await this.getCategories(this.currentPage, this.selectedSort, this.filterBigCategory);
         await this.getBigCategories(1, "none")
     },
     methods: {
@@ -422,7 +354,6 @@ export default {
                 }
                 const { total_count, total_pages, big_categories } = response.data;
 
-                // Преобразование ключей totalCount и totalPages
                 const transformedData = {
                     totalCount: total_count,
                     totalPages: total_pages,
@@ -439,7 +370,7 @@ export default {
             }
         },
 
-        async getCategories(page, selectedSort, selectedFilter) {
+        async getCategories(page, selectedSort, filterBigCategory) {
             const offset = (page - 1) * 50
             let params = {
                 offset: offset,
@@ -454,10 +385,9 @@ export default {
                 params.sort_by = sortBy;
                 params.order = order;
             }
-            if (selectedFilter !== "big-category:none") {
-                console.log(selectedFilter)
-                const [filterBy, id] = selectedFilter.split(":");
-                params.big_category_id = id;
+            if (filterBigCategory !== 0) {
+                console.log(filterBigCategory)
+                params.big_category_id = filterBigCategory;
             }
 
             try {
@@ -487,9 +417,11 @@ export default {
         },
         async addCategory() {
             const formData = {
+                big_category_id: this.newCategory.bigCategoryId,
                 name: this.newCategory.name,
                 slug: this.newCategory.slug
             }
+            console.log(formData)
             try {
                 this.loading = true;
                 const response = await axios.post(`/category`, formData);
@@ -500,7 +432,7 @@ export default {
                     this.showErrorToast(response.status, response.data)
                     console.log(response);
                 }
-                await this.getCategories(this.currentPage, this.selectedSort, this.selectedFilter);
+                await this.getCategories(this.currentPage, this.selectedSort, this.filterBigCategory);
             } catch (error) {
                 this.showErrorToast(error.code, error.message);
                 console.log(error);
@@ -512,7 +444,7 @@ export default {
             try {
                 this.currentPage = 1;
                 localStorage.setItem('categoryCurrentPage',  this.currentPage);
-                await this.getCategories(this.currentPage, this.selectedSort, this.selectedFilter);
+                await this.getCategories(this.currentPage, this.selectedSort, this.filterBigCategory);
             } catch (error) {
                 this.showErrorToast(error.code, error.message);
                 console.log(error);
@@ -524,7 +456,7 @@ export default {
             this.loading = true;
             localStorage.setItem('categoryCurrentPage', page);
             this.currentPage = page
-            await this.getCategories(page, this.selectedSort, this.selectedFilter);
+            await this.getCategories(page, this.selectedSort, this.filterBigCategory);
             this.loading = false;
         },
         async changeSort() {
@@ -533,13 +465,19 @@ export default {
                 this.currentPage = 1;
                 localStorage.setItem('categoryCurrentPage',  this.currentPage);
                 localStorage.setItem('categorySelectedSort',  this.selectedSort);
-                await this.getCategories(this.currentPage, this.selectedSort, this.selectedFilter);
+                await this.getCategories(this.currentPage, this.selectedSort, this.filterBigCategory);
             } catch (error) {
                 this.showErrorToast(error.code, error.message);
                 console.log(error);
             } finally {
                 this.loading = false;
             }
+        },
+
+        async handleBigCategoryChange(event) {
+
+            await this.getCategories(this.currentPage, this.selectedSort, this.filterBigCategory);
+            console.log("Выбранное значение:", event.target.value);
         },
         showSuccessfulCreationCategoryToast() {
             const successfulCreation = new Toast(document.getElementById('successfulCreationCategoryToast'))
@@ -552,10 +490,10 @@ export default {
             errorCreation.show();
         },
         async handlecategoryDeleted() {
-            await this.getCategories(this.currentPage, this.selectedSort, this.selectedFilter);
+            await this.getCategories(this.currentPage, this.selectedSort, this.filterBigCategory);
         },
         async handlecategoryUpdated() {
-            await this.getCategories(this.currentPage, this.selectedSort, this.selectedFilter);
+            await this.getCategories(this.currentPage, this.selectedSort, this.filterBigCategory);
         }
     },
     watch: {
@@ -563,145 +501,16 @@ export default {
             const bigCategory = this.$route.query['big-category'];
             if (bigCategory) {
                 console.log('big-category:', bigCategory);
-
-                localStorage.setItem('categorySelectedFilter', 'big-category:' + bigCategory);
+                localStorage.setItem('categoryFilterBigCategory', bigCategory);
             } else {
-                localStorage.setItem('categorySelectedFilter', 'big-category:none');
+                localStorage.setItem('categoryFilterBigCategory', 0);
             }
-            this.selectedFilter = localStorage.getItem('categorySelectedFilter');
+            this.filterBigCategory = localStorage.getItem('categoryFilterBigCategory');
 
-            await this.getCategories(this.currentPage, this.selectedSort, this.selectedFilter);
+            await this.getCategories(this.currentPage, this.selectedSort, this.filterBigCategory);
             await this.getBigCategories(1, "none")
         }
     }
-
-    
-    
-    // data() {
-    //     return {
-
-
-
-    //         filter_big_category_id: 0,
-    //         big_categories: [],
-    //         categories: [],
-    //         name: '',
-    //         slug: '',
-    //         big_category_id: 0,
-    //         FilterId: '',
-    //     }
-    // },
-    // components: {
-    //     ListCategories
-    // },
-    // mounted() {
-    //     this.getCategories()
-    //     this.FilterId = this.getFilterId()
-    //     this.getCategories(this.FilterId)
-    // },
-    // methods: {
-    //     async getCategories() {
-    //         console.log('Метод getCategories')
-    //         await axios
-    //             .get(`/big_categories`)
-    //             .then(response => {
-    //                 this.big_categories = response.data
-    //                 console.log(this.big_categories)
-    //             })
-    //             .catch(error => {
-    //                 console.log(error)
-    //             })
-    //     },
-    //     getFilterId() {
-    //         console.log('Метод getFilterId')
-    //         const filterId = this.$route.query.big_category_id;
-    //         this.filter_big_category_id = filterId
-    //         return filterId
-    //     },
-    //     async getCategories(filterId) {
-    //         console.log('Метод getCategories')
-    //         if (filterId !== undefined && filterId !== null) {
-    //             console.log('Значение filterId:', filterId);
-    //             const params = filterId !== '0' ? { big_category_id: filterId } : {};
-    //             console.log(filterId)
-    //             await axios
-    //                 .get(`/categories`, { params })
-    //                 .then(response => {
-    //                     this.categories = response.data
-    //                     console.log(this.categories)
-    //                 })
-    //                 .catch(error => {
-    //                     console.log(error)
-    //                 })
-    //         } else {
-    //             console.log('Значение filterId отсутствует');
-    //             await axios
-    //             .get(`/categories`)
-    //             .then(response => {
-    //                 this.categories = response.data
-    //                 console.log(this.categories)
-    //             })
-    //             .catch(error => {
-    //                 console.log(error)
-    //             })
-    //         }
-            
-            
-    //     },
-    //     async addCategory() {
-    //         let filterId;
-
-    //         const formData = {
-    //             name: this.name,
-    //             slug: this.slug,
-    //             big_category_id: this.big_category_id
-    //         }
-    //         console.log(formData)
-    //         await axios
-    //             .post(`/category`, formData)
-    //             .then(response => {
-    //                 console.log(response.data)
-    //                 filterId = this.getFilterId()
-    //                 this.getCategories(filterId);
-    //                 this.name = '',
-    //                 this.slug = '',
-    //                 this.big_category_id = 0
-    //             })
-    //             .catch(error => {
-    //                 console.log(error)
-    //             })
-    //     },
-    //     handleFilterChange() {
-    //         console.log('Хендлер handleFilterChange')
-    //         this.$router.push({ 
-    //             path: '/categories',
-    //             query: { big_category_id: this.filter_big_category_id }
-    //         });
-    //     },
-    //     handleCategoryDeleted() {
-    //         console.log('Хендлер handleCategoryDeleted')
-    //         const filterId = this.getFilterId()
-    //         console.log('filterId')
-    //         console.log(filterId)
-    //         console.log('filterId')
-    //         this.getCategories(filterId);
-    //     },
-    //     handleCategoryUpdated() {
-    //         console.log('Хендлер handleCategoryUpdated')
-    //         const filterId = this.getFilterId()
-    //         console.log('filterId')
-    //         console.log(filterId)
-    //         console.log('filterId')
-    //         this.getCategories(filterId);
-    //     },
-    // },
-    // beforeRouteUpdate(to, from, next) {
-    //     console.log('Хук beforeRouteUpdate');
-    //     const filterId = to.query.big_category_id;
-    //     this.filter_big_category_id = filterId
-    //     this.getCategories(filterId)
-    //     next();
-    // },
 }   
 
 </script>

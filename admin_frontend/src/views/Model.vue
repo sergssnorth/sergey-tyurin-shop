@@ -138,7 +138,6 @@ export default {
         this.getBigCategories()
         this.getCollections()
         this.getFilterId()
-        // Добавить логику для правильного обновления
 
         const { big_category_id, category_id, collection_id } = this.$route.query;
 

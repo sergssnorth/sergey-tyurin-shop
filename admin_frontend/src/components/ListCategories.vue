@@ -67,7 +67,7 @@
                         </div>
                     </div>
                     <div v-else>
-                        <span>Категорий нет</span>
+                        <span>Моделей нет</span>
                     </div>
                 </div>
                 

@@ -169,16 +169,21 @@
                     </div>
                 </div>
                 <div v-if="!loading">
-                    <div class="col d-flex flex-column" style="flex-grow: 1;"></div>
+                    <div v-if="categories.categories.length != 0">
+                        <ListCategories
+                        v-for="category in categories.categories"
+                        v-bind:key="category.id"
+                        v-bind:category="category"
+                        v-bind:bigCategories="bigCategories"
+                        @categoryDeleted="handlecategoryDeleted" 
+                        @categoryUpdated="handlecategoryUpdated"
+                        :showErrorToast="showErrorToast"/>
+
+                    </div>
+                    <div v-else>
+                        <span style="font-size: 1.3rem;">Категорий пока нет ...</span>
+                    </div>
                     
-                    <ListCategories
-                    v-for="category in categories.categories"
-                    v-bind:key="category.id"
-                    v-bind:category="category"
-                    v-bind:bigCategories="bigCategories"
-                    @categoryDeleted="handlecategoryDeleted" 
-                    @categoryUpdated="handlecategoryUpdated"
-                    :showErrorToast="showErrorToast"/>
                 </div>
 
             </div>

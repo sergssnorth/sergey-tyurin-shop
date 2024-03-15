@@ -7,21 +7,21 @@
                 <span style="margin-right: 0.5rem;">
                 <i class="bi bi-person-circle"></i>
                 </span>
-                <span>{{ dataCategory.name }}</span>
+                <span>{{ dataModel.name }}</span>
                 <span class="ms-auto" style="color: grey; margin-right: 0rem;"><i class="bi bi-hash"></i></span>
-                <span class="" style="color: grey; margin-right: 1.5rem;">{{ dataCategory.id }}</span>
+                <span class="" style="color: grey; margin-right: 1.5rem;">{{ dataModel.id }}</span>
             </div>
             
             <div class="vr" style="margin-right: 1.15rem;"></div>
             <div class="123123">
-                <button class="btn btn-icon mx-1 px-2 d-inline text-dark" @click="this.$router.push({ path: '/models', query: { 'category': dataCategory.id } });">
+                <button class="btn btn-icon mx-1 px-2 d-inline text-dark" @click="this.$router.push({ path: '/models', query: { 'model': dataModel.id } });">
                     <i class="bi bi-layers" style="font-size: 18px;"></i>
                 </button>
 
-                <button data-bs-toggle="modal" :data-bs-target="'#editModal_' + dataCategory.id" class="btn btn-icon d-inline text-primary px-2"><i class="bi bi-pen"></i></button>
+                <button data-bs-toggle="modal" :data-bs-target="'#editModal_' + dataModel.id" class="btn btn-icon d-inline text-primary px-2"><i class="bi bi-pen"></i></button>
                 
                 
-                <div class="modal fade" :id="'editModal_' + dataCategory.id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal fade" :id="'editModal_' + dataModel.id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                         <div class="modal-content">
                             <div class="modal-header text-center">
@@ -29,12 +29,22 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
+                                <select v-model="updatedModel.categoryId" class="form-select py-3" aria-label="Default select example">
+                                    <option v-for="category in categories.categories" :key="category.id" :value="category.id">
+                                        {{ category.name }}
+                                    </option>
+                                </select>
+                                <select v-model="updatedModel.collectionId" class="form-select py-3" aria-label="Default select example">
+                                    <option v-for="collection in collections.collections" :key="collection.id" :value="collection.id">
+                                        {{ collection.name }}
+                                    </option>
+                                </select>
                                 <div class="form-floating mb-3">
-                                <input type="text" class="form-control" placeholder="name@example.com" v-model="updatedCategory.name">
+                                <input type="text" class="form-control" placeholder="name@example.com" v-model="updatedModel.name">
                                 <label for="floatingInput">Имя</label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                <input type="text" class="form-control" placeholder="Password" v-model="updatedCategory.slug">
+                                <input type="text" class="form-control" placeholder="Password" v-model="updatedModel.slug">
                                 <label for="floatingPassword">Слаг</label>
                                 </div>
                             </div>
@@ -49,7 +59,7 @@
             </div>
         </div>
         <div class="separator-card" v-show="isCollapsed"></div>
-        <div :id="'collapseProduct' + dataCategory.id" class="collapse" aria-labelledby="headingExampleTwo" data-bs-parent="#collapseIndicatorExampleOne" >
+        <div :id="'collapseProduct' + dataModel.id" class="collapse" aria-labelledby="headingExampleTwo" data-bs-parent="#collapseIndicatorExampleOne" >
             <div class="card-body">
                 <div v-if="loading">
                     <div class="text-center">
@@ -61,11 +71,11 @@
 
                 <div v-if="!loading">
                     <div v-if="dataModels.models.length != 0">
-                        <div v-for="model in dataModels.models" :key="category.id" class="d-flex align-items-center">
+                        <div v-for="model in dataModels.models" :key="model.id" class="d-flex align-items-center">
                             <span style="margin-right: 0.5em;">{{ model.id }}.</span>
                             <span>{{ model.name }}</span>
                             <button data-bs-toggle="modal" data-bs-target="#editModal" class="btn btn-icon d-inline text-primary ms-auto px-2"><i class="bi bi-pen"></i></button>
-                            <button @click="deleteBigCategory()" class="btn btn-icon d-inline text-danger px-2"><i class="bi bi-trash3"></i></button>
+                            <button @click="deleteBigmodel()" class="btn btn-icon d-inline text-danger px-2"><i class="bi bi-trash3"></i></button>
                         </div>
                     </div>
                     <div v-else>
@@ -83,9 +93,9 @@
             
             
             <span class="ms-auto" style="color: grey; margin-right: 0.5rem;"><i class="bi bi-boxes"></i></span>
-            <span class="" style="color: grey; margin-right: 0.5rem;"> {{ TreeBigCategory }}</span>
+            <span class="" style="color: grey; margin-right: 0.5rem;"> {{ TreeBigmodel }}</span>
             <span class="" style="color: grey; margin-right: 0.5rem;"><i class="bi bi-arrow-right"></i></span>
-            <span class="" style="color: grey; margin-right: 1.5rem;"> {{ TreeCategory }}</span>
+            <span class="" style="color: grey; margin-right: 1.5rem;"> {{ Treemodel }}</span>
             <span class="" style="color: grey; margin-right: 0.5rem;"><i class="bi bi-gem"></i></span>
             <span class="" style="color: grey; margin-right: 1.5rem;"> {{ TreeCollection }}</span>
 
@@ -113,16 +123,16 @@
                       <input type="text" class="form-control" placeholder="Password" v-model="update_data_model.description">
                       <label for="floatingPassword">Описание</label>
                     </div>
-                    <select v-model="update_data_model.big_category_id" class="form-select py-3 mb-3" aria-label="Default select example">
+                    <select v-model="update_data_model.big_model_id" class="form-select py-3 mb-3" aria-label="Default select example">
                         <option :value="0">Выберите раздел</option>
-                        <option v-for="big_category in data_big_categories" :key="big_category.id" :value="big_category.id">
-                            {{ big_category.name }}
+                        <option v-for="big_model in data_big_categories" :key="big_model.id" :value="big_model.id">
+                            {{ big_model.name }}
                         </option>
                     </select>
-                    <select v-model="update_data_model.category_id" class="form-select py-3 mb-3" aria-label="Default select example">
+                    <select v-model="update_data_model.model_id" class="form-select py-3 mb-3" aria-label="Default select example">
                         <option :value="0">Выберите категорию</option>
-                        <option v-for="category in data_categories" :key="category.id" :value="category.id">
-                            {{ category.name }}
+                        <option v-for="model in data_categories" :key="model.id" :value="model.id">
+                            {{ model.name }}
                         </option>
                     </select>
                     <select v-model="update_data_model.collection_id" class="form-select py-3 mb-3" aria-label="Default select example">
@@ -133,13 +143,13 @@
                     </select>
                   </div>
                   <div class="modal-footer ">
-                    <button @click="updateCategory()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Изменить</button>
+                    <button @click="updatemodel()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Изменить</button>
                   </div>
                 </div>
               </div>
             </div>
 
-            <button @click="deleteCategory()" class="btn btn-icon d-inline text-danger px-2"><i class="bi bi-trash3"></i></button>
+            <button @click="deletemodel()" class="btn btn-icon d-inline text-danger px-2"><i class="bi bi-trash3"></i></button>
         </div>
         </div>
     </div> -->
@@ -152,23 +162,27 @@ import { Collapse } from 'bootstrap/dist/js/bootstrap.js'
 export default {
     name: 'ListModels',
     props: {
-        category: Object,
-        bigСategories: Array
+        model: Object,
+        categories: Array,
+        collections: Array,
     },
     data() {
         return {
             isCollapsed : false,
-            
-            dataCategory : this.category,
-            updatedCategory: {
+
+            dataModel : this.model,
+
+            updatedModel: {
+                categoryId: 0,
+                collectionId: 0,
                 name: '',
                 slug: '',
             },
             
-            dataModels : {
+            dataProducts : {
                 totalCount: 0,
                 totalPages: 0,
-                categories: []
+                products: []
             },
             
             loading: true,
@@ -188,29 +202,29 @@ export default {
         },
     },
     created() {
-        this.updatedCategory = { ...this.category };
+        this.updatedModel = { ...this.model };
     },
     methods: {
-        async getModels(categoryId) {
+        async getProducts(modelId) {
             this.loading = true;
-            const params = { category_id: categoryId,
+            const params = { model_id: modelId,
                             offset: 0,
                             limit: 20 }
             try {
-                const response = await axios.get(`/models`, { params });
+                const response = await axios.get(`/products`, { params });
                 if (!response.status == 200) {
                     this.showErrorToast(response.status, response.data)
                     console.log(response);
                 }
-                const { total_count, total_pages, models } = response.data;
+                const { total_count, total_pages, products } = response.data;
 
                 // Преобразование ключей totalCount и totalPages
                 const transformedData = {
                     totalCount: total_count,
                     totalPages: total_pages,
-                    models: models
+                    products: products
                 };
-                this.dataModels = transformedData;
+                this.dataProducts = transformedData;
             } catch (error) {
                 this.showErrorToast(error.code, error.message);
                 console.error(error);
@@ -227,7 +241,7 @@ export default {
             // Подождем, чтобы Vue успел обновить isCollapsed
             await this.$nextTick();
 
-            const collapseTarget = document.getElementById('collapseProduct' + this.dataCategory.id);
+            const collapseTarget = document.getElementById('collapseProduct' + this.dataModel.id);
 
             if (!this.isCollapsed) {
                 new Collapse(collapseTarget, { toggle: false }).show();
@@ -238,7 +252,7 @@ export default {
             this.isCollapsed = !this.isCollapsed;
 
             if (this.isCollapsed) {
-              await this.getModels(this.dataCategory.id);
+              await this.getProducts(this.dataModel.id);
             }          
         },
     }
@@ -260,27 +274,27 @@ export default {
     //             name: '',
     //             slug: '',
     //             description: '',
-    //             big_category_id: 0,
-    //             category_id: 0,
+    //             big_model_id: 0,
+    //             model_id: 0,
     //             collection_id: 0,
     //             FilterId: '',
     //         },
     //     }
     // },
     // computed: {
-    //     TreeBigCategory() {
-    //         console.log("TreeBigCategory")
-    //         const bigCategoryId = this.data_model.big_category_id
-    //         const bigCategory = this.data_big_categories.find(category => category.id == bigCategoryId)  
+    //     TreeBigmodel() {
+    //         console.log("TreeBigmodel")
+    //         const bigmodelId = this.data_model.big_model_id
+    //         const bigmodel = this.data_big_categories.find(model => model.id == bigmodelId)  
 
-    //         return bigCategory ? bigCategory.name : ''; 
+    //         return bigmodel ? bigmodel.name : ''; 
     //     },
-    //     TreeCategory() {
-    //         console.log("TreeCategory")
-    //         const categoryId = this.data_model.category_id
-    //         const category = this.data_categories.find(category => category.id == categoryId)  
+    //     Treemodel() {
+    //         console.log("Treemodel")
+    //         const modelId = this.data_model.model_id
+    //         const model = this.data_categories.find(model => model.id == modelId)  
 
-    //         return category ? category.name : ''; 
+    //         return model ? model.name : ''; 
     //     },
     //     TreeCollection() {
     //         console.log("TreeCollection")
@@ -299,7 +313,7 @@ export default {
     //             .delete(`/model/${this.data_model.id}`)
     //             .then(response => {
     //                 console.log(response.data)
-    //                 this.$emit('categoryDeleted');
+    //                 this.$emit('modelDeleted');
     //             })
     //             .catch(error => {
     //                 console.log(error)
@@ -310,7 +324,7 @@ export default {
     //             name: this.update_data_model.name,
     //             slug: this.update_data_model.slug,
     //             description: this.update_data_model.description,
-    //             category_id: this.update_data_model.category_id,
+    //             model_id: this.update_data_model.model_id,
     //             collection_id: this.update_data_model.collection_id
     //         }
     //         await axios
@@ -318,7 +332,7 @@ export default {
     //             .then(response => {
     //                 console.log(response.data)
     //                 this.data_model = { ...this.update_data_model}
-    //                 this.$emit('categoryUpdated');
+    //                 this.$emit('modelUpdated');
     //             })
     //             .catch(error => {
     //                 console.log(error)

@@ -242,7 +242,7 @@ export default {
             }          
         },
     }
-
+ 
     // props: {
     //     model: Object,
     //     big_categories: Array,

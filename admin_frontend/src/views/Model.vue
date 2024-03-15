@@ -514,11 +514,11 @@ export default {
                 params.sort_by = sortBy;
                 params.order = order;
             }
-            if (filterCategory !== 0) {
+            if (filterCategory != 0) {
                 console.log(filterCategory)
                 params.category_id = filterCategory;
             }
-            if (filterCollection !== 0) {
+            if (filterCollection != 0) {
                 console.log(filterCollection)
                 params.collection_id = filterCollection;
             }

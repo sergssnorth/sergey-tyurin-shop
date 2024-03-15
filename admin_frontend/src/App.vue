@@ -95,13 +95,13 @@
                 <div class="col">
                   <div class="container">
                   <div class="collapse multi-collapse" id="multiCollapseModel">
-                    <button @click="$router.push('/big-categories')" class="btn btn-navigation d-flex justify-content-between my-1" style="width: 100%; border-radius: 1.5rem;">
+                    <!-- <button @click="$router.push('/big-categories')" class="btn btn-navigation d-flex justify-content-between my-1" style="width: 100%; border-radius: 1.5rem;">
                       <div>
                         <span><i class="bi bi-box-fill"></i></span>
                         <span style="padding-left: 1rem;">Разделы</span>
                       </div>
-                    </button>
-                    <button @click="$router.push('/categories')" class="btn btn-navigation d-flex justify-content-between mb-1" style="width: 100%; border-radius: 1.5rem;">
+                    </button> -->
+                    <button @click="$router.push('/categories')" class="btn btn-navigation d-flex justify-content-between my-1" style="width: 100%; border-radius: 1.5rem;">
                       <div>
                         <span><i class="bi bi-box-seam-fill"></i></span>
                         <span style="padding-left: 1rem;">Категории</span>

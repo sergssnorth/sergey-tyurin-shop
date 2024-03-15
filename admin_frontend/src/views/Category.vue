@@ -221,7 +221,7 @@
             <div id="errorToast" class="toast text-bg-danger" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="7000">
                 <div class="d-flex">
                     <div class="toast-body" id="errorToastBody">
-                        Ошибка при создании пользователя.
+                        Ошибка ...
                     </div>
                     <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
@@ -233,7 +233,6 @@
 <script>
 import axios from 'axios'
 import { Toast } from 'bootstrap/dist/js/bootstrap.js'
-
 
 import ListCategories from '@/components/ListCategories'
 

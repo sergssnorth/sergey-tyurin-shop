@@ -7,49 +7,49 @@
                 <span style="margin-right: 0.5rem;">
                 <i class="bi bi-person-circle"></i>
                 </span>
-                <span>{{ dataCategory.name }}</span>
+                <span>{{ dataDetail.name }}</span>
                 <span class="ms-auto" style="color: grey; margin-right: 0rem;"><i class="bi bi-hash"></i></span>
-                <span class="" style="color: grey; margin-right: 1.5rem;">{{ dataCategory.id }}</span>
+                <span class="" style="color: grey; margin-right: 1.5rem;">{{ dataDetail.id }}</span>
             </div>
             
             <div class="vr" style="margin-right: 1.15rem;"></div>
             <div class="123123">
-                <button class="btn btn-icon mx-1 px-2 d-inline text-dark" @click="this.$router.push({ path: '/models', query: { 'category': dataCategory.id } });">
+                <button class="btn btn-icon mx-1 px-2 d-inline text-dark" @click="this.$router.push({ path: '/models', query: { 'detail': dataDetail.id } });">
                     <i class="bi bi-layers" style="font-size: 18px;"></i>
                 </button>
 
-                <button data-bs-toggle="modal" :data-bs-target="'#editModal_' + dataCategory.id" class="btn btn-icon d-inline text-primary px-2"><i class="bi bi-pen"></i></button>
+                <button data-bs-toggle="modal" :data-bs-target="'#editModal_' + dataDetail.id" class="btn btn-icon d-inline text-primary px-2"><i class="bi bi-pen"></i></button>
                 
                 
-                <div class="modal fade" :id="'editModal_' + dataCategory.id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal fade" :id="'editModal_' + dataDetail.id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                         <div class="modal-content">
                             <div class="modal-header text-center">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">Изменение клиента</h1>
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Изменение описания</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                                 <div class="form-floating mb-3">
-                                <input type="text" class="form-control" placeholder="name@example.com" v-model="updatedCategory.name">
-                                <label for="floatingInput">Имя</label>
+                                    <input type="text" class="form-control" placeholder="name@example.com" v-model="updatedDetail.name">
+                                    <label for="floatingInput">Имя</label>
                                 </div>
-                                <div class="form-floating mb-3">
-                                <input type="text" class="form-control" placeholder="Password" v-model="updatedCategory.slug">
-                                <label for="floatingPassword">Слаг</label>
+                                <div class="form-floating">
+                                    <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 300px"  v-model="updatedDetail.description"></textarea>
+                                    <label for="floatingTextarea2">Описание</label>
                                 </div>
                             </div>
-                            <div class="modal-footer ">
-                                <button @click="updateCategory()" type="button" class="btn btn-second w-100" data-bs-dismiss="modal">Изменить</button>
+                            <div class="modal-footer">
+                                <button @click="updateDetail()" type="button" class="btn btn-second w-100" data-bs-dismiss="modal">Изменить</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <button @click="deleteCategory()" class="btn btn-icon d-inline text-danger px-2"><i class="bi bi-trash3"></i></button>
+                <button @click="deleteDetail()" class="btn btn-icon d-inline text-danger px-2"><i class="bi bi-trash3"></i></button>
             </div>
         </div>
         <div class="separator-card" v-show="isCollapsed"></div>
-        <div :id="'collapseProduct' + dataCategory.id" class="collapse" aria-labelledby="headingExampleTwo" data-bs-parent="#collapseIndicatorExampleOne" >
+        <div :id="'collapseProduct' + dataDetail.id" class="collapse" aria-labelledby="headingExampleTwo" data-bs-parent="#collapseIndicatorExampleOne" >
             <div class="card-body">
                 <div v-if="modelLoading">
                     <div class="text-center">
@@ -61,11 +61,11 @@
 
                 <div v-if="!modelLoading">
                     <div v-if="dataModels.models.length != 0">
-                        <div v-for="model in dataModels.models" :key="category.id" class="d-flex align-items-center">
+                        <div v-for="model in dataModels.models" :key="detail.id" class="d-flex align-items-center">
                             <span style="margin-right: 0.5em;">{{ model.id }}.</span>
                             <span>{{ model.name }}</span>
                             <button data-bs-toggle="modal" data-bs-target="#editModal" class="btn btn-icon d-inline text-primary ms-auto px-2"><i class="bi bi-pen"></i></button>
-                            <button @click="deleteBigCategory()" class="btn btn-icon d-inline text-danger px-2"><i class="bi bi-trash3"></i></button>
+                            <button @click="deleteBigdetail()" class="btn btn-icon d-inline text-danger px-2"><i class="bi bi-trash3"></i></button>
                         </div>
                     </div>
                     <div v-else>
@@ -84,31 +84,30 @@ import { Collapse } from 'bootstrap/dist/js/bootstrap.js'
 
 
 export default {
-    name: 'ListCategories',
+    name: 'ListDetails',
     props: {
-        category: Object,
-        bigСategories: Array,
+        detail: Object,
         showErrorToast: Function,
         setLoading: Function,
         loading: Boolean,
-        handleCategoryUpdated: Function,
-        handleCategoryDeleted: Function,
+        handleDetailUpdated: Function,
+        handleDetailDeleted: Function,
     },
     data() {
         return {
             isCollapsed : false,
             
-            dataCategory : this.category,
+            dataDetail : this.detail,
 
-            updatedCategory: {
+            updatedDetail: {
                 name: '',
-                slug: '',
+                description: '',
             },
             
             dataModels : {
                 totalCount: 0,
                 totalPages: 0,
-                categories: []
+                models: []
             },
             
             modelLoading: true,
@@ -128,12 +127,12 @@ export default {
         },
     },
     created() {
-        this.updatedCategory = { ...this.category };
+        this.updatedDetail = { ...this.detail };
     },
     methods: {
-        async getModels(categoryId) {
+        async getModels(detailId) {
             this.modelLoading = true;
-            const params = { category_id: categoryId,
+            const params = { detail_id: detailId,
                             offset: 0,
                             limit: 20 }
             try {
@@ -158,14 +157,14 @@ export default {
                 this.modelLoading = false;
             }
         },
-        async updateCategory() {
+        async updateDetail() {
             const formData = {
-                name: this.updatedCategory.name,
-                slug: this.updatedCategory.slug
+                name: this.updatedDetail.name,
+                description: this.updatedDetail.description
             }
             this.setLoading(true);
             try {
-                const response = await axios.put(`/category/${this.dataCategory.id}`, formData);
+                const response = await axios.put(`/detail/${this.dataDetail.id}`, formData);
                 if (!response.status == 200) {
                     this.showErrorToast(response.status, response.data)
                     console.log(response);
@@ -175,13 +174,13 @@ export default {
                 console.error(error);
             } finally {
                 this.setLoading(false);
-                await this.handleCategoryUpdated()
+                await this.handleDetailUpdated()
             }
         },
-        async deleteCategory() {
+        async deleteDetail() {
             this.setLoading(true);
             try {
-                const response = await axios.delete(`/category/${this.dataCategory.id}`);
+                const response = await axios.delete(`/detail/${this.dataDetail.id}`);
                 if (!response.status == 200) {
                     this.showErrorToast(response.status, response.data)
                     console.log(response);
@@ -191,7 +190,7 @@ export default {
                 console.error(error);
             } finally {
                 this.setLoading(false);
-                await this.handleCategoryDeleted()
+                await this.handleDetailDeleted()
             }
         },
         async toggleSeparator(event) {
@@ -202,7 +201,7 @@ export default {
             // Подождем, чтобы Vue успел обновить isCollapsed
             await this.$nextTick();
 
-            const collapseTarget = document.getElementById('collapseProduct' + this.dataCategory.id);
+            const collapseTarget = document.getElementById('collapseProduct' + this.dataDetail.id);
 
             if (!this.isCollapsed) {
                 new Collapse(collapseTarget, { toggle: false }).show();
@@ -213,7 +212,7 @@ export default {
             this.isCollapsed = !this.isCollapsed;
 
             if (this.isCollapsed) {
-              await this.getModels(this.dataCategory.id);
+              await this.getModels(this.dataDetail.id);
             }          
         },
     }

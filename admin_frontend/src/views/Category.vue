@@ -126,12 +126,12 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <select v-model="newCategory.bigCategoryId" class="form-select py-3" aria-label="Default select example">
+                                <!-- <select v-model="newCategory.bigCategoryId" class="form-select py-3" aria-label="Default select example">
                                     <option :value="0">Создание категории</option>
                                     <option v-for="bigCategory in bigCategories.bigCategories" :key="bigCategory.id" :value="bigCategory.id">
                                         {{ bigCategory.name }}
                                     </option>
-                                </select>
+                                </select> -->
                                 <div class="form-floating mt-2 mb-3">
                                     <input type="text" class="form-control" placeholder="name@example.com" v-model="newCategory.name">
                                     <label for="floatingInput">Имя</label>
@@ -165,13 +165,14 @@
                     <div v-if="categories.categories.length != 0">
                         <ListCategories
                         v-for="category in categories.categories"
-                        v-bind:key="category.id"
-                        v-bind:category="category"
-                        v-bind:bigCategories="bigCategories"
-                        @categoryDeleted="handlecategoryDeleted" 
-                        @categoryUpdated="handlecategoryUpdated"
+                        :key="category.id"
+                        :category="category"
+                        :bigCategories="bigCategories"
+                        :setLoading="setLoading"
+                        :handleCategoryDeleted = "handleCategoryDeleted"
+                        :handleCategoryUpdated = "handleCategoryUpdated"
+                        :loading="loading"
                         :showErrorToast="showErrorToast"/>
-
                     </div>
                     <div v-else>
                         <span style="font-size: 1.3rem;">Категорий пока нет ...</span>
@@ -246,7 +247,6 @@ export default {
             filterBigCategory: 0,
 
             newCategory: {
-                bigCategoryId: 0,
                 name: '',
                 slug: '',
             },
@@ -370,6 +370,7 @@ export default {
         },
 
         async getCategories(page, selectedSort, filterBigCategory) {
+            console.log("getCategories")
             const offset = (page - 1) * 50
             let params = {
                 offset: offset,
@@ -416,7 +417,6 @@ export default {
         },
         async addCategory() {
             const formData = {
-                big_category_id: this.newCategory.bigCategoryId,
                 name: this.newCategory.name,
                 slug: this.newCategory.slug
             }
@@ -426,6 +426,8 @@ export default {
                 const response = await axios.post(`/category`, formData);
                 if (response.status == 200) {
                     this.showSuccessfulCreationCategoryToast()
+                    this.newCategory.name = '',
+                    this.newCategory.slug = ''
                 }
                 else {
                     this.showErrorToast(response.status, response.data)
@@ -488,12 +490,19 @@ export default {
             errorBody.textContent = 'Ошибка, ' + errorCode + ', ' + errorMessage;
             errorCreation.show();
         },
-        async handlecategoryDeleted() {
+        setLoading(loading) {
+            console.log("setLoading")
+            this.loading = loading;
+        },
+        async handleCategoryDeleted() {
+            console.log("handleCategoryDeleted")
             await this.getCategories(this.currentPage, this.selectedSort, this.filterBigCategory);
         },
-        async handlecategoryUpdated() {
+        async handleCategoryUpdated() {
+            console.log("handleCategoryUpdated")
             await this.getCategories(this.currentPage, this.selectedSort, this.filterBigCategory);
         }
+
     },
     watch: {
         async '$route'(to, from) {

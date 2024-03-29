@@ -8,6 +8,6 @@ class Category(SQLModel, table=True):
     slug: str
     models: List["Model"] = Relationship(back_populates="category")
 
-    big_category_id: Optional[int] = Field(default=None, foreign_key="bigcategory.id")
-    big_category: Optional[BigCategory] = Relationship(back_populates="categories")
+    # big_category_id: Optional[int] = Field(default=None, foreign_key="bigcategory.id")
+    # big_category: Optional[BigCategory] = Relationship(back_populates="categories")
     

@@ -70,16 +70,16 @@
                 </div>
 
                 <div v-if="!loading">
-                    <div v-if="dataModels.models.length != 0">
-                        <div v-for="model in dataModels.models" :key="model.id" class="d-flex align-items-center">
-                            <span style="margin-right: 0.5em;">{{ model.id }}.</span>
-                            <span>{{ model.name }}</span>
+                    <div v-if="dataProducts.products.length != 0">
+                        <div v-for="product in dataProducts.products" :key="product.id" class="d-flex align-items-center">
+                            <span style="margin-right: 0.5em;">{{ product.id }}.</span>
+                            <span>{{ product.name }}</span>
                             <button data-bs-toggle="modal" data-bs-target="#editModal" class="btn btn-icon d-inline text-primary ms-auto px-2"><i class="bi bi-pen"></i></button>
                             <button @click="deleteBigmodel()" class="btn btn-icon d-inline text-danger px-2"><i class="bi bi-trash3"></i></button>
                         </div>
                     </div>
                     <div v-else>
-                        <span>Моделей нет</span>
+                        <span>Продуктов нет</span>
                     </div>
                 </div>
                 

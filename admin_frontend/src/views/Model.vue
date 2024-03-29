@@ -128,22 +128,35 @@
                         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                             <div class="modal-content">
                             <div class="modal-header text-center">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">Создание категории</h1>
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Создание модели</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <select v-model="newModel.categoryId" class="form-select py-3" aria-label="Default select example">
-                                    <option :value="0">Создание категории</option>
+                                <select v-model="newModel.categoryId" class="form-select py-3 mt-2 mb-3" aria-label="Default select example">
+                                    <option :value="0">Категория</option>
                                     <option v-for="category in categories.categories" :key="category.id" :value="category.id">
                                         {{ category.name }}
                                     </option>
                                 </select>
-                                <select v-model="newModel.collectionId" class="form-select py-3" aria-label="Default select example">
-                                    <option :value="0">Создание категории</option>
+                                <select v-model="newModel.collectionId" class="form-select py-3 mb-3" aria-label="Default select example">
+                                    <option :value="0">Коллекция</option>
                                     <option v-for="collection in collections.collections" :key="collection.id" :value="collection.id">
                                         {{ collection.name }}
                                     </option>
                                 </select>
+                                <select v-model="newModel.detailId" class="form-select py-3 mb-3" aria-label="Default select example">
+                                    <option :value="0">Описание</option>
+                                    <option v-for="detail in details.details" :key="detail.id" :value="detail.id">
+                                        {{ detail.name }}
+                                    </option>
+                                </select>
+                                <select v-model="newModel.detailId" class="form-select py-3 mb-3" aria-label="Default select example">
+                                    <option :value="0">Размерная сетка</option>
+                                    <option v-for="sideGuide in sizeGuides.sizeGuides" :key="sideGuide.id" :value="sideGuide.id">
+                                        {{ sideGuide.name }}
+                                    </option>
+                                </select>
+
                                 <div class="form-floating mt-2 mb-3">
                                     <input type="text" class="form-control" placeholder="name@example.com" v-model="newModel.name">
                                     <label for="floatingInput">Имя</label>
@@ -152,7 +165,6 @@
                                     <input type="text" class="form-control" placeholder="Password" v-model="newModel.slug">
                                     <label for="floatingPassword">Слаг</label>
                                 </div>
-
                             </div>
                             <div class="modal-footer ">
                                 <button @click="addModel()" type="button" class="btn btn-second w-100" data-bs-dismiss="modal">Cоздать</button>
@@ -179,8 +191,8 @@
                         v-for="model in models.models"
                         v-bind:key="model.id"
                         v-bind:model="model"
-                        v-bind:categories="categories"
-                        v-bind:collections="collections"
+                        v-bind:categories="categories.categories"
+                        v-bind:collections="collections.collections"
                         @modelDeleted="handleModelDeleted" 
                         @modelUpdated="handleModelUpdated"
                         :showErrorToast="showErrorToast"/>
@@ -361,6 +373,8 @@ export default {
             newModel: {
                 categoryId: 0,
                 collectionId: 0,
+                detailId: 0,
+                sizeGuideId: 0,
                 name: '',
                 slug: '',
             },
@@ -375,6 +389,17 @@ export default {
                 totalCount: 0,
                 totalPages: 0,
                 collections: []
+            },
+
+            details: {
+                totalCount: 0,
+                totalPages: 0,
+                details: []
+            },
+            sizeGuides: {
+                totalCount: 0,
+                totalPages: 0,
+                sizeGuides: []
             },
 
             models : {
@@ -446,6 +471,9 @@ export default {
 
         await this.getModels(this.currentPage, this.selectedSort, this.filterCategory);
         await this.getCategories()
+        await this.getCollections()
+        await this.getDetails()
+        await this.getSizeGuides()
     },
     methods: {
         async getCategories() {
@@ -491,6 +519,58 @@ export default {
 
                 this.collections = transformedData;
                 console.log(this.collections);
+            } catch (error) {
+                this.showErrorToast(error.code, error.message);
+                console.log(error);
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        async getDetails() {
+            try {
+                this.loading = true;
+                const response = await axios.get(`/details`);
+                if (!response.status == 200) {
+                    this.showErrorToast(response.status, response.data)
+                    console.log(response);
+                }
+                const { total_count, total_pages, details } = response.data;
+
+                const transformedData = {
+                    totalCount: total_count,
+                    totalPages: total_pages,
+                    details: details
+                };
+
+                this.details = transformedData;
+                console.log(this.details);
+            } catch (error) {
+                this.showErrorToast(error.code, error.message);
+                console.log(error);
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        async getSizeGuides() {
+            try {
+                this.loading = true;
+                const response = await axios.get(`/size-guides`);
+                if (!response.status == 200) {
+                    this.showErrorToast(response.status, response.data)
+                    console.log(response);
+                }
+                const { total_count, total_pages, sizeGuides } = response.data;
+
+                const transformedData = {
+                    totalCount: total_count,
+                    totalPages: total_pages,
+                    sizeGuides: sizeGuides
+                };
+
+                this.sizeGuides = transformedData;
+                console.log(this.sizeGuides);
             } catch (error) {
                 this.showErrorToast(error.code, error.message);
                 console.log(error);
@@ -552,15 +632,23 @@ export default {
             const formData = {
                 category_id: this.newModel.categoryId,
                 collection_id: this.newModel.collectionId,
+                detail_id: this.newModel.detailId,
+                size_guide_id: this.newModel.sizeGuideId,
                 name: this.newModel.name,
                 slug: this.newModel.slug
             }
             console.log(formData)
             try {
                 this.loading = true;
-                const response = await axios.post(`/category`, formData);
+                const response = await axios.post(`/model`, formData);
                 if (response.status == 200) {
                     this.showSuccessfulCreationModelToast()
+                    this.newModel.category_id = 0,
+                    this.newModel.name = 0,
+                    this.newModel.detailId = 0,
+                    this.newModel.size_guide_id = 0,
+                    this.newModel.name = '',
+                    this.newModel.slug = ''
                 }
                 else {
                     this.showErrorToast(response.status, response.data)

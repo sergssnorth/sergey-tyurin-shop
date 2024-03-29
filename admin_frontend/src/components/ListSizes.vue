@@ -1,37 +1,51 @@
 <template>
-    <div class="card mb-1">
-        <div class="card-body py-1 px-3">
-        <div class="d-flex align-items-center">
-            <span>{{ data_size.name }}</span>
-            <button @click="$router.push(`/models`)" class="btn btn-icon d-inline ms-auto px-2"><i class="bi bi bi-box-seam"></i></button>
+    <div class="card mb-1" style="border-radius: 1.5rem;">
+        <div class="card-body elementList py-1 px-3 d-flex" id="headingExampleTwo" aria-controls="collapseIndicatorChevron">
             
-            <button data-bs-toggle="modal" :data-bs-target="'#editModal_' + data_size.id" class="btn btn-icon d-inline text-primary px-2"><i class="bi bi-pen"></i></button>
-            <div class="modal fade" :id="'editModal_' + data_size.id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-              <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                <div class="modal-content">
-                  <div class="modal-header text-center">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Изменить размер, {{ data_size.name }}</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                    <div class="form-floating mb-3">
-                      <input type="text" class="form-control" placeholder="name@example.com" v-model="update_data_size.name">
-                      <label for="floatingInput">Имя</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                      <input type="text" class="form-control" placeholder="Password" v-model="update_data_size.slug">
-                      <label for="floatingPassword">Слаг</label>
-                    </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button @click="updateSize()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Изменить</button>
-                  </div>
-                </div>
-              </div>
+            <div class="flex-grow-1 d-flex  align-items-center" @click="toggleSeparator" style="">
+                <span style="margin-right: 0.5rem;">
+                <i class="bi bi-person-circle"></i>
+                </span>
+                <span>{{ dataSize.name }}</span>
+                <span class="ms-auto" style="color: grey; margin-right: 0rem;"><i class="bi bi-hash"></i></span>
+                <span class="" style="color: grey; margin-right: 1.5rem;">{{ dataSize.id }}</span>
             </div>
+            
+            <div class="vr" style="margin-right: 1.15rem;"></div>
+            <div class="123123">
+                <button class="btn btn-icon mx-1 px-2 d-inline text-dark" @click="this.$router.push({ path: '/models', query: { 'size': dataSize.id } });">
+                    <i class="bi bi-layers" style="font-size: 18px;"></i>
+                </button>
 
-            <button @click="deleteSize()" class="btn btn-icon d-inline text-danger px-2"><i class="bi bi-trash3"></i></button>
-        </div>
+                <button data-bs-toggle="modal" :data-bs-target="'#editModal_' + dataSize.id" class="btn btn-icon d-inline text-primary px-2"><i class="bi bi-pen"></i></button>
+                
+                
+                <div class="modal fade" :id="'editModal_' + dataSize.id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header text-center">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Изменение размера</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" placeholder="name@example.com" v-model="updatedSize.name">
+                                    <label for="floatingInput">Имя</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" placeholder="Password" v-model="updatedSize.slug">
+                                    <label for="floatingPassword">Слаг</label>
+                                </div>
+                            </div>
+                            <div class="modal-footer ">
+                                <button @click="updateSize()" type="button" class="btn btn-second w-100" data-bs-dismiss="modal">Изменить</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button @click="deleteSize()" class="btn btn-icon d-inline text-danger px-2"><i class="bi bi-trash3"></i></button>
+            </div>
         </div>
     </div>
 </template>
@@ -43,51 +57,66 @@ export default {
     name: 'ListSizes',
     props: {
         size: Object,
+        showErrorToast: Function,
+        setLoading: Function,
+        loading: Boolean,
+        handleSizeUpdated: Function,
+        handleSizeDeleted: Function,
+   
     },
     data() {
-        return {
-            data_size: this.size,
-            update_data_size: {
+        return { 
+            dataSize : this.size,
+
+            updatedSize: {
                 name: '',
                 slug: '',
-                description: '',
             },
         }
     },
     created() {
-      this.update_data_size = { ...this.size };
+        this.updatedSize = { ...this.size };
     },
     methods: {
-        async deleteSize() {
-            await axios
-                .delete(`/size/${this.data_size.id}`)
-                .then(response => {
-                    console.log(response.data)
-                    this.$emit('sizeDeleted');
-                })
-                .catch(error => {
-                    console.log(error)
-                })
-        },
         async updateSize() {
             const formData = {
-                name: this.update_data_size.name,
-                slug: this.update_data_size.slug,
+                name: this.updatedSize.name,
+                slug: this.updatedSize.slug,
             }
+            this.setLoading(true);
             try {
-                await axios
-                .put(`/size/${this.data_size.id}`, formData)
-                .then(response => {
-                    console.log(response.data)
-                    this.data_size = { ...this.update_data_size }
-                    this.$emit('sizeUpdated');
-                })
+                const response = await axios.put(`/size/${this.dataSize.id}`, formData);
+                if (!response.status == 200) {
+                    this.showErrorToast(response.status, response.data)
+                    console.log(response);
+                }
             } catch (error) {
-                console.log(error);
+                this.showErrorToast(error.code, error.message);
+                console.error(error);
+            } finally {
+                this.setLoading(false);
+                await this.handleSizeUpdated()
+            }
+        },
+        async deleteSize() {
+            this.setLoading(true); // Включить индикатор загрузки
+            try {
+                const response = await axios.delete(`/size/${this.dataSize.id}`);
+                if (!response.status == 200) {
+                    this.showErrorToast(response.status, response.data)
+                    console.log(response);
+                }
+            } catch (error) {
+                this.showErrorToast(error.code, error.message);
+                console.error(error);
+            } finally {
+                this.setLoading(false);
+                await this.handleSizeDeleted()
             }
         },
     }
-}
+
+  }
 </script>
 
 <style scoped>

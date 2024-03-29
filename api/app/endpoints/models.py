@@ -49,8 +49,8 @@ async def get_models(offset: int = Query(0, ge=0),
             Model.name.ilike(f"%{search}%")
         ))    
     
-    if big_category_id is not None:
-        query = query.filter(Category.big_category_id == big_category_id)
+    # if big_category_id is not None:
+    #     query = query.filter(Category.big_category_id == big_category_id)
 
     if category_id is not None:
         query = query.filter(Model.category_id == category_id)
@@ -63,12 +63,12 @@ async def get_models(offset: int = Query(0, ge=0),
 
     if sort_by and order:
         if sort_by == "name":
-            query = query.order_by(Category.name.desc() if order == "desc" else Category.name.asc())
+            query = query.order_by(Model.name.desc() if order == "desc" else Model.name.asc())
         elif sort_by == "id":
-            query = query.order_by(Category.id.desc() if order == "desc" else Category.id.asc())
+            query = query.order_by(Model.id.desc() if order == "desc" else Model.id.asc())
     else:
         #Сортировака по умолчанию
-        query = query.order_by(Category.id.desc() if order == "desc" else Category.id.asc())
+        query = query.order_by(Model.id.desc() if order == "desc" else Model.id.asc())
 
     total_count_query = select(func.count()).select_from(query)
     total_count_result = await session.execute(total_count_query)

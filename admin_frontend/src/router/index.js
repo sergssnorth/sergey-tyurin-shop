@@ -5,6 +5,8 @@ import ProductStatistics from  '../views/ProductStatistics.vue'
 
 import BigCategory from '../views/BigCategory.vue'
 import Category from '../views/Category.vue'
+import Detail from '../views/Detail.vue'
+import SizeGuide from '../views/SizeGuide.vue'
 import Model from  '../views/Model.vue'
 import Product from  '../views/Product.vue'
 
@@ -16,6 +18,7 @@ import OrderStatus from '../views/OrderStatus.vue'
 import Client from '../views/Client.vue'
 
 import Order from '../views/Order.vue'
+
 
 
 
@@ -47,6 +50,12 @@ const routes = [
     component: Model
   },
   {
+    path: '/details',
+    name: 'Detail',
+    component: Detail
+  },
+
+  {
     path: '/product/:model_id',
     name: 'Product',
     component: Product
@@ -55,6 +64,11 @@ const routes = [
     path: '/collections',
     name: 'Collection',
     component: Collection
+  },
+  {
+    path: '/size-guides',
+    name: 'SizeGuide',
+    component: SizeGuide
   },
   {
     path: '/sizes',

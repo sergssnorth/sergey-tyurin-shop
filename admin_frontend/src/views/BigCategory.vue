@@ -382,7 +382,7 @@ export default {
         },
         async handleBigCategoryUpdated() {
             await this.getBigCategories(this.currentPage, this.selectedSort);
-        }
+        },
     },
 }   
 

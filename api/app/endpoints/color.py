@@ -21,11 +21,25 @@ class ColorsResponseModel(BaseModel):
 async def get_colors(offset: int = Query(0, ge=0),
                      limit: int = Query(50, gt=0),
                      search: str = Query(None),
+
+                     sort_by: str = Query(None, description="Sort by 'name' or 'id'."),
+                     order: str = Query("desc", description="Sort order: 'asc' or 'desc'."),
+
                      session: AsyncSession = Depends(get_session)):
+    
     query = select(Color)
 
     if search:
         query = query.where(Color.name.ilike(f"%{search}%"))
+
+    if sort_by and order:
+        if sort_by == "name":
+            query = query.order_by(Color.name.desc() if order == "desc" else Color.name.asc())
+        elif sort_by == "id":
+            query = query.order_by(Color.id.desc() if order == "desc" else Color.id.asc())
+    else:
+        #Сортировака по умолчанию
+        query = query.order_by(Color.id.desc() if order == "desc" else Color.id.asc())
 
     total_count_query = select(func.count()).select_from(query)
     total_count_result = await session.execute(total_count_query)

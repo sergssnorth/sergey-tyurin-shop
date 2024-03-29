@@ -11,6 +11,8 @@ from alembic import context
 from app.models.big_category import BigCategory
 from app.models.category import Category
 from app.models.collection import Collection
+from app.models.detail import Detail
+from app.models.size_guide import SizeGuide
 from app.models.model import Model
 from app.models.size import Size
 from app.models.color import Color

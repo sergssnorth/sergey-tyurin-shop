@@ -28,12 +28,16 @@
                             </div>
                             <div class="modal-body">
                                 <div class="form-floating mb-3">
-                                <input type="text" class="form-control" placeholder="name@example.com" v-model="updatedClient.name">
-                                <label for="floatingInput">Имя</label>
+                                    <input type="text" class="form-control" placeholder="name@example.com" v-model="updatedClient.name">
+                                    <label for="floatingInput">Имя</label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                <input type="text" class="form-control" placeholder="Password" v-model="updatedClient.slug">
-                                <label for="floatingPassword">Слаг</label>
+                                    <input type="text" class="form-control" placeholder="Password" v-model="updatedClient.phone">
+                                    <label for="floatingPassword">Телефон</label>
+                                </div>
+                                <div class="form-floating mb-2">
+                                    <input type="text" class="form-control" placeholder="Password" v-model="updatedClient.email">
+                                    <label for="floatingPassword">Email</label>
                                 </div>
                             </div>
                             <div class="modal-footer ">
@@ -95,7 +99,8 @@ export default {
             dataClient : this.client,
             updatedClient: {
                 name: '',
-                slug: '',
+                phone: '',
+                email: ''
             },
             
             dataOrders : [],

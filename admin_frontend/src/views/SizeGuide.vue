@@ -1,11 +1,10 @@
 <template>
     <div class="container-fluid text-center" style="height: 100%; display: flex; flex-direction: column;">
         <div class="row mb-3">
-            
             <div class="d-flex align-items-center flex-grow-1" >
                 <div class="input-group align-items-center">
-                    <span @click="searchClients" class="input-group-text" id="basic-addon1" style="border-radius: 1.5rem 0 0 1.5rem;"><i class="bi bi-search" style="font-size: 16px;"></i></span>
-                    <input v-model="search" @keyup.enter="searchClients" type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1" style="border-radius: 0 1.5rem 1.5rem 0;">
+                    <span @click="searchdetails" class="input-group-text" id="basic-addon1" style="border-radius: 1.5rem 0 0 1.5rem;"><i class="bi bi-search" style="font-size: 16px;"></i></span>
+                    <input v-model="search" @keyup.enter="searchdetails" type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1" style="border-radius: 0 1.5rem 1.5rem 0;">
                 </div>
                 <div class="d-flex align-items-center">
                     
@@ -94,61 +93,31 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div>                    
 
-                    <button @click="" class="btn btn-icon d-inline mx-1 px-2 custom-dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="bi bi-funnel"></i>            
-                    </button>
-
-                    <div class="dropdown-menu" aria-labelledby="userDropdown" style="width: 20rem;">
-                        <div class="row">
-                            <div class="col">
-                                <div class="separator mx-3 mb-2">Фильтры</div>
-                                <select class="form-select mx-3 mb-2" style="width: 91%;" required aria-label="select example">
-                                    <option value="">Open</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                </select>
-                                <select class="form-select mx-3 mb-2" style="width: 91%;" required aria-label="select example">
-                                    <option value="">Open</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    
-
-
-                    <button class="btn btn-icon mx-1 px-2 d-inline text-success" data-bs-toggle="modal" data-bs-target="#сreateUserModal">
-                        <i class="bi bi-person-add" style="font-size: 18px;"></i>
+                    <button class="btn btn-icon mx-1 px-2 d-inline text-success" data-bs-toggle="modal" data-bs-target="#сreateCategoryModal">
+                        <i class="bi bi-box-seam" style="font-size: 18px;"></i>
                     </button>
                     
-                    <div class="modal fade" id="сreateUserModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal fade" id="сreateCategoryModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                             <div class="modal-content">
                             <div class="modal-header text-center">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">Создание клиента</h1>
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Создание описания</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                                 <div class="form-floating mt-2 mb-3">
-                                    <input type="text" class="form-control" placeholder="name@example.com" v-model="newClient.name">
+                                    <input type="text" class="form-control" placeholder="name@example.com" v-model="newDetail.name">
                                     <label for="floatingInput">Имя</label>
                                 </div>
-                                <div class="form-floating mb-3">
-                                    <input type="text" class="form-control" placeholder="Password" v-model="newClient.phone">
-                                    <label for="floatingPassword">Телефон</label>
-                                </div>
-                                <div class="form-floating mb-2">
-                                    <input type="text" class="form-control" placeholder="Password" v-model="newClient.email">
-                                    <label for="floatingPassword">Email</label>
+                                <div class="form-floating">
+                                    <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 300px"  v-model="newDetail.description"></textarea>
+                                    <label for="floatingTextarea2">Описание</label>
                                 </div>
                             </div>
                             <div class="modal-footer ">
-                                <button @click="addClient()" type="button" class="btn btn-second w-100" data-bs-dismiss="modal">Cоздать</button>
+                                <button @click="addDetail()" type="button" class="btn btn-second w-100" data-bs-dismiss="modal">Cоздать</button>
                             </div>
                             </div>
                         </div>
@@ -156,7 +125,7 @@
                 </div>
             </div>
         </div>
-        <div class="row flex-grow-1" id="clientlist">
+        <div class="row flex-grow-1" id="big-category-list">
             <div class="col d-flex flex-column" style="flex-grow: 1;">
             
                 <div v-if="loading">
@@ -167,14 +136,21 @@
                     </div>
                 </div>
                 <div v-if="!loading">
-                    <div class="col d-flex flex-column" style="flex-grow: 1;"></div>
-                    <ListClients
-                    v-for="client in clients.clients"
-                    v-bind:key="client.id"
-                    v-bind:client="client"
-                    @clientDeleted="handleClientDeleted" 
-                    @clientUpdated="handleClientUpdated"
-                    :showErrorToast="showErrorToast"/>
+                    <div v-if="details.details.length != 0">
+                        <ListSizeGuides
+                        v-for="detail in details.details"
+                        :key="detail.id"
+                        :detail="detail"
+                        :setLoading="setLoading"
+                        :handleDetailDeleted = "handleDetailDeleted"
+                        :handleDetailUpdated = "handleDetailUpdated"
+                        :loading="loading"
+                        :showErrorToast="showErrorToast"/>
+                    </div>
+                    <div v-else>
+                        <span style="font-size: 1.3rem;">Описаний пока нет ...</span>
+                    </div>
+                    
                 </div>
 
             </div>
@@ -183,7 +159,7 @@
             <div class="col text-center">
                 <nav class="px-0 py-0" aria-label="Навигация по страницам">
                     <ul class="my-2 pagination justify-content-center">
-                        <li class="page-item page-item-pointer" v-if="clients.totalPages > 1 && currentPage > 1">
+                        <li class="page-item page-item-pointer" v-if="details.totalPages > 1 && currentPage > 1">
                             <a class="page-link" @click="changePage(currentPage - 1)" aria-label="Предыдущая">
                             <span aria-hidden="true">&laquo;</span>
                             </a>
@@ -196,7 +172,7 @@
                             <a class="page-link" @click="changePage(page)" :class="{ 'active': page == currentPage }">{{ page }}</a>
                             </template>
                         </li>
-                        <li class="page-item page-item-pointer" v-if="clients.totalPages > 1 && currentPage < clients.totalPages">
+                        <li class="page-item page-item-pointer" v-if="details.totalPages > 1 && currentPage < details.totalPages">
                             <a class="page-link" @click="changePage(currentPage + 1)" aria-label="Следующая">
                             <span aria-hidden="true">&raquo;</span>
                             </a>
@@ -206,10 +182,10 @@
             </div>
         </div>
         <div class="toast-container position-fixed bottom-0 end-0 p-3">
-            <div id="successfulCreationСlientToast" class="toast text-bg-success" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
+            <div id="successfulCreationDetailToast" class="toast text-bg-success" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
                 <div class="d-flex">
                     <div class="toast-body">
-                        Пользователь успешно создан!
+                        Описание успешно создано!
                     </div>
                     <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
@@ -219,7 +195,7 @@
             <div id="errorToast" class="toast text-bg-danger" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="7000">
                 <div class="d-flex">
                     <div class="toast-body" id="errorToastBody">
-                        Ошибка при создании пользователя.
+                        Ошибка ...
                     </div>
                     <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
@@ -232,26 +208,25 @@
 import axios from 'axios'
 import { Toast } from 'bootstrap/dist/js/bootstrap.js'
 
-
-import ListClients from '@/components/ListClients.vue'
+import ListSizeGuides from '@/components/ListSizeGuides'
 
 export default {
-    name: 'Client',
+    name: 'SizeGuide',
+    
     data() {
         return {
             search: '',
             selectedSort: '',
 
-            newClient: {
+            newSizeGuide: {
                 name: '',
-                phone: '',
-                email: '',
+                image: '',
             },
 
-            clients : {
+            details : {
                 totalCount: 0,
                 totalPages: 0,
-                clients: []
+                details: []
             },
 
             loading : true,
@@ -259,13 +234,13 @@ export default {
         }
     },
     components: {
-        ListClients,
+        ListSizeGuides,
     },
     computed: {
         displayedPages() {
             const totalDisplayPages = 5;
             const startPage = Math.max(1, this.currentPage - 2);
-            const endPage = Math.min(this.clients.totalPages, startPage + totalDisplayPages - 1);
+            const endPage = Math.min(this.details.totalPages, startPage + totalDisplayPages - 1);
 
             let pages = [];
 
@@ -277,32 +252,33 @@ export default {
             pages.push(i);
             }
 
-            if (endPage < this.clients.totalPages) {
-            pages.push('...', this.clients.totalPages);
+            if (endPage < this.details.totalPages) {
+            pages.push('...', this.details.totalPages);
             }
 
             return pages;
         }
     },
     async mounted() {
-        this.currentPage = localStorage.getItem('clientCurrentPage');
+        this.currentPage = localStorage.getItem('detailCurrentPage');
 
         if (!this.currentPage) {
             this.currentPage = 1;
-            localStorage.setItem('clientCurrentPage', this.currentPage);
+            localStorage.setItem('detailCurrentPage', this.currentPage);
         }
 
-        this.selectedSort = localStorage.getItem('clientSelectedSort');
+        this.selectedSort = localStorage.getItem('detailSelectedSort');
 
         if (!this.selectedSort) {
             this.selectedSort = 'none';
-            localStorage.setItem('clientSelectedSort', this.selectedSort);
+            localStorage.setItem('detailSelectedSort', this.selectedSort);
         }
 
-        await this.getClients(this.currentPage, this.selectedSort);
+        await this.getDetails(this.currentPage, this.selectedSort);
     },
     methods: {
-        async getClients(page, selectedSort) {
+        async getDetails(page, selectedSort) {
+            console.log("getDetails")
             const offset = (page - 1) * 50
             let params = {
                 offset: offset,
@@ -320,20 +296,22 @@ export default {
 
             try {
                 this.loading = true;
-                const response = await axios.get(`/clients`, { params });
+                const response = await axios.get(`/details`, { params });
                 if (!response.status == 200) {
                     this.showErrorToast(response.status, response.data)
                     console.log(response);
                 }
-                const { total_count, total_pages, clients } = response.data;
+                const { total_count, total_pages, details } = response.data;
+
+                // Преобразование ключей totalCount и totalPages
                 const transformedData = {
                     totalCount: total_count,
                     totalPages: total_pages,
-                    clients: clients
+                    details: details
                 };
 
-                this.clients = transformedData;
-                console.log(this.clients);
+                this.details = transformedData;
+                console.log(this.details);
             } catch (error) {
                 this.showErrorToast(error.code, error.message);
                 console.log(error);
@@ -341,26 +319,25 @@ export default {
                 this.loading = false;
             }
         },
-        async addClient() {
+        async addDetail() {
             const formData = {
-                name: this.newClient.name,
-                phone: this.newClient.phone,
-                email: this.newClient.email,
+                name: this.newDetail.name,
+                description: this.newDetail.description
             }
+            console.log(formData)
             try {
                 this.loading = true;
-                const response = await axios.post(`/client`, formData);
+                const response = await axios.post(`/detail`, formData);
                 if (response.status == 200) {
-                    this.showSuccessfulCreationСlientToast()
-                    this.newClient.name = '',
-                    this.newClient.phone = '',
-                    this.newClient.email = ''
+                    this.showSuccessfulCreationDetailToast()
+                    this.newDetail.name = '',
+                    this.newDetail.description = ''
                 }
                 else {
                     this.showErrorToast(response.status, response.data)
                     console.log(response);
                 }
-                await this.getClients(this.currentPage, this.selectedSort);
+                await this.getDetails(this.currentPage, this.selectedSort);
             } catch (error) {
                 this.showErrorToast(error.code, error.message);
                 console.log(error);
@@ -368,11 +345,11 @@ export default {
                 this.loading = false;
             }
         },
-        async searchClients() {
+        async searchdetails() {
             try {
                 this.currentPage = 1;
-                localStorage.setItem('clientCurrentPage',  this.currentPage);
-                await this.getClients(this.currentPage, this.selectedSort);
+                localStorage.setItem('detailCurrentPage',  this.currentPage);
+                await this.getDetails(this.currentPage, this.selectedSort);
             } catch (error) {
                 this.showErrorToast(error.code, error.message);
                 console.log(error);
@@ -382,18 +359,18 @@ export default {
         },
         async changePage(page) {
             this.loading = true;
-            localStorage.setItem('clientCurrentPage', page);
+            localStorage.setItem('detailCurrentPage', page);
             this.currentPage = page
-            await this.getClients(page, this.selectedSort);
+            await this.getDetails(page, this.selectedSort, this.filterBigCategory);
             this.loading = false;
         },
         async changeSort() {
             this.loading = true;
             try {
                 this.currentPage = 1;
-                localStorage.setItem('clientCurrentPage',  this.currentPage);
-                localStorage.setItem('clientSelectedSort',  this.selectedSort);
-                await this.getClients(this.currentPage, this.selectedSort);
+                localStorage.setItem('detailCurrentPage',  this.currentPage);
+                localStorage.setItem('detailSelectedSort',  this.selectedSort);
+                await this.getDetails(this.currentPage, this.selectedSort);
             } catch (error) {
                 this.showErrorToast(error.code, error.message);
                 console.log(error);
@@ -401,8 +378,14 @@ export default {
                 this.loading = false;
             }
         },
-        showSuccessfulCreationСlientToast() {
-            const successfulCreation = new Toast(document.getElementById('successfulCreationСlientToast'))
+
+        async handleBigCategoryChange(event) {
+
+            await this.getDetails(this.currentPage, this.selectedSort);
+            console.log("Выбранное значение:", event.target.value);
+        },
+        showSuccessfulCreationDetailToast() {
+            const successfulCreation = new Toast(document.getElementById('successfulCreationDetailToast'))
             successfulCreation.show()
         },
         showErrorToast(errorCode, errorMessage) {
@@ -411,49 +394,20 @@ export default {
             errorBody.textContent = 'Ошибка, ' + errorCode + ', ' + errorMessage;
             errorCreation.show();
         },
-        async handleClientDeleted() {
-            await this.getClients(this.currentPage, this.selectedSort);
+        setLoading(loading) {
+            console.log("setLoading")
+            this.loading = loading;
         },
-        async handleClientUpdated() {
-            await this.getClients(this.currentPage, this.selectedSort);
+        async handleDetailDeleted() {
+            console.log("handleDetailDeleted")
+            await this.getDetails(this.currentPage, this.selectedSort);
+        },
+        async handleDetailUpdated() {
+            console.log("handleDetailUpdated")
+            await this.getDetails(this.currentPage, this.selectedSort);
         }
+
     },
 }   
 
 </script>
-
-<style lang="scss">
-
-button.btn {
-    border-radius: 0.75rem;
-}
-
-#clientlist {
-    overflow-y: auto;
-}
-
-#clientlist::-webkit-scrollbar {
-    width: 8px;
-}
-
-#clientlist::-webkit-scrollbar-track {
-    border-radius: 8px;
-    background-color: #e7e7e7;
-    border: 1px solid #cacaca;
-}
-
-#clientlist::-webkit-scrollbar-thumb {
-    border-radius: 8px;
-    background-color: #696cff;
-}
-
-input {
-    border-radius: 0;
-}
-
-.input-group-text:hover {
-    cursor: pointer;
-}
-
-
-</style>

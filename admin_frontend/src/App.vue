@@ -143,7 +143,7 @@
               <div class="d-inline-flex gap-1" style="width: 100%;">
                 <button @click="toggleReferenceCollapse"  :class="{'active': isClickedReference}" class="btn btn-navigation d-flex justify-content-between" style="width: 100%; border-radius: 1.5rem;" data-bs-toggle="collapse" data-bs-target="#multiCollapseReference" href="#multiCollapseReference" role="button" aria-expanded="false" aria-controls="multiCollapseReference">
                   <div>
-                    <span><i class="bi bi-database-fill"></i></span>
+                    <span><i class="bi bi-file-text-fill"></i></span>
                     <span style="padding-left: 1rem;">Справочники</span>
                   </div>
                   <span><i :class="isClickedReference ? 'bi-caret-up-fill' : 'bi-caret-right-fill'"></i></span>
@@ -155,26 +155,38 @@
                   <div class="collapse multi-collapse" id="multiCollapseReference">
                     <button @click="$router.push('/collections')" class="btn btn-navigation d-flex justify-content-between my-1" style="width: 100%; border-radius: 1.5rem;">
                       <div>
-                        <span><i class="bi bi-table"></i></span>
+                        <span><i class="bi bi-file-zip-fill"></i></span>
                         <span style="padding-left: 1rem;">Коллекции</span>
                       </div>
                     </button>
                     <button @click="$router.push('/sizes')" class="btn btn-navigation d-flex justify-content-between mb-1" style="width: 100%;  border-radius: 1.5rem;">
                       <div>
-                        <span><i class="bi bi-table"></i></span>
+                        <span><i class="bi bi-file-code-fill"></i></span>
                         <span style="padding-left: 1rem;">Размеры</span>
+                      </div>
+                    </button>
+                    <button @click="$router.push('/size-guides')" class="btn btn-navigation d-flex justify-content-between mb-1" style="width: 100%; border-radius: 1.5rem;">
+                      <div>
+                        <span><i class="bi bi-file-spreadsheet-fill"></i></span>
+                        <span style="padding-left: 1rem;">Размерные сетки</span>
                       </div>
                     </button>
                     <button @click="$router.push('/colors')" class="btn btn-navigation d-flex justify-content-between mb-1" style="width: 100%;  border-radius: 1.5rem;">
                       <div>
-                        <span><i class="bi bi-table"></i></span>
+                        <span><i class="bi bi-file-image-fill"></i></span>
                         <span style="padding-left: 1rem;">Цвета</span>
                       </div>
                     </button>
-                    <button @click="$router.push('/order-status')" class="btn btn-navigation d-flex justify-content-between" style="width: 100%; border-radius: 1.5rem;">
+                    <button @click="$router.push('/order-status')" class="btn btn-navigation d-flex justify-content-between mb-1" style="width: 100%; border-radius: 1.5rem;">
                       <div>
-                        <span><i class="bi bi-table"></i></span>
+                        <span><i class="bi bi-file-check-fill"></i></span>
                         <span style="padding-left: 1rem;">Статусы заказов</span>
+                      </div>
+                    </button>
+                    <button @click="$router.push('/details')" class="btn btn-navigation d-flex justify-content-between" style="width: 100%; border-radius: 1.5rem;">
+                      <div>
+                        <span><i class="bi bi-file-font-fill"></i></span>
+                        <span style="padding-left: 1rem;">Описание</span>
                       </div>
                     </button>
                   </div>

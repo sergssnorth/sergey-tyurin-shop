@@ -2,6 +2,8 @@ from .category import Category
 from .big_category import BigCategory
 from .model import Model
 from .collection import Collection
+from .detail import Detail
+from .size_guide import SizeGuide
 from .size import Size
 from .color import Color
 from .product import Product

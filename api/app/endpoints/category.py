@@ -20,23 +20,19 @@ class CategoriesResponseModel(BaseModel):
 async def get_categories(offset: int = Query(0, ge=0),
                         limit: int = Query(50, gt=0),
                         search: str = Query(None),
-                        big_category_id: int = Query(None),
 
                         sort_by: str = Query(None, description="Sort by 'name' or 'id'."),
                         order: str = Query("desc", description="Sort order: 'asc' or 'desc'."),
 
                         session: AsyncSession = Depends(get_session)):
     
-    query = select(Category, BigCategory).join(BigCategory)
+    query = select(Category)
     
 
     if search:
         query = query.filter(or_(
             Category.name.ilike(f"%{search}%")
         ))
-
-    if big_category_id:
-        query = query.filter(Category.big_category_id == big_category_id)
 
     if sort_by and order:
         if sort_by == "name":
@@ -65,7 +61,6 @@ async def get_categories(offset: int = Query(0, ge=0),
                 id=category.id,
                 name=category.name,
                 slug=category.slug,
-                big_category_id=category.big_category_id
             ) for category in categories
         ]
     )
@@ -73,7 +68,7 @@ async def get_categories(offset: int = Query(0, ge=0),
 
 @router.post("/category")
 async def add_category(category: Category, session: AsyncSession = Depends(get_session)):
-    new_category = Category(name=category.name, slug=category.slug, big_category_id=category.big_category_id)
+    new_category = Category(name=category.name, slug=category.slug)
     session.add(new_category)
     await session.commit()
     await session.refresh(new_category)
@@ -87,7 +82,6 @@ async def update_category(category_id: int, updated_category: Category, session:
         raise HTTPException(status_code=404, detail="Категория не найдена")
     existing_category.name = updated_category.name
     existing_category.slug = updated_category.slug
-    existing_category.big_category_id = updated_category.big_category_id
     await session.commit()
     await session.refresh(existing_category)
     return existing_category

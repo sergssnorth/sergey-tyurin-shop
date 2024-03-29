@@ -15,6 +15,8 @@ from app.endpoints import product_size
 from app.endpoints import order_status
 from app.endpoints import client
 from app.endpoints import order
+from app.endpoints import detail
+
 
 app = FastAPI()
 
@@ -44,17 +46,4 @@ app.include_router(product_size.router)
 app.include_router(order_status.router)
 app.include_router(client.router)
 app.include_router(order.router)
-
-# @app.get("/big_categories", response_model=list[BigCategory])
-# async def get_big_categories(session: AsyncSession = Depends(get_session)):
-#     result = await session.execute(select(BigCategory))
-#     big_categories = result.scalars().all()
-#     return [BigCategory(id=big_category.id, name=big_category.name, slug=big_category.slug) for big_category in big_categories]
-
-# @app.post("/big_categories")
-# async def add_big_categories(big_category: BigCategory, session: AsyncSession = Depends(get_session)):
-#     new_big_category = BigCategory(name = big_category.name, slug=big_category.slug)
-#     session.add(new_big_category)
-#     await session.commit()
-#     await session.refresh(new_big_category)
-#     return new_big_category
+app.include_router(detail.router)

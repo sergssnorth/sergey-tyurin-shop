@@ -1,39 +1,55 @@
 <template>
-    <div class="card mb-1">
-        <div class="card-body py-1 px-3">
-        <div class="d-flex align-items-center">
-            <span>{{ data_color.name }}</span>
-            <button @click="$router.push(`/models`)" class="btn btn-icon d-inline ms-auto px-2"><i class="bi bi bi-box-seam"></i></button>
+    <div class="card mb-1" style="border-radius: 1.5rem;">
+        <div class="card-body elementList py-1 px-3 d-flex" id="headingExampleTwo" aria-controls="collapseIndicatorChevron">
             
-            <button data-bs-toggle="modal" :data-bs-target="'#editModal_' + data_color.id" class="btn btn-icon d-inline text-primary px-2"><i class="bi bi-pen"></i></button>
-            <div class="modal fade" :id="'editModal_' + data_color.id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-              <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                <div class="modal-content">
-                  <div class="modal-header text-center">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Изменить размер, {{ data_color.name }}</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                    <div class="form-floating mb-3">
-                      <input type="text" class="form-control" placeholder="name@example.com" v-model="update_data_color.name">
-                      <label for="floatingInput">Имя</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                      <input type="text" class="form-control" placeholder="Password" v-model="update_data_color.slug">
-                      <label for="floatingPassword">Слаг</label>
-                    </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button @click="updateColor()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Изменить</button>
-                  </div>
-                </div>
-              </div>
+            <div class="flex-grow-1 d-flex  align-items-center" @click="toggleSeparator" style="">
+                <span style="margin-right: 0.5rem;">
+                <i class="bi bi-person-circle"></i>
+                </span>
+                <span>{{ dataColor.name }}</span>
+                <span class="ms-auto" style="color: grey; margin-right: 0rem;"><i class="bi bi-hash"></i></span>
+                <span class="" style="color: grey; margin-right: 1.5rem;">{{ dataColor.id }}</span>
             </div>
+            
+            <div class="vr" style="margin-right: 1.15rem;"></div>
+            <div class="123123">
+                <button class="btn btn-icon mx-1 px-2 d-inline text-dark" @click="this.$router.push({ path: '/models', query: { 'color': dataColor.id } });">
+                    <i class="bi bi-layers" style="font-color: 18px;"></i>
+                </button>
 
-            <button @click="deleteColor()" class="btn btn-icon d-inline text-danger px-2"><i class="bi bi-trash3"></i></button>
-        </div>
+                <button data-bs-toggle="modal" :data-bs-target="'#editModal_' + dataColor.id" class="btn btn-icon d-inline text-primary px-2"><i class="bi bi-pen"></i></button>
+                
+                
+                <div class="modal fade" :id="'editModal_' + dataColor.id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header text-center">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Изменение размера</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" placeholder="name@example.com" v-model="updatedColor.name">
+                                    <label for="floatingInput">Имя</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" placeholder="Password" v-model="updatedColor.slug">
+                                    <label for="floatingPassword">Слаг</label>
+                                </div>
+                            </div>
+                            <div class="modal-footer ">
+                                <button @click="updateColor()" type="button" class="btn btn-second w-100" data-bs-dismiss="modal">Изменить</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button @click="deleteColor()" class="btn btn-icon d-inline text-danger px-2"><i class="bi bi-trash3"></i></button>
+            </div>
         </div>
     </div>
+    
+   
 </template>
 
 <script>
@@ -43,50 +59,66 @@ export default {
     name: 'ListColors',
     props: {
         color: Object,
+        showErrorToast: Function,
+        setLoading: Function,
+        loading: Boolean,
+        handleColorUpdated: Function,
+        handleColorDeleted: Function,
+   
     },
     data() {
-        return {
-            data_color: this.color,
-            update_data_color: {
+        return { 
+            dataColor : this.color,
+
+            updatedColor: {
                 name: '',
                 slug: '',
             },
         }
     },
     created() {
-      this.update_data_color = { ...this.color };
+        this.updatedColor = { ...this.color };
     },
     methods: {
-        async deleteColor() {
-            await axios
-                .delete(`/color/${this.data_color.id}`)
-                .then(response => {
-                    console.log(response.data)
-                    this.$emit('colorDeleted');
-                })
-                .catch(error => {
-                    console.log(error)
-                })
-        },
         async updateColor() {
             const formData = {
-                name: this.update_data_color.name,
-                slug: this.update_data_color.slug,
+                name: this.updatedColor.name,
+                slug: this.updatedColor.slug,
             }
+            this.setLoading(true);
             try {
-                await axios
-                .put(`/color/${this.data_color.id}`, formData)
-                .then(response => {
-                    console.log(response.data)
-                    this.data_color = { ...this.update_data_color }
-                    this.$emit('colorUpdated');
-                })
+                const response = await axios.put(`/color/${this.dataColor.id}`, formData);
+                if (!response.status == 200) {
+                    this.showErrorToast(response.status, response.data)
+                    console.log(response);
+                }
             } catch (error) {
-                console.log(error);
+                this.showErrorToast(error.code, error.message);
+                console.error(error);
+            } finally {
+                this.setLoading(false);
+                await this.handleColorUpdated()
+            }
+        },
+        async deleteColor() {
+            this.setLoading(true); // Включить индикатор загрузки
+            try {
+                const response = await axios.delete(`/color/${this.dataColor.id}`);
+                if (!response.status == 200) {
+                    this.showErrorToast(response.status, response.data)
+                    console.log(response);
+                }
+            } catch (error) {
+                this.showErrorToast(error.code, error.message);
+                console.error(error);
+            } finally {
+                this.setLoading(false);
+                await this.handleColorDeleted()
             }
         },
     }
-}
+
+  }
 </script>
 
 <style scoped>

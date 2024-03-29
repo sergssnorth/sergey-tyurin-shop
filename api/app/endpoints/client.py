@@ -1,3 +1,4 @@
+import datetime
 from math import ceil
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import Client
@@ -8,7 +9,6 @@ from sqlmodel import select, func, or_
 from typing import List
 from math import ceil
 from pydantic import BaseModel
-
 
 router = APIRouter()
 
@@ -64,7 +64,9 @@ async def get_clients(offset: int = Query(0, ge=0),
             Client(
                 id=client.id,
                 name=client.name,
-                slug=client.slug,
+                phone=client.phone,
+                email=client.email,
+                created_at=client.created_at
             ) for client in clients
         ]
     )
@@ -73,7 +75,12 @@ async def get_clients(offset: int = Query(0, ge=0),
 
 @router.post("/client")
 async def add_client(client: Client, session: AsyncSession = Depends(get_session)):
-    new_client = Client(name=client.name, slug=client.slug,)
+    new_client = Client(
+        name=client.name,
+        phone=client.phone,
+        email=client.email,
+        created_at=datetime.datetime.now() # Убедитесь, что это поле устанавливается автоматически, если необходимо
+    )
     session.add(new_client)
     await session.commit()
     await session.refresh(new_client)
@@ -84,8 +91,10 @@ async def update_client(client_id: int, updated_client: Client, session: AsyncSe
     existing_client = await session.get(Client, client_id)
     if existing_client is None:
         raise HTTPException(status_code=404, detail="Клиент не найден")
+    
     existing_client.name = updated_client.name
-    existing_client.slug = updated_client.slug
+    existing_client.phone = updated_client.phone
+    existing_client.email = updated_client.email
     
     await session.commit()
     await session.refresh(existing_client)

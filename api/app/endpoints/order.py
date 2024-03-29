@@ -29,7 +29,13 @@ class OrdersResponseModel(BaseModel):
 async def get_orders(offset: int = Query(0, ge=0),
                      limit: int = Query(50, gt=0),
                      search: str = Query(None),
+
                      client_id: int = Query(None),
+                     order_status_id: int = Query(None),
+
+                     sort_by: str = Query(None, description="Sort by 'name' or 'id'."),
+                     order: str = Query("desc", description="Sort order: 'asc' or 'desc'."),
+
                      session: AsyncSession = Depends(get_session)):
 
     query = select(Order, OrderStatus).join(OrderStatus)
@@ -41,6 +47,19 @@ async def get_orders(offset: int = Query(0, ge=0),
 
     if client_id:
         query = query.filter(Order.client_id == client_id)
+
+    if order_status_id:
+        query = query.filter(Order.order_status_id == order_status_id)
+
+    if sort_by and order:
+        if sort_by == "name":
+            query = query.order_by(Order.name.desc() if order == "desc" else Category.name.asc())
+        elif sort_by == "id":
+            query = query.order_by(Category.id.desc() if order == "desc" else Category.id.asc())
+    else:
+        #Сортировака по умолчанию
+        query = query.order_by(Category.id.desc() if order == "desc" else Category.id.asc())
+
 
     total_count_query = select(func.count()).select_from(query)
     total_count_result = await session.execute(total_count_query)

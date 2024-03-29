@@ -14,18 +14,31 @@ router = APIRouter()
 class SizesResponseModel(BaseModel):
     total_count: int
     total_pages: int
-    sizrs: List[Size]
+    sizes: List[Size]
 
 
 @router.get("/sizes", response_model=SizesResponseModel)
 async def get_sizes(offset: int = Query(0, ge=0),
                     limit: int = Query(50, gt=0),
                     search: str = Query(None),
+                    
+                    sort_by: str = Query(None, description="Sort by 'name' or 'id'."),
+                    order: str = Query("desc", description="Sort order: 'asc' or 'desc'."),
+
                     session: AsyncSession = Depends(get_session)):
     query = select(Size)
 
     if search:
         query = query.where(Size.name.ilike(f"%{search}%"))
+
+    if sort_by and order:
+        if sort_by == "name":
+            query = query.order_by(Size.name.desc() if order == "desc" else Size.name.asc())
+        elif sort_by == "id":
+            query = query.order_by(Size.id.desc() if order == "desc" else Size.id.asc())
+    else:
+        #Сортировака по умолчанию
+        query = query.order_by(Size.id.desc() if order == "desc" else Size.id.asc())
 
     total_count_query = select(func.count()).select_from(query)
     total_count_result = await session.execute(total_count_query)

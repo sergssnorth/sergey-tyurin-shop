@@ -1,5 +1,6 @@
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 from app.db import get_session
@@ -16,6 +17,7 @@ from app.endpoints import order_status
 from app.endpoints import client
 from app.endpoints import order
 from app.endpoints import detail
+from app.endpoints import size_guide
 
 
 app = FastAPI()
@@ -33,6 +35,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.mount('/static', StaticFiles(directory='static'), name='static')
 
 app.include_router(big_category.router)
 app.include_router(category.router)
@@ -47,3 +50,4 @@ app.include_router(order_status.router)
 app.include_router(client.router)
 app.include_router(order.router)
 app.include_router(detail.router)
+app.include_router(size_guide.router)

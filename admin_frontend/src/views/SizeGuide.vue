@@ -3,8 +3,8 @@
         <div class="row mb-3">
             <div class="d-flex align-items-center flex-grow-1" >
                 <div class="input-group align-items-center">
-                    <span @click="searchdetails" class="input-group-text" id="basic-addon1" style="border-radius: 1.5rem 0 0 1.5rem;"><i class="bi bi-search" style="font-size: 16px;"></i></span>
-                    <input v-model="search" @keyup.enter="searchdetails" type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1" style="border-radius: 0 1.5rem 1.5rem 0;">
+                    <span @click="searchSizeGuide" class="input-group-text" id="basic-addon1" style="border-radius: 1.5rem 0 0 1.5rem;"><i class="bi bi-search" style="font-size: 16px;"></i></span>
+                    <input v-model="search" @keyup.enter="searchSizeGuide" type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1" style="border-radius: 0 1.5rem 1.5rem 0;">
                 </div>
                 <div class="d-flex align-items-center">
                     
@@ -103,21 +103,22 @@
                         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                             <div class="modal-content">
                             <div class="modal-header text-center">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">Создание описания</h1>
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Создание размерной сетки</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                                 <div class="form-floating mt-2 mb-3">
-                                    <input type="text" class="form-control" placeholder="name@example.com" v-model="newDetail.name">
+                                    <input type="text" class="form-control" placeholder="name@example.com" v-model="newSizeGuide.name">
                                     <label for="floatingInput">Имя</label>
                                 </div>
-                                <div class="form-floating">
-                                    <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 300px"  v-model="newDetail.description"></textarea>
-                                    <label for="floatingTextarea2">Описание</label>
+                                <div class="mb-3 mx-2" style="text-align: start;">
+                                    <label for="formFile" class="form-label">Изображение</label>
+                                    <input class="form-control mb-3" type="file" id="formFile" @change="onFileChange">
+                                    <img v-if="imagePreview" :src="imagePreview" class="img-fluid" alt="preview" />
                                 </div>
                             </div>
                             <div class="modal-footer ">
-                                <button @click="addDetail()" type="button" class="btn btn-second w-100" data-bs-dismiss="modal">Cоздать</button>
+                                <button @click="addSizeGuide()" type="button" class="btn btn-second w-100" data-bs-dismiss="modal">Cоздать</button>
                             </div>
                             </div>
                         </div>
@@ -136,19 +137,19 @@
                     </div>
                 </div>
                 <div v-if="!loading">
-                    <div v-if="details.details.length != 0">
+                    <div v-if="sizeGuides.sizeGuides.length != 0">
                         <ListSizeGuides
-                        v-for="detail in details.details"
-                        :key="detail.id"
-                        :detail="detail"
+                        v-for="sizeGuide in sizeGuides.sizeGuides"
+                        :key="sizeGuide.id"
+                        :sizeGuide="sizeGuide"
                         :setLoading="setLoading"
-                        :handleDetailDeleted = "handleDetailDeleted"
-                        :handleDetailUpdated = "handleDetailUpdated"
+                        :handleSizeGuideDeleted = "handleSizeGuideDeleted"
+                        :handleSizeGuideUpdated = "handleSizeGuideUpdated"
                         :loading="loading"
                         :showErrorToast="showErrorToast"/>
                     </div>
                     <div v-else>
-                        <span style="font-size: 1.3rem;">Описаний пока нет ...</span>
+                        <span style="font-size: 1.3rem;">Размерных сеток пока нет ...</span>
                     </div>
                     
                 </div>
@@ -159,7 +160,7 @@
             <div class="col text-center">
                 <nav class="px-0 py-0" aria-label="Навигация по страницам">
                     <ul class="my-2 pagination justify-content-center">
-                        <li class="page-item page-item-pointer" v-if="details.totalPages > 1 && currentPage > 1">
+                        <li class="page-item page-item-pointer" v-if="sizeGuides.totalPages > 1 && currentPage > 1">
                             <a class="page-link" @click="changePage(currentPage - 1)" aria-label="Предыдущая">
                             <span aria-hidden="true">&laquo;</span>
                             </a>
@@ -172,7 +173,7 @@
                             <a class="page-link" @click="changePage(page)" :class="{ 'active': page == currentPage }">{{ page }}</a>
                             </template>
                         </li>
-                        <li class="page-item page-item-pointer" v-if="details.totalPages > 1 && currentPage < details.totalPages">
+                        <li class="page-item page-item-pointer" v-if="sizeGuides.totalPages > 1 && currentPage < sizeGuides.totalPages">
                             <a class="page-link" @click="changePage(currentPage + 1)" aria-label="Следующая">
                             <span aria-hidden="true">&raquo;</span>
                             </a>
@@ -182,10 +183,10 @@
             </div>
         </div>
         <div class="toast-container position-fixed bottom-0 end-0 p-3">
-            <div id="successfulCreationDetailToast" class="toast text-bg-success" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
+            <div id="successfulCreationSizeGuideToast" class="toast text-bg-success" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
                 <div class="d-flex">
                     <div class="toast-body">
-                        Описание успешно создано!
+                        Размерная сетка успешно создана!
                     </div>
                     <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
@@ -215,18 +216,18 @@ export default {
     
     data() {
         return {
+            imagePreview: null, 
             search: '',
             selectedSort: '',
 
             newSizeGuide: {
                 name: '',
-                image: '',
             },
 
-            details : {
+            sizeGuides : {
                 totalCount: 0,
                 totalPages: 0,
-                details: []
+                sizeGuides: []
             },
 
             loading : true,
@@ -240,7 +241,7 @@ export default {
         displayedPages() {
             const totalDisplayPages = 5;
             const startPage = Math.max(1, this.currentPage - 2);
-            const endPage = Math.min(this.details.totalPages, startPage + totalDisplayPages - 1);
+            const endPage = Math.min(this.sizeGuides.totalPages, startPage + totalDisplayPages - 1);
 
             let pages = [];
 
@@ -252,33 +253,33 @@ export default {
             pages.push(i);
             }
 
-            if (endPage < this.details.totalPages) {
-            pages.push('...', this.details.totalPages);
+            if (endPage < this.sizeGuides.totalPages) {
+            pages.push('...', this.sizeGuides.totalPages);
             }
 
             return pages;
         }
     },
     async mounted() {
-        this.currentPage = localStorage.getItem('detailCurrentPage');
+        this.currentPage = localStorage.getItem('sizeGuideCurrentPage');
 
         if (!this.currentPage) {
             this.currentPage = 1;
-            localStorage.setItem('detailCurrentPage', this.currentPage);
+            localStorage.setItem('sizeGuideCurrentPage', this.currentPage);
         }
 
-        this.selectedSort = localStorage.getItem('detailSelectedSort');
+        this.selectedSort = localStorage.getItem('sizeGuideSelectedSort');
 
         if (!this.selectedSort) {
             this.selectedSort = 'none';
-            localStorage.setItem('detailSelectedSort', this.selectedSort);
+            localStorage.setItem('sizeGuideSelectedSort', this.selectedSort);
         }
 
-        await this.getDetails(this.currentPage, this.selectedSort);
+        await this.getSizeGuides(this.currentPage, this.selectedSort);
     },
     methods: {
-        async getDetails(page, selectedSort) {
-            console.log("getDetails")
+        async getSizeGuides(page, selectedSort) {
+            console.log("getSizeGuides")
             const offset = (page - 1) * 50
             let params = {
                 offset: offset,
@@ -296,22 +297,22 @@ export default {
 
             try {
                 this.loading = true;
-                const response = await axios.get(`/details`, { params });
+                const response = await axios.get(`/size-guides`, { params });
                 if (!response.status == 200) {
                     this.showErrorToast(response.status, response.data)
                     console.log(response);
                 }
-                const { total_count, total_pages, details } = response.data;
+                const { total_count, total_pages, size_guides } = response.data;
 
                 // Преобразование ключей totalCount и totalPages
                 const transformedData = {
                     totalCount: total_count,
                     totalPages: total_pages,
-                    details: details
+                    sizeGuides: size_guides
                 };
 
-                this.details = transformedData;
-                console.log(this.details);
+                this.sizeGuides = transformedData;
+                console.log(this.sizeGuides);
             } catch (error) {
                 this.showErrorToast(error.code, error.message);
                 console.log(error);
@@ -319,37 +320,45 @@ export default {
                 this.loading = false;
             }
         },
-        async addDetail() {
-            const formData = {
-                name: this.newDetail.name,
-                description: this.newDetail.description
+        async addSizeGuide() {
+            const formData = new FormData();
+            formData.append('name', this.newSizeGuide.name);
+
+            // Предполагаем, что у вас есть доступ к элементу ввода файла через ref="fileInput"
+            const fileInput = document.querySelector('#formFile');
+            if (fileInput.files[0]) {
+                formData.append('image', fileInput.files[0]);
             }
-            console.log(formData)
+
             try {
                 this.loading = true;
-                const response = await axios.post(`/detail`, formData);
-                if (response.status == 200) {
-                    this.showSuccessfulCreationDetailToast()
-                    this.newDetail.name = '',
-                    this.newDetail.description = ''
+                const response = await axios.post(`/size-guide`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+
+                if (response.status == 200) { // Проверяем, была ли размерная сетка успешно создана
+                    this.showSuccessfulCreationSizeGuideToast();
+                    this.newSizeGuide.name = '';
+                    // Очищаем поле ввода файла
+                    fileInput.value = '';
+                } else {
+                    this.showErrorToast(response.status, "Не удалось создать размерную сетку.");
                 }
-                else {
-                    this.showErrorToast(response.status, response.data)
-                    console.log(response);
-                }
-                await this.getDetails(this.currentPage, this.selectedSort);
+
+                await this.getSizeGuides(this.currentPage, this.selectedSort);
             } catch (error) {
-                this.showErrorToast(error.code, error.message);
-                console.log(error);
+                this.showErrorToast(error.response.status, error.response.data.detail);
             } finally {
                 this.loading = false;
             }
         },
-        async searchdetails() {
+        async searchSizeGuide() {
             try {
                 this.currentPage = 1;
-                localStorage.setItem('detailCurrentPage',  this.currentPage);
-                await this.getDetails(this.currentPage, this.selectedSort);
+                localStorage.setItem('sizeGuideCurrentPage',  this.currentPage);
+                await this.getSizeGuides(this.currentPage, this.selectedSort);
             } catch (error) {
                 this.showErrorToast(error.code, error.message);
                 console.log(error);
@@ -359,18 +368,18 @@ export default {
         },
         async changePage(page) {
             this.loading = true;
-            localStorage.setItem('detailCurrentPage', page);
+            localStorage.setItem('sizeGuideCurrentPage', page);
             this.currentPage = page
-            await this.getDetails(page, this.selectedSort, this.filterBigCategory);
+            await this.getSizeGuides(page, this.selectedSort, this.filterBigCategory);
             this.loading = false;
         },
         async changeSort() {
             this.loading = true;
             try {
                 this.currentPage = 1;
-                localStorage.setItem('detailCurrentPage',  this.currentPage);
-                localStorage.setItem('detailSelectedSort',  this.selectedSort);
-                await this.getDetails(this.currentPage, this.selectedSort);
+                localStorage.setItem('sizeGuideCurrentPage',  this.currentPage);
+                localStorage.setItem('sizeGuideSelectedSort',  this.selectedSort);
+                await this.getSizeGuides(this.currentPage, this.selectedSort);
             } catch (error) {
                 this.showErrorToast(error.code, error.message);
                 console.log(error);
@@ -379,13 +388,8 @@ export default {
             }
         },
 
-        async handleBigCategoryChange(event) {
-
-            await this.getDetails(this.currentPage, this.selectedSort);
-            console.log("Выбранное значение:", event.target.value);
-        },
-        showSuccessfulCreationDetailToast() {
-            const successfulCreation = new Toast(document.getElementById('successfulCreationDetailToast'))
+        showSuccessfulCreationSizeGuideToast() {
+            const successfulCreation = new Toast(document.getElementById('successfulCreationSizeGuideToast'))
             successfulCreation.show()
         },
         showErrorToast(errorCode, errorMessage) {
@@ -398,14 +402,21 @@ export default {
             console.log("setLoading")
             this.loading = loading;
         },
-        async handleDetailDeleted() {
-            console.log("handleDetailDeleted")
-            await this.getDetails(this.currentPage, this.selectedSort);
+        async handleSizeGuideDeleted() {
+            console.log("handleSizeGuideDeleted")
+            await this.getSizeGuides(this.currentPage, this.selectedSort);
         },
-        async handleDetailUpdated() {
-            console.log("handleDetailUpdated")
-            await this.getDetails(this.currentPage, this.selectedSort);
-        }
+        async handleSizeGuideUpdated() {
+            console.log("handleSizeGuideUpdated")
+            await this.getSizeGuides(this.currentPage, this.selectedSort);
+        },
+        onFileChange(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Создаем URL для предпросмотра изображения
+                this.imagePreview = URL.createObjectURL(file);
+            }
+        },
 
     },
 }   

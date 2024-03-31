@@ -150,7 +150,7 @@
                                         {{ detail.name }}
                                     </option>
                                 </select>
-                                <select v-model="newModel.detailId" class="form-select py-3 mb-3" aria-label="Default select example">
+                                <select v-model="newModel.sizeGuideId" class="form-select py-3 mb-3" aria-label="Default select example">
                                     <option :value="0">Размерная сетка</option>
                                     <option v-for="sideGuide in sizeGuides.sizeGuides" :key="sideGuide.id" :value="sideGuide.id">
                                         {{ sideGuide.name }}
@@ -561,12 +561,12 @@ export default {
                     this.showErrorToast(response.status, response.data)
                     console.log(response);
                 }
-                const { total_count, total_pages, sizeGuides } = response.data;
+                const { total_count, total_pages, size_guides } = response.data;
 
                 const transformedData = {
                     totalCount: total_count,
                     totalPages: total_pages,
-                    sizeGuides: sizeGuides
+                    sizeGuides: size_guides
                 };
 
                 this.sizeGuides = transformedData;

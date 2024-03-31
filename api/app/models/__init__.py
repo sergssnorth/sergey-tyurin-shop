@@ -5,6 +5,8 @@ from .collection import Collection
 from .detail import Detail
 from .size_guide import SizeGuide
 from .size import Size
+from .measurement_type import MeasurementType
+from .measurement_value import MeasurementValue
 from .color import Color
 from .product import Product
 from .warehouse import Warehouse

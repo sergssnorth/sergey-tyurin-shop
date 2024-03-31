@@ -17,9 +17,7 @@ class ModelResponseModel(BaseModel):
     id: int
     name: str
     slug: str
-    description: str
     collection_id: int
-    big_category_id: int
     category_id: int
 
 class ModelsResponseModel(BaseModel):
@@ -32,8 +30,6 @@ class ModelsResponseModel(BaseModel):
 async def get_models(offset: int = Query(0, ge=0),
                      limit: int = Query(50, gt=0),
                      search: str = Query(None),
-
-                     big_category_id: Optional[int] = None, 
                      category_id: Optional[int] = None, 
                      collection_id: Optional[int] = None, 
                      model_id: Optional[int] = None, 
@@ -48,9 +44,6 @@ async def get_models(offset: int = Query(0, ge=0),
         query = query.filter(or_(
             Model.name.ilike(f"%{search}%")
         ))    
-    
-    # if big_category_id is not None:
-    #     query = query.filter(Category.big_category_id == big_category_id)
 
     if category_id is not None:
         query = query.filter(Model.category_id == category_id)
@@ -83,9 +76,7 @@ async def get_models(offset: int = Query(0, ge=0),
             id=model.id, 
             name=model.name,
             slug=model.slug,
-            description=model.description,
             collection_id=model.collection_id,
-            big_category_id=category.big_category_id,
             category_id=model.category_id,
         ) for model, category in models_and_categories]
     
@@ -98,7 +89,7 @@ async def get_models(offset: int = Query(0, ge=0),
 
 @router.post("/model")
 async def add_model(model: Model, session: AsyncSession = Depends(get_session)):
-    new_model = Model(name=model.name, slug=model.slug, description=model.description, collection_id=model.collection_id, category_id=model.category_id)
+    new_model = Model(name=model.name, slug=model.slug, collection_id=model.collection_id, category_id=model.category_id)
     session.add(new_model)
     await session.commit()
     await session.refresh(new_model)
@@ -111,7 +102,6 @@ async def update_collection(model_id: int, updated_model: Model, session: AsyncS
         raise HTTPException(status_code=404, detail="Модель не найдена")
     existing_model.name = updated_model.name
     existing_model.slug = updated_model.slug
-    existing_model.description = updated_model.description
     existing_model.collection_id = updated_model.collection_id
     existing_model.category_id = updated_model.category_id
     await session.commit()

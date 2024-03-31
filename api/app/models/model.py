@@ -9,7 +9,6 @@ class Model(SQLModel, table=True):
     id: Optional[int] = Field(default=None, nullable=False, primary_key=True)
     name: str
     slug: str
-    description: str
     category_id: Optional[int] = Field(default=None, foreign_key="category.id")
     collection_id: Optional[int] = Field(default=None, foreign_key="collection.id")
     detail_id: Optional[int] = Field(default=None, foreign_key="detail.id")

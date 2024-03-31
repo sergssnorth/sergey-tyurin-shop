@@ -6,4 +6,5 @@ class Size(SQLModel, table=True):
     name: str
     slug: str
 
+    measurement_values: List["MeasurementValue"] = Relationship(back_populates="size")
     product_sizes: List["ProductSize"] = Relationship(back_populates="size")

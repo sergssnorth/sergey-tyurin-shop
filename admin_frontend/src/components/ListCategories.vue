@@ -61,15 +61,35 @@
 
                 <div v-if="!modelLoading">
                     <div v-if="dataModels.models.length != 0">
-                        <div v-for="model in dataModels.models" :key="category.id" class="d-flex align-items-center">
+                        <!-- <div v-for="model in dataModels.models" :key="category.id" class="d-flex align-items-center">
                             <span style="margin-right: 0.5em;">{{ model.id }}.</span>
                             <span>{{ model.name }}</span>
                             <button data-bs-toggle="modal" data-bs-target="#editModal" class="btn btn-icon d-inline text-primary ms-auto px-2"><i class="bi bi-pen"></i></button>
                             <button @click="deleteBigCategory()" class="btn btn-icon d-inline text-danger px-2"><i class="bi bi-trash3"></i></button>
+                        </div> -->
+                        <div v-for="model in dataModels.models" :key="category.id" class="card mb-1" style="border-radius: 1.5rem;">
+                            <div class="card-body elementSecondList py-1 px-3 d-flex align-items-center" id="headingExampleTwo" aria-controls="collapseIndicatorChevron">
+                                <span style="margin-right: 0.5em;">{{ model.id }}.</span>
+                                <span>{{ model.name }}</span>
+                                <button data-bs-toggle="modal" data-bs-target="#editModal" class="btn btn-icon d-inline text-primary ms-auto px-2"><i class="bi bi-pen"></i></button>
+                                <button @click="deleteBigCategory()" class="btn btn-icon d-inline text-danger px-2"><i class="bi bi-trash3"></i></button>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center mt-3">
+                            <button class="btn btn-outline-success px-3" style="border-radius: 1.25rem;">
+                                <i class="bi bi-layers" style="margin-right: 0.5em;"></i>
+                                <span>Добавить модель</span>
+                            </button>
                         </div>
                     </div>
-                    <div v-else>
+                    <div v-else style="text-align: start;">
                         <span>Моделей нет</span>
+                        <div class="d-flex align-items-center mt-3">
+                            <button class="btn btn-outline-success px-3" style="border-radius: 1.25rem;">
+                                <i class="bi bi-layers" style="margin-right: 0.5em;"></i>
+                                <span>Добавить модель</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 

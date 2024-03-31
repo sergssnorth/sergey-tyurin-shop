@@ -12,9 +12,15 @@ from app.models.big_category import BigCategory
 from app.models.category import Category
 from app.models.collection import Collection
 from app.models.detail import Detail
+
+
 from app.models.size_guide import SizeGuide
-from app.models.model import Model
 from app.models.size import Size
+from app.models.measurement_type import MeasurementType
+from app.models.measurement_value import MeasurementValue
+
+from app.models.model import Model
+
 from app.models.color import Color
 from app.models.product import Product
 from app.models.warehouse import Warehouse

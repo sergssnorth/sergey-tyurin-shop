@@ -1,6 +1,6 @@
 from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.models import Model, Category, BigCategory
+from app.models import Model, Category
 from app.db import get_session
 
 
@@ -17,8 +17,10 @@ class ModelResponseModel(BaseModel):
     id: int
     name: str
     slug: str
-    collection_id: int
-    category_id: int
+    category_id: Optional[int] = None
+    collection_id: Optional[int] = None
+    detail_id: Optional[int] = None
+    size_guide_id: Optional[int] = None
 
 class ModelsResponseModel(BaseModel):
     total_count: int
@@ -38,7 +40,7 @@ async def get_models(offset: int = Query(0, ge=0),
                      order: str = Query("desc", description="Sort order: 'asc' or 'desc'."),
                      session: AsyncSession = Depends(get_session)):
 
-    query = select(Model, Category).join(Category)
+    query = select(Model)
 
     if search:
         query = query.filter(or_(
@@ -69,16 +71,18 @@ async def get_models(offset: int = Query(0, ge=0),
     total_pages = ceil(total_count / limit)
 
     query = query.offset(offset).limit(limit)
-    models_and_categories = await session.execute(query)
-
+    models = await session.execute(query)
+    models = models.scalars().all()
 
     models = [ModelResponseModel(
             id=model.id, 
             name=model.name,
             slug=model.slug,
-            collection_id=model.collection_id,
             category_id=model.category_id,
-        ) for model, category in models_and_categories]
+            collection_id=model.collection_id,
+            detail_id=model.detail_id,
+            size_guide_id=model.size_guide_id
+        ) for model in models]
     
     return ModelsResponseModel(
         total_count=total_count,
@@ -89,7 +93,12 @@ async def get_models(offset: int = Query(0, ge=0),
 
 @router.post("/model")
 async def add_model(model: Model, session: AsyncSession = Depends(get_session)):
-    new_model = Model(name=model.name, slug=model.slug, collection_id=model.collection_id, category_id=model.category_id)
+    new_model = Model(name=model.name, 
+                      slug=model.slug,
+                      category_id=model.category_id,
+                      collection_id=model.collection_id,  
+                      detail_id=model.detail_id,
+                      size_guide_id=model.size_guide_id)
     session.add(new_model)
     await session.commit()
     await session.refresh(new_model)
@@ -104,6 +113,8 @@ async def update_collection(model_id: int, updated_model: Model, session: AsyncS
     existing_model.slug = updated_model.slug
     existing_model.collection_id = updated_model.collection_id
     existing_model.category_id = updated_model.category_id
+    existing_model.detail_id = updated_model.detail_id
+    existing_model.size_guide_id = updated_model.size_guide_id
     await session.commit()
     await session.refresh(existing_model)
     return existing_model

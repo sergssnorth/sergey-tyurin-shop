@@ -1,5 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.models import Category, BigCategory
+from app.models import Category
 from app.db import get_session
 
 from fastapi import APIRouter, Depends, HTTPException, Query

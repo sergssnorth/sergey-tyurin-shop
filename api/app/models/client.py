@@ -1,27 +1,15 @@
 from sqlmodel import SQLModel, Field, Relationship
 from typing import Optional, List
-from pydantic import EmailStr, validator 
-from datetime import datetime
+from .user import User
 
 class Client(SQLModel, table=True):
     id: Optional[int] = Field(default=None, nullable=False, primary_key=True)
+    user_id: Optional[int] = Field(default=None, foreign_key="user.id")
+    email: str
     name: str
+    sname: Optional[str] = Field(nullable=True)
     phone: str
-    email: str 
-    created_at: datetime
+
+    user: Optional[User] = Relationship(back_populates="client")
 
     orders: List["Order"] = Relationship(back_populates="client")
-
-    # Валидатор для проверки формата телефонного номера
-    @validator('phone')
-    def validate_phone(cls, value):
-        import re
-        if not re.match(r'^\+?7?\d{9,15}$', value):
-            raise ValueError("Неверный формат телефонного номера")
-        return value
-
-    # Валидатор для проверки email
-    @validator('email')
-    def validate_email(cls, value):
-        return EmailStr.validate(value)
-    

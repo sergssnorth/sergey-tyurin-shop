@@ -127,14 +127,67 @@
                             </div>
                             <div class="modal-body">
 
-
-                                <div class="form-floating mt-2 mb-3">
-                                    <input type="text" class="form-control" placeholder="name@example.com" v-model="newProduct.name">
-                                    <label for="floatingInput">Имя</label>
+                                <select v-model="newProduct.modelId" class="form-select py-3 mt-2 mb-3" aria-label="Default select example">
+                                    <option :value="0">Модель</option>
+                                    <option v-for="model in models.models" :key="model.id" :value="model.id">
+                                        {{ model.name }}
+                                    </option>
+                                </select>
+                                <select v-model="newProduct.colorId" class="form-select py-3 mt-2 mb-3" aria-label="Default select example">
+                                    <option :value="0">Цвет</option>
+                                    <option v-for="color in colors.colors" :key="color.id" :value="color.id">
+                                        {{ color.name }}
+                                    </option>
+                                </select>
+                                <div class="mb-3 mx-2" style="text-align: start;">
+                                    <label for="formImageProduct1" class="form-label">Изображение 1</label>
+                                    <input class="form-control mb-3" type="file" id="formImageProduct1" @change="onFileChange1">
+                                    <img v-if="imageProduct1" :src="imageProduct1" class="img-fluid" alt="preview" />
                                 </div>
-                                <div class="form-floating mb-2">
-                                    <input type="text" class="form-control" placeholder="Password" v-model="newProduct.slug">
-                                    <label for="floatingPassword">Слаг</label>
+                                <div class="mb-3 mx-2" style="text-align: start;">
+                                    <label for="formImageProduct2" class="form-label">Изображение 2</label>
+                                    <input class="form-control mb-3" type="file" id="formImageProduct2" @change="onFileChange2">
+                                    <img v-if="imageProduct2" :src="imageProduct2" class="img-fluid" alt="preview" />
+                                </div>
+                                <div class="mb-3 mx-2" style="text-align: start;">
+                                    <label for="formImageProduct3" class="form-label">Изображение 3</label>
+                                    <input class="form-control mb-3" type="file" id="formImageProduct3" @change="onFileChange3">
+                                    <img v-if="imageProduct3" :src="imageProduct3" class="img-fluid" alt="preview" />
+                                </div>
+                                <div class="mb-3 mx-2" style="text-align: start;">
+                                    <label for="formImageProduct4" class="form-label">Изображение 4</label>
+                                    <input class="form-control mb-3" type="file" id="formImageProduct4" @change="onFileChange4">
+                                    <img v-if="imageProduct4" :src="imageProduct4" class="img-fluid" alt="preview" />
+                                </div>
+                                <div class="mb-3 mx-2" style="text-align: start;">
+                                    <label for="formImageProduct5" class="form-label">Изображение 5</label>
+                                    <input class="form-control mb-3" type="file" id="formImageProduct5" @change="onFileChange5">
+                                    <img v-if="imageProduct5" :src="imageProduct5" class="img-fluid" alt="preview" />
+                                </div>
+                                <div class="mb-3 mx-2" style="text-align: start;">
+                                    <label for="formImageProduct6" class="form-label">Изображение 6</label>
+                                    <input class="form-control mb-3" type="file" id="formImageProduct6" @change="onFileChange6">
+                                    <img v-if="imageProduct6" :src="imageProduct6" class="img-fluid" alt="preview" />
+                                </div>
+                                <div class="mb-3 mx-2" style="text-align: start;">
+                                    <label for="formImageProduct7" class="form-label">Изображение 7</label>
+                                    <input class="form-control mb-3" type="file" id="formImageProduct7" @change="onFileChange7">
+                                    <img v-if="imageProduct7" :src="imageProduct7" class="img-fluid" alt="preview" />
+                                </div>
+                                <div class="mb-3 mx-2" style="text-align: start;">
+                                    <label for="formImageProduct8" class="form-label">Изображение 8</label>
+                                    <input class="form-control mb-3" type="file" id="formImageProduct8" @change="onFileChange8">
+                                    <img v-if="imageProduct8" :src="imageProduct8" class="img-fluid" alt="preview" />
+                                </div>
+                                <div class="mb-3 mx-2" style="text-align: start;">
+                                    <label for="formImageProduct9" class="form-label">Изображение 9</label>
+                                    <input class="form-control mb-3" type="file" id="formImageProduct9" @change="onFileChange9">
+                                    <img v-if="imageProduct9" :src="imageProduct9" class="img-fluid" alt="preview" />
+                                </div>
+                                <div class="mb-3 mx-2" style="text-align: start;">
+                                    <label for="formImageProduct10" class="form-label">Изображение 10</label>
+                                    <input class="form-control mb-3" type="file" id="formImageProduct10" @change="onFileChange10">
+                                    <img v-if="imageProduct10" :src="imageProduct10" class="img-fluid" alt="preview" />
                                 </div>
 
                             </div>
@@ -163,11 +216,13 @@
                         v-for="product in products.products"
                         :key="product.id"
                         :product="product"
-                        :bigproducts="bigproducts"
+                        :models="models.models"
+                        :colors="colors.colors"
+
                         :setLoading="setLoading"
+                        :loading="loading"
                         :handleProductDeleted = "handleProductDeleted"
                         :handleProductUpdated = "handleProductUpdated"
-                        :loading="loading"
                         :showErrorToast="showErrorToast"/>
                     </div>
                     <div v-else>
@@ -241,9 +296,19 @@ export default {
             filterModel: 0,
 
             newProduct: {
-                name: '',
-                slug: '',
+                modelId: 0,
+                colorId: 0,
             },
+            imageProduct1: null,
+            imageProduct2: null,
+            imageProduct3: null,
+            imageProduct4: null,
+            imageProduct5: null,
+            imageProduct6: null,
+            imageProduct7: null,
+            imageProduct8: null,
+            imageProduct9: null,
+            imageProduct10: null,
 
             products : {
                 totalCount: 0,
@@ -255,6 +320,12 @@ export default {
                 totalCount: 0,
                 totalPages: 0,
                 models: []
+            },
+
+            colors: {
+                totalCount: 0,
+                totalPages: 0,
+                colors: []
             },
 
             loading : true,
@@ -291,9 +362,9 @@ export default {
         const model = this.$route.query['model'];
         if (model) {
             console.log('model:', model);
-            localStorage.setItem('productfilterMode', model);
+            localStorage.setItem('productfilterModel', model);
         } else {
-            localStorage.setItem('productfilterMode', 0);
+            localStorage.setItem('productfilterModel', 0);
         }
     },
     async mounted() {
@@ -311,15 +382,16 @@ export default {
             localStorage.setItem('productSelectedSort', this.selectedSort);
         }
 
-        this.filterModel = localStorage.getItem('productfilterMode');
+        this.filterModel = localStorage.getItem('productfilterModel');
 
         if (!this.filterModel) {
             this.filterModel = 0;
-            localStorage.setItem('productfilterMode', this.filterModel);
+            localStorage.setItem('productfilterModel', this.filterModel);
         }
 
         await this.getProducts(this.currentPage, this.selectedSort, this.filterModel);
         await this.getModels()
+        await this.getColors()
     },
     methods: {
         async getProducts(page, selectedSort, filterModel) {
@@ -338,7 +410,8 @@ export default {
                 params.sort_by = sortBy;
                 params.order = order;
             }
-            if (filterModel !== 0) {
+            if (filterModel != 0) {
+                console.log("if (filterModel !== 0)")
                 console.log(filterModel)
                 params.model_id = filterModel;
             }
@@ -393,12 +466,100 @@ export default {
                 this.loading = false;
             }
         },
-        async addProduct() {
-            const formData = {
-                name: this.newProduct.name,
-                slug: this.newProduct.slug
+        async getColors() {
+            try {
+                this.loading = true;
+                const response = await axios.get(`/colors`);
+                if (!response.status == 200) {
+                    this.showErrorToast(response.status, response.data)
+                    console.log(response);
+                }
+                const { total_count, total_pages, colors } = response.data;
+
+                const transformedData = {
+                    totalCount: total_count,
+                    totalPages: total_pages,
+                    colors: colors
+                };
+
+                this.colors = transformedData;
+                console.log(this.colors);
+            } catch (error) {
+                this.showErrorToast(error.code, error.message);
+                console.log(error);
+            } finally {
+                this.loading = false;
             }
-            console.log(formData)
+        },
+
+        async addProduct() {
+            const formData = new FormData();
+            formData.append('model_id', this.newProduct.modelId);
+            formData.append('color_id', this.newProduct.colorId);
+
+            const fileInputs = [
+                '#formImageProduct1', '#formImageProduct2', '#formImageProduct3', '#formImageProduct4',
+                '#formImageProduct5', '#formImageProduct6', '#formImageProduct7', '#formImageProduct8',
+                '#formImageProduct9', '#formImageProduct10'
+            ];
+
+            fileInputs.forEach(selector => {
+                const fileInput = document.querySelector(selector);
+                if (fileInput && fileInput.files && fileInput.files.length > 0) {
+                    formData.append(selector.replace('#formImageProduct', 'image'), fileInput.files[0]);
+                }
+            });
+
+            // const fileImageProduct1 = document.querySelector('#formImageProduct1');
+            // if (fileImageProduct1.files[0]) {
+            //     formData.append('image1', fileImageProduct1.files[0]);
+            // }
+
+            // const fileImageProduct2 = document.querySelector('#formImageProduct2');
+            // if (fileImageProduct2.files[0]) {
+            //     formData.append('image2', fileImageProduct2.files[0]);
+            // }
+
+            // const fileImageProduct3 = document.querySelector('#formImageProduct3');
+            // if (fileImageProduct3.files[0]) {
+            //     formData.append('image3', fileImageProduct3.files[0]);
+            // }
+
+            // const fileImageProduct4 = document.querySelector('#formImageProduct4');
+            // if (fileImageProduct4.files[0]) {
+            //     formData.append('image4', fileImageProduct4.files[0]);
+            // }
+
+            // const fileImageProduct5 = document.querySelector('#formImageProduct5');
+            // if (fileImageProduct5.files[0]) {
+            //     formData.append('image5', fileImageProduct5.files[0]);
+            // }
+
+            // const fileImageProduct6 = document.querySelector('#formImageProduct6');
+            // if (fileImageProduct6.files[0]) {
+            //     formData.append('image6', fileImageProduct6.files[0]);
+            // }
+            
+            // const fileImageProduct7 = document.querySelector('#formImageProduct7');
+            // if (fileImageProduct7.files[0]) {
+            //     formData.append('image7', fileImageProduct7.files[0]);
+            // }
+
+            // const fileImageProduct8 = document.querySelector('#formImageProduct8');
+            // if (fileImageProduct8.files[0]) {
+            //     formData.append('image8', fileImageProduct8.files[0]);
+            // }
+
+            // const fileImageProduct9 = document.querySelector('#formImageProduct9');
+            // if (fileImageProduct9.files[0]) {
+            //     formData.append('image9', fileImageProduct9.files[0]);
+            // }
+
+            // const fileImageProduct10 = document.querySelector('#formImageProduct10');
+            // if (fileImageProduct10.files[0]) {
+            //     formData.append('image10', fileImageProduct10.files[0]);
+            // }
+
             try {
                 this.loading = true;
                 const response = await axios.post(`/product`, formData);
@@ -478,19 +639,90 @@ export default {
         async handleProductUpdated() {
             console.log("handleProductUpdated")
             await this.getProducts(this.currentPage, this.selectedSort, this.filterModel);
-        }
+        },
+        onFileChange1(e) {
+            const fileInput = e.target;
+            if (fileInput && fileInput.files && fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                this.imageProduct1 = URL.createObjectURL(file);
+            }
+        },
 
+        onFileChange2(e) {
+            const fileInput = e.target;
+            if (fileInput && fileInput.files && fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                this.imageProduct2 = URL.createObjectURL(file);
+            }
+        },
+
+        onFileChange3(e) {
+            const fileInput = e.target;
+            if (fileInput && fileInput.files && fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                this.imageProduct3 = URL.createObjectURL(file);
+            }
+        },
+        onFileChange4(e) {
+            const fileInput = e.target;
+            if (fileInput && fileInput.files && fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                this.imageProduct4 = URL.createObjectURL(file);
+            }
+        },
+        onFileChange5(e) {
+            const fileInput = e.target;
+            if (fileInput && fileInput.files && fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                this.imageProduct5 = URL.createObjectURL(file);
+            }
+        },
+        onFileChange6(e) {
+            const fileInput = e.target;
+            if (fileInput && fileInput.files && fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                this.imageProduct6 = URL.createObjectURL(file);
+            }
+        },
+        onFileChange7(e) {
+            const fileInput = e.target;
+            if (fileInput && fileInput.files && fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                this.imageProduct7 = URL.createObjectURL(file);
+            }
+        },
+        onFileChange8(e) {
+            const fileInput = e.target;
+            if (fileInput && fileInput.files && fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                this.imageProduct8 = URL.createObjectURL(file);
+            }
+        },
+        onFileChange9(e) {
+            const fileInput = e.target;
+            if (fileInput && fileInput.files && fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                this.imageProduct9 = URL.createObjectURL(file);
+            }
+        },
+        onFileChange10(e) {
+            const fileInput = e.target;
+            if (fileInput && fileInput.files && fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                this.imageProduct10 = URL.createObjectURL(file);
+            }
+        },
     },
     watch: {
         async '$route'(to, from) {
             const model = this.$route.query['model'];
             if (model) {
                 console.log('model:', model);
-                localStorage.setItem('productfilterMode', model);
+                localStorage.setItem('productfilterModel', model);
             } else {
-                localStorage.setItem('productfilterMode', 0);
+                localStorage.setItem('productfilterModel', 0);
             }
-            this.filterModel = localStorage.getItem('productfilterMode');
+            this.filterModel = localStorage.getItem('productfilterModel');
 
             await this.getProducts(this.currentPage, this.selectedSort, this.filterModel);
             await this.getModels()

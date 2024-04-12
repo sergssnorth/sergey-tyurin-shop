@@ -7,12 +7,16 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from sqlmodel import SQLModel
 from alembic import context
 
-
-from app.models.big_category import BigCategory
+from app.models.user import User
+from app.models.client import Client
+from app.models.employee_status import EmployeeStatus
+from app.models.department import Department
+from app.models.delivery_information import DeliveryInformation
+from app.models.employee import Employee
 from app.models.category import Category
 from app.models.collection import Collection
 from app.models.detail import Detail
-
+from app.models.price_list import PriceList
 
 from app.models.size_guide import SizeGuide
 from app.models.size import Size
@@ -23,11 +27,15 @@ from app.models.model import Model
 
 from app.models.color import Color
 from app.models.product import Product
+from app.models.product_instance import ProductInstance
+from app.models.price_list_element import PriceListElement
 from app.models.warehouse import Warehouse
-from app.models.product_size import ProductSize
-from app.models.client import Client
+from app.models.warehouse_element import WarehouseElement
+
+
 from app.models.order_status import OrderStatus
 from app.models.order import Order
+from app.models.order_element import OrderElement
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

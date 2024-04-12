@@ -159,13 +159,22 @@ export default {
         //     }
         // },
         async updateSizeGuide() {
-            const formData = {
-                name: this.updatedSizeGuide.name,
-                description: this.updatedSizeGuide.description
+            const formData = new FormData();
+            formData.append('name', this.updatedSizeGuide.name);
+            formData.append('description', this.updatedSizeGuide.description);
+
+            // Предполагаем, что у вас есть доступ к элементу ввода файла через ref="fileInput"
+            if (this.updatedSizeGuide.newImage) {
+                formData.append('image', this.updatedSizeGuide.newImage);
             }
+
             this.setLoading(true);
             try {
-                const response = await axios.put(`/sizeGuide/${this.dataSizeGuide.id}`, formData);
+                const response = await axios.put(`/size-guide/${this.dataSizeGuide.id}`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
                 if (!response.status == 200) {
                     this.showErrorToast(response.status, response.data)
                     console.log(response);
@@ -181,7 +190,7 @@ export default {
         async deleteSizeGuide() {
             this.setLoading(true);
             try {
-                const response = await axios.delete(`/sizeGuide/${this.dataSizeGuide.id}`);
+                const response = await axios.delete(`/size-guide/${this.dataSizeGuide.id}`);
                 if (!response.status == 200) {
                     this.showErrorToast(response.status, response.data)
                     console.log(response);

@@ -22,4 +22,4 @@ class Product(SQLModel, table=True):
     model: Optional[Model] = Relationship(back_populates="products")
     color: Optional[Color] = Relationship(back_populates="products")
 
-    product_sizes: List["ProductSize"] = Relationship(back_populates="product")
+    product_instances: List["ProductInstance"] = Relationship(back_populates="product")

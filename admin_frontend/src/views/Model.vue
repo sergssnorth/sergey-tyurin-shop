@@ -189,13 +189,20 @@
                     <div v-if="models.models.length != 0">
                         <ListModels
                         v-for="model in models.models"
-                        v-bind:key="model.id"
-                        v-bind:model="model"
-                        v-bind:categories="categories.categories"
-                        v-bind:collections="collections.collections"
-                        @modelDeleted="handleModelDeleted" 
-                        @modelUpdated="handleModelUpdated"
+                        :key="model.id"
+                        :model="model"
+                        :categories="categories.categories"
+                        :collections="collections.collections"
+                        :details="details.details"
+                        :sizeGuides = "sizeGuides.sizeGuides"
+
+
+                        :setLoading="setLoading"
+                        :loading="loading"
+                        :handleModelDeleted = "handleModelDeleted"
+                        :handleModelUpdated = "handleModelUpdated"
                         :showErrorToast="showErrorToast"/>
+
                     </div>
                     <div v-else>
                         <span style="font-size: 1.3rem;">Моделей пока нет ...</span>
@@ -253,105 +260,6 @@
         </div>
     </div>
 
-    <!-- <div class="container-fluid text-center" style="height: 100%; display: flex; flex-direction: column;">
-        <div class="row align-items-center mb-3">
-            <div class="col-2">
-                <select v-model="filter_big_category_id" class="form-select" aria-label="Default select example" @change="handleBigCategoryFilterChange">
-                    <option :value="0">Все разделы</option>
-                    <option v-for="big_category in big_models" :key="big_category.id" :value="big_category.id">
-                        {{ big_category.name }}
-                    </option>
-                </select>
-            </div>
-            <div class="col-2">
-                <select v-model="filter_category_id" class="form-select" aria-label="Default select example" @change="handleCategoryFilterChange">
-                    <option :value="0">Все категории</option>
-                    <option v-for="category in models" :key="category.id" :value="category.id">
-                        {{ category.name }}
-                    </option>
-                </select>
-            </div>
-            <div class="col-2">
-                <select v-model="filter_collection_id" class="form-select" aria-label="Default select example" @change="handleCollectionFilterChange">
-                    <option :value="0">Все коллекции</option>
-                    <option v-for="collection in collections" :key="collection.id" :value="collection.id">
-                        {{ collection.name }}
-                    </option>
-                </select>
-            </div>
-            <div class="col-5">
-                <div class="input-group align-items-center">
-                <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
-                <input type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
-                </div>
-            </div>
-            <div class="col-1">
-                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bi bi-file-earmark-plus" style="font-size: 20px"></i></button>
-                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                    <div class="modal-content">
-                    <div class="modal-header text-center">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Создать модель</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-floating mb-3">
-                        <input type="text" class="form-control" placeholder="name@example.com" v-model="name">
-                        <label for="floatingInput">Имя</label>
-                        </div>
-                        <div class="form-floating mb-3">
-                        <input type="text" class="form-control" placeholder="Password" v-model="slug">
-                        <label for="floatingPassword">Слаг</label>
-                        </div>
-                        <div class="form-floating mb-3">
-                        <input type="text" class="form-control" placeholder="Password" v-model="description">
-                        <label for="floatingPassword">Описание</label>
-                        </div>
-                        
-                        <select v-model="big_category_id" class="form-select py-3 mb-3" aria-label="Default select example" @change="handleBigCategoryFilterChangeCreateModal">
-                            <option :value="0">Выберите раздел</option>
-                            <option v-for="big_category in big_models" :key="big_category.id" :value="big_category.id">
-                                {{ big_category.name }}
-                            </option>
-                        </select>
-
-                        <select v-model="category_id" class="form-select py-3 mb-3" aria-label="Default select example">
-                            <option :value="0">Выберите категорию</option>
-                            <option v-for="category in models" :key="category.id" :value="category.id">
-                                {{ category.name }}
-                            </option>
-                        </select>
-
-                        <select v-model="collection_id" class="form-select py-3 mb-3" aria-label="Default select example">
-                            <option :value="0">Выберите коллекцию</option>
-                            <option v-for="collection in collections" :key="collection.id" :value="collection.id">
-                                {{ collection.name }}
-                            </option>
-                        </select>
-
-                    </div>
-                    <div class="modal-footer ">
-                        <button @click="addModel()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Cоздать</button>
-                    </div>
-                    </div>
-                </div>
-                </div>
-            </div>
-            </div>
-        <div class="row flex-grow-1" style="overflow-y: auto;">
-          <div class="col d-flex flex-column" style="flex-grow: 1;">
-            <ListModels 
-              v-for="model in models"
-              v-bind:key="model.id"
-              v-bind:model="model"
-              v-bind:big_models="big_models"
-              v-bind:models="models"
-              v-bind:collections="collections"
-              @categoryDeleted="handleCategoryDeleted" 
-              @categoryUpdated="handleCategoryUpdated"/>
-          </div>
-        </div>
-    </div> -->
 </template>
 
 <script>
@@ -713,6 +621,10 @@ export default {
             const errorBody = document.getElementById('errorToastBody');
             errorBody.textContent = 'Ошибка, ' + errorCode + ', ' + errorMessage;
             errorCreation.show();
+        },
+        setLoading(loading) {
+            console.log("setLoading")
+            this.loading = loading;
         },
         async handleModelDeleted() {
             await this.getModels(this.currentPage, this.selectedSort, this.filterCategory);

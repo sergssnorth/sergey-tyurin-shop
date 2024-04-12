@@ -1,150 +1,241 @@
 <template>
-    <div class="card mb-1">
-            <a @click="toggleSeparator" :data-bs-target="'#collapseProduct' + data_product.id" class="card-body py-1 px-3 d-flex align-items-center" id="headingExampleTwo" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseIndicatorChevron">
-                <span>{{ product.color_name }}</span>
-                <!-- <button @click="$router.push(`/categories?big_category_id=${this.category.id}`)" class="btn btn-icon d-inline ms-auto px-2"><i class="bi bi bi-box-seam"></i></button> -->
+    <div class="card mb-1" style="border-radius: 1.5rem;">
+        <div class="card-body elementList py-1 px-3 d-flex" id="headingExampleTwo" aria-controls="collapseIndicatorChevron"
+        :style="cardBodyStyles">
+            
+            <div class="flex-grow-1 d-flex  align-items-center" @click="toggleSeparator" style="">
+                <span style="margin-right: 0.5rem;">
+                <i class="bi bi-person-circle"></i>
+                </span>
+                <span>{{ dataProduct.color_name }}</span>
+                <span class="ms-auto" style="color: grey; margin-right: 0rem;"><i class="bi bi-hash"></i></span>
+                <span class="" style="color: grey; margin-right: 1.5rem;">{{ dataProduct.id }}</span>
+            </div>
+            
+            <div class="vr" style="margin-right: 1.15rem;"></div>
+            <div class="123123">
+                <button class="btn btn-icon mx-1 px-2 d-inline text-dark" @click="this.$router.push({ path: '/models', query: { 'model': dataProduct.id } });">
+                    <i class="bi bi-layers" style="font-size: 18px;"></i>
+                </button>
+
+                <button data-bs-toggle="modal" :data-bs-target="'#editModal_' + dataProduct.id" class="btn btn-icon d-inline text-primary px-2"><i class="bi bi-pen"></i></button>
                 
-                <button  data-bs-toggle="modal" data-bs-target="#editModal" class="btn btn-icon d-inline text-primary ms-auto px-2"><i class="bi bi-pen"></i></button>
                 
-                
-                <!-- <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                    <div class="modal-content">
-                    <div class="modal-header text-center">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Изменить раздел</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-floating mb-3">
-                        <input type="text" class="form-control" placeholder="name@example.com" v-model="category.name">
-                        <label for="floatingInput">Имя</label>
+                <div class="modal fade" :id="'editModal_' + dataProduct.id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header text-center">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Изменение продукта</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <select v-model="updatedProduct.modelId" class="form-select py-3 mt-2 mb-3" aria-label="Default select example">
+                                    <option :value="0">Модель</option>
+                                    <option v-for="model in models" :key="model.id" :value="model.id">
+                                        {{ model.name }}
+                                    </option>
+                                </select>
+                                <select v-model="updatedProduct.colorId" class="form-select py-3 mb-3" aria-label="Default select example">
+                                    <option :value="0">Коллекция</option>
+                                    <option v-for="color in colors" :key="color.id" :value="color.id">
+                                        {{ color.name }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="modal-footer ">
+                                <button @click="updateProduct()" type="button" class="btn btn-second w-100" data-bs-dismiss="modal">Изменить</button>
+                            </div>
                         </div>
-                        <div class="form-floating mb-3">
-                        <input type="text" class="form-control" placeholder="Password" v-model="category.slug">
-                        <label for="floatingPassword">Слаг</label>
-                        </div>
-                    </div>
-                    <div class="modal-footer ">
-                        <button @click="updateBigCategory()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Изменить</button>
-                    </div>
                     </div>
                 </div>
-                </div> -->
 
-                <button @click="deleteBigCategory()" class="btn btn-icon d-inline text-danger px-2"><i class="bi bi-trash3"></i></button>
-            </a>
-            <div class="separator-card" v-show="isCollapsed"></div>
-            <div :id="'collapseProduct' + data_product.id" class="collapse" aria-labelledby="headingExampleTwo" data-bs-parent="#collapseIndicatorExampleOne" >
-                <div class="card-body">
-                    <div v-for="(size, index) in data_product_sizes" :key="size.id" class="d-flex align-items-center">
-                        <span style="margin-right: 0.5em;">{{ index + 1 }}.</span>
-                        <span>{{ size.size_name }}</span>
-                        <button data-bs-toggle="modal" data-bs-target="#editModal" class="btn btn-icon d-inline text-primary ms-auto px-2"><i class="bi bi-pen"></i></button>
-                        <button @click="deleteBigCategory()" class="btn btn-icon d-inline text-danger px-2"><i class="bi bi-trash3"></i></button>
+                <button @click="deleteProduct()" class="btn btn-icon d-inline text-danger px-2"><i class="bi bi-trash3"></i></button>
+            </div>
+        </div>
+        <div class="separator-card" v-show="isCollapsed"></div>
+        <div :id="'collapseProduct' + dataProduct.id" class="collapse" aria-labelledby="headingExampleTwo" data-bs-parent="#collapseIndicatorExampleOne" >
+            <div class="card-body">
+                <div v-if="productInstancesLoading">
+                    <div class="text-center">
+                        <div v-show="productInstancesLoading" class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
                     </div>
-                    <div class="d-flex align-items-center mt-3">
-                        <button class="btn btn-outline-success"><i class="bi bi-plus-circle" style="margin-right: 0.5em;"></i>Добавить размер</button>
+                </div>
+
+                <div v-if="!productInstancesLoading">
+                    <div v-if="dataProductInstances.productInstances.length != 0">
+                        <div v-for="productInstance in dataProductInstances.productInstances" :key="productInstance.id" class="card mb-2" style="border-radius: 1.5rem;">
+                            <div class="card-body elementSecondList py-1 px-3 d-flex align-items-center" id="headingExampleTwo" aria-controls="collapseIndicatorChevron">
+                                <span style="margin-right: 0.5em;">{{ productInstance.id }}.</span>
+                                <span>{{ productInstance.size_name }}</span>
+                                <button data-bs-toggle="modal" data-bs-target="#editModal" class="btn btn-icon d-inline text-primary ms-auto px-2"><i class="bi bi-pen"></i></button>
+                                <button @click="deleteProduct()" class="btn btn-icon d-inline text-danger px-2"><i class="bi bi-trash3"></i></button>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center mt-3">
+                            <button class="btn btn-outline-success px-3" style="border-radius: 1.25rem;">
+                                <i class="bi bi-layers" style="margin-right: 0.5em;"></i>
+                                <span>Добавить экземляр продукта</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div v-else style="text-align: start;">
+                        <span>Экземляров продукта нет</span>
+                        <div class="d-flex align-items-center mt-3">
+                            <button class="btn btn-outline-success px-3" style="border-radius: 1.25rem;">
+                                <i class="bi bi-layers" style="margin-right: 0.5em;"></i>
+                                <span>Добавить экземляр продукта</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
     </div>
 </template>
 
 <script>
 import axios from 'axios'
+import { Collapse } from 'bootstrap/dist/js/bootstrap.js'
 
 export default {
     name: 'ListProducts',
     props: {
         product: Object,
+        models: Array,
+        colors: Array,
+
+        showErrorToast: Function,
+        setLoading: Function,
+        loading: Boolean,
+        handleProductUpdated: Function,
+        handleProductDeleted: Function,
+
     },
     data() {
         return {
-            isCollapsed: false,
-            data_product: this.product,
-            data_product_sizes: []
+            isCollapsed : false,
+
+            dataProduct : this.product,
+
+            updatedProduct: {
+                modelId: 0,
+                colorId: 0,
+            },
+            
+            dataProductInstances : {
+                totalCount: 0,
+                totalPages: 0,
+                productInstances: []
+            },
+            
+            productInstancesLoading: true,
         }
     },
-    mounted() {
-        this.getProductSizes(this.data_product.id)
-    },
     computed: {
-       
+        cardBodyStyles() {
+            if (this.isCollapsed) {
+                return {
+                backgroundColor: 'rgba(238, 238, 238, 0.637)',
+                borderRadius: '1.5rem 1.5rem  0 0',
+                };
+            } else {
+                return {};
+            }
+        },
+    },
+    created() {
+        this.updatedProduct.modelId = this.product.model_id === null ? 0 : this.product.model_id;
+        this.updatedProduct.colorId =  this.product.color_id === null ? 0 : this.product.color_id;
     },
     methods: {
-        async getProductSizes(product_id) {
-            const params = { product_id: product_id}
-            await axios
-                .get(`/product-sizes`, { params })
-                .then(response => {
-                    this.data_product_sizes = response.data
-                    console.log(this.data_product_sizes)
-                })
-                .catch(error => {
-                    console.log(error)
-                })
+        async getProductInstances(productId) {
+            this.productInstancesLoading = true;
+            const params = {product_id: productId,
+                            offset: 0,
+                            limit: 20 }
+            try {
+                const response = await axios.get(`/product-instances`, { params });
+                if (!response.status == 200) {
+                    this.showErrorToast(response.status, response.data)
+                    console.log(response);
+                }
+                const { total_count, total_pages, product_instances } = response.data;
+
+                // Преобразование ключей totalCount и totalPages
+                const transformedData = {
+                    totalCount: total_count,
+                    totalPages: total_pages,
+                    productInstances: product_instances
+                };
+                this.dataProductInstances = transformedData;
+            } catch (error) {
+                this.showErrorToast(error.code, error.message);
+                console.error(error);
+            } finally {
+                this.productInstancesLoading = false;
+            }
+        },
+        async updateProduct() {
+            const formData = {
+                category_id: this.updatedModel.categoryId,
+                collection_id: this.updatedModel.collectionId,
+            }
+            this.setLoading(true);
+            try {
+                const response = await axios.put(`/model/${this.dataProduct.id}`, formData);
+                if (!response.status == 200) {
+                    this.showErrorToast(response.status, response.data)
+                    console.log(response);
+                }
+            } catch (error) {
+                this.showErrorToast(error.code, error.message);
+                console.error(error);
+            } finally {
+                this.setLoading(false);
+                await this.handleModelUpdated()
+            }
+        },
+        async deleteProduct() {
+            this.setLoading(true);
+            try {
+                const response = await axios.delete(`/model/${this.dataProduct.id}`);
+                if (!response.status == 200) {
+                    this.showErrorToast(response.status, response.data)
+                    console.log(response);
+                }
+            } catch (error) {
+                this.showErrorToast(error.code, error.message);
+                console.error(error);
+            } finally {
+                this.setLoading(false);
+                await this.handleModelDeleted()
+            }
         },
 
-        async deleteBigCategory() {
-            await axios
-                .delete(`/big_category/${this.big_category.id}`)
-                .then(response => {
-                    console.log(response.data)
-                    this.$emit('categoryDeleted', this.category.id);
-                })
-                .catch(error => {
-                    console.log(error)
-                })
-        },
-        async updateBigCategory() {
-            const formData = {
-                name: this.big_category.name,
-                slug: this.big_category.slug
+        async toggleSeparator(event) {
+            console.log("toggleSeparator")
+            console.log(this.isCollapsed)
+            console.log("toggleSeparator")
+
+            // Подождем, чтобы Vue успел обновить isCollapsed
+            await this.$nextTick();
+
+            const collapseTarget = document.getElementById('collapseProduct' + this.dataProduct.id);
+
+            if (!this.isCollapsed) {
+                new Collapse(collapseTarget, { toggle: false }).show();
+            } else {
+                new Collapse(collapseTarget, { toggle: false }).hide();
             }
-            await axios
-                .put(`/big_category/${this.big_category.id}`, formData)
-                .then(response => {
-                    console.log(response.data)
-                    this.$emit('categoryUpdated', this.category.id);
-                })
-                .catch(error => {
-                    console.log(error)
-                })
-        },
-        toggleSeparator() {
+
             this.isCollapsed = !this.isCollapsed;
+
+            if (this.isCollapsed) {
+              await this.getProductInstances(this.dataProduct.id);
+            }          
         },
     }
 }
 </script>
-
-<style lang="scss">
-
-.card {
-  a {
-    text-decoration: none; // Убираем подчеркивание
-    cursor: pointer;
-  }
-}
-
-.separator-card {
-  display: flex;
-  align-items: center;
-  text-align: center;
-}
-
-.separator-card::before,
-.separator-card::after {
-  content: '';
-  flex: 1;
-  border-bottom: 1px solid #dee2e6;
-}
-
-.separator-card:not(:empty)::before {
-  margin-right: 2em;
-}
-
-.separator-card:not(:empty)::after {
-  margin-left: 2em;
-}
-</style>

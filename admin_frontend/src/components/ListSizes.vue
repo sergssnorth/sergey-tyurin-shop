@@ -3,16 +3,19 @@
         <div class="card-body elementList py-1 px-3 d-flex" id="headingExampleTwo" aria-controls="collapseIndicatorChevron">
             
             <div class="flex-grow-1 d-flex  align-items-center" @click="toggleSeparator" style="">
-                <span style="margin-right: 0.5rem;">
-                <i class="bi bi-person-circle"></i>
+                <span style="margin-right: 0.75rem;">
+                <i class="bi bi-file-code"></i>
                 </span>
                 <span>{{ dataSize.name }}</span>
-                <span class="ms-auto" style="color: grey; margin-right: 0rem;"><i class="bi bi-hash"></i></span>
-                <span class="" style="color: grey; margin-right: 1.5rem;">{{ dataSize.id }}</span>
+                <span class="ms-auto"><i class="bi bi-hash"></i></span>
+                <span class="" style="margin-right: 1.5rem;">{{ dataSize.id }}</span>
             </div>
             
             <div class="vr" style="margin-right: 1.15rem;"></div>
             <div class="123123">
+                <button class="btn btn-icon mx-1 px-2 d-inline text-success" @click="">
+                    <i class="bi bi-plus-circle" style="font-size: 18px;"></i>
+                </button>
                 <button class="btn btn-icon mx-1 px-2 d-inline text-dark" @click="this.$router.push({ path: '/models', query: { 'size': dataSize.id } });">
                     <i class="bi bi-layers" style="font-size: 18px;"></i>
                 </button>

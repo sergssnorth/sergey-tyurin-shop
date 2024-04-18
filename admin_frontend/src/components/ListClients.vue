@@ -4,16 +4,20 @@
         :style="cardBodyStyles">
             
             <div class="flex-grow-1 d-flex  align-items-center" @click="toggleSeparator" style="">
-                <span style="margin-right: 0.5rem;">
+                <span style="margin-right: 0.75rem;">
                 <i class="bi bi-person-circle"></i>
                 </span>
                 <span>{{ dataClient.name }}</span>
-                <span class="ms-auto" style="color: grey; margin-right: 0rem;"><i class="bi bi-hash"></i></span>
-                <span class="" style="color: grey; margin-right: 1.5rem;">{{ dataClient.id }}</span>
+                <span class="ms-auto"><i class="bi bi-hash"></i></span>
+                <span class="" style="margin-right: 1.5rem;">{{ dataClient.id }}</span>
             </div>
             
             <div class="vr" style="margin-right: 1.15rem;"></div>
             <div class="123123">
+                <button class="btn btn-icon mx-1 px-2 d-inline text-success" @click="">
+                    <i class="bi bi-plus-circle" style="font-size: 18px;"></i>
+                </button>
+
                 <button data-bs-toggle="modal" data-bs-target="#edi" class="btn btn-icon d-inline text-success px-2"><i class="bi bi-bag-plus"></i></button>
 
                 <button data-bs-toggle="modal" :data-bs-target="'#editModal_' + dataClient.id" class="btn btn-icon d-inline text-primary px-2"><i class="bi bi-pen"></i></button>

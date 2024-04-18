@@ -10,3 +10,5 @@ from .order_status import router
 from .client import router
 from .order import router
 from .product_instance import router
+from .price_list import router
+from .price_list_element import router

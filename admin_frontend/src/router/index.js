@@ -19,6 +19,8 @@ import Client from '../views/Client.vue'
 
 import Order from '../views/Order.vue'
 
+import Warehouse from '@/views/Warehouse.vue'
+import PriceList from '@/views/PriceList.vue'
 
 
 
@@ -96,6 +98,17 @@ const routes = [
     path: '/orders',
     name: 'Order',
     component: Order
+  },
+
+  {
+    path: '/warehouses',
+    name: 'Warehouse',
+    component: Warehouse
+  },
+  {
+    path: '/price-list',
+    name: 'PriceList',
+    component: PriceList
   },
 
 ]

@@ -32,9 +32,12 @@ class ModelsResponseModel(BaseModel):
 async def get_models(offset: int = Query(0, ge=0),
                      limit: int = Query(50, gt=0),
                      search: str = Query(None),
+
                      category_id: Optional[int] = None, 
                      collection_id: Optional[int] = None, 
-                     model_id: Optional[int] = None, 
+                     model_id: Optional[int] = None,
+                     detail_id: Optional[int] = None,
+                     size_guide_id: Optional[int] = None,
 
                      sort_by: str = Query(None, description="Sort by 'name' or 'id'."),
                      order: str = Query("desc", description="Sort order: 'asc' or 'desc'."),
@@ -55,6 +58,12 @@ async def get_models(offset: int = Query(0, ge=0),
 
     if model_id is not None:
         query = query.filter(Model.id == model_id)
+
+    if detail_id is not None:
+        query = query.filter(Model.detail_id == detail_id)
+
+    if size_guide_id is not None:
+        query = query.filter(Model.size_guide_id == size_guide_id)
 
     if sort_by and order:
         if sort_by == "name":

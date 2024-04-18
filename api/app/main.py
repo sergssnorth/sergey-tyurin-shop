@@ -18,6 +18,8 @@ from app.endpoints import order
 from app.endpoints import detail
 from app.endpoints import size_guide
 from app.endpoints import product_instance
+from app.endpoints import price_list
+from app.endpoints import price_list_element
 
 
 app = FastAPI()
@@ -51,3 +53,5 @@ app.include_router(order.router)
 app.include_router(detail.router)
 app.include_router(size_guide.router)
 app.include_router(product_instance.router)
+app.include_router(price_list.router)
+app.include_router(price_list_element.router)

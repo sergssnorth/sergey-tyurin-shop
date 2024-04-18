@@ -4,16 +4,19 @@
         :style="cardBodyStyles">
             
             <div class="flex-grow-1 d-flex  align-items-center" @click="toggleSeparator" style="">
-                <span style="margin-right: 0.5rem;">
-                <i class="bi bi-person-circle"></i>
+                <span style="margin-right: 0.75rem;">
+                <i class="bi bi-layers"></i>
                 </span>
                 <span>{{ dataModel.name }}</span>
-                <span class="ms-auto" style="color: grey; margin-right: 0rem;"><i class="bi bi-hash"></i></span>
-                <span class="" style="color: grey; margin-right: 1.5rem;">{{ dataModel.id }}</span>
+                <span class="ms-auto"><i class="bi bi-hash"></i></span>
+                <span class="" style="margin-right: 1.5rem;">{{ dataModel.id }}</span>
             </div>
             
             <div class="vr" style="margin-right: 1.15rem;"></div>
             <div class="123123">
+                <button class="btn btn-icon mx-1 px-2 d-inline text-success" @click="">
+                    <i class="bi bi-plus-circle" style="font-size: 18px;"></i>
+                </button>
                 <button class="btn btn-icon mx-1 px-2 d-inline text-dark" @click="this.$router.push({ path: '/models', query: { 'model': dataModel.id } });">
                     <i class="bi bi-layers" style="font-size: 18px;"></i>
                 </button>
@@ -93,21 +96,10 @@
                                 <button @click="deleteProduct()" class="btn btn-icon d-inline text-danger px-2"><i class="bi bi-trash3"></i></button>
                             </div>
                         </div>
-                        <div class="d-flex align-items-center mt-3">
-                            <button class="btn btn-outline-success px-3" style="border-radius: 1.25rem;">
-                                <i class="bi bi-layers" style="margin-right: 0.5em;"></i>
-                                <span>Добавить продукт</span>
-                            </button>
-                        </div>
                     </div>
                     <div v-else style="text-align: start;">
                         <span>Продуктов нет</span>
-                        <div class="d-flex align-items-center mt-3">
-                            <button class="btn btn-outline-success px-3" style="border-radius: 1.25rem;">
-                                <i class="bi bi-layers" style="margin-right: 0.5em;"></i>
-                                <span>Добавить продукт</span>
-                            </button>
-                        </div>
+
                     </div>
                 </div>
             </div>

@@ -18,6 +18,7 @@ from .warehouse import Warehouse
 from .warehouse_element import WarehouseElement
 from .product_instance import ProductInstance
 from .price_list import PriceList
+from .price_list_element import PriceListElement
 from .product_instance import ProductInstance
 
 from .department import Department

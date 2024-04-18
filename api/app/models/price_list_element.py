@@ -8,6 +8,7 @@ class PriceListElement(SQLModel, table=True):
     id: Optional[int] = Field(default=None, nullable=False, primary_key=True)
     price_list_id: Optional[int] = Field(default=None, foreign_key="pricelist.id")
     product_instance_id: Optional[int] = Field(default=None, foreign_key="productinstance.id")
+    price: float
 
     order_elements: List["OrderElement"] = Relationship(back_populates="price_list_element")
 

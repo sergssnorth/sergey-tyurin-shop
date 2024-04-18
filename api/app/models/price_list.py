@@ -7,6 +7,6 @@ class PriceList(SQLModel, table=True):
     name: str
     created_at: datetime
     beginning_at: datetime
-    completion_at: datetime
+    completion_at: Optional[datetime]
 
     price_list_elements: List["PriceListElement"] = Relationship(back_populates="price_list")

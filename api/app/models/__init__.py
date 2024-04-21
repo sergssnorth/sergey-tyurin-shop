@@ -1,6 +1,8 @@
 from .user import User
-from .client import Client
 from .employee import Employee
+from .role import Role
+from .access import Access
+
 from .category import Category
 from .model import Model
 from .collection import Collection
@@ -24,5 +26,7 @@ from .product_instance import ProductInstance
 from .department import Department
 from .employee_status import EmployeeStatus
 
-from .delivery_information import DeliveryInformation
 from .order_element import OrderElement
+
+from .role_access import RoleAccess
+from .employee_role import EmployeeRole

@@ -8,11 +8,15 @@ from sqlmodel import SQLModel
 from alembic import context
 
 from app.models.user import User
-from app.models.client import Client
 from app.models.employee_status import EmployeeStatus
 from app.models.department import Department
-from app.models.delivery_information import DeliveryInformation
 from app.models.employee import Employee
+
+from app.models.role import Role
+from app.models.access import Access
+from app.models.role_access import RoleAccess
+from app.models.employee_role import EmployeeRole
+
 from app.models.category import Category
 from app.models.collection import Collection
 from app.models.detail import Detail

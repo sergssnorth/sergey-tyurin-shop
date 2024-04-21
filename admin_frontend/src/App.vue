@@ -62,7 +62,7 @@
                 <div class="col">
                   <div class="container">
                   <div class="collapse multi-collapse" id="multiCollapseStatistic">
-                    <button @click="$router.push('/')" class="btn btn-navigation d-flex justify-content-between mt-1" style="width: 100%; border-radius: 1.5rem;">
+                    <button @click="$router.push('/')" :class="{'active': currentPath === '/'}" class="btn btn-navigation-second d-flex justify-content-between mt-1" style="width: 100%; border-radius: 1.5rem;">
                       <div>
                         <span><i class="bi bi-bar-chart-fill"></i></span>
                         <span style="padding-left: 1rem;">Общая</span>
@@ -89,20 +89,20 @@
                 <div class="col">
                   <div class="container">
                   <div class="collapse multi-collapse" id="multiCollapseModel">
-                    <button @click="$router.push('/categories')" class="btn btn-navigation d-flex justify-content-between my-1" style="width: 100%; border-radius: 1.5rem;">
+                    <button @click="$router.push('/categories')" :class="{'active': currentPath === '/categories'}" class="btn btn-navigation-second d-flex justify-content-between my-1" style="width: 100%; border-radius: 1.5rem;">
                       <div>
                         <span><i class="bi bi-box-seam-fill"></i></span>
                         <span style="padding-left: 1rem;">Категории</span>
                       </div>
                     </button>
-                    <button @click="$router.push('/models')" class="btn btn-navigation d-flex justify-content-between mb-1" style="width: 100%; border-radius: 1.5rem;">
+                    <button @click="$router.push('/models')" :class="{'active': currentPath === '/models'}" class="btn btn-navigation-second d-flex justify-content-between mb-1" style="width: 100%; border-radius: 1.5rem;">
                       <div>
                         <span><i class="bi bi-layers-fill"></i></span>
                         <span style="padding-left: 1rem;">Модели</span>
                       </div>
                     </button>
 
-                    <button @click="$router.push('/products')" class="btn btn-navigation d-flex justify-content-between" style="width: 100%; border-radius: 1.5rem;">
+                    <button @click="$router.push('/products')" :class="{'active': currentPath === '/products'}" class="btn btn-navigation-second d-flex justify-content-between" style="width: 100%; border-radius: 1.5rem;">
                       <div>
                         <span><i class="bi bi-box-fill"></i></span>
                         <span style="padding-left: 1rem;">Продукты</span>
@@ -130,7 +130,7 @@
                 <div class="col">
                   <div class="container">
                   <div class="collapse multi-collapse" id="multiCollapsePriceList">
-                    <button @click="$router.push('/price-list')" class="btn btn-navigation d-flex justify-content-between mt-1" style="width: 100%; border-radius: 1.5rem;">
+                    <button @click="$router.push('/price-lists')" :class="{'active': currentPath === '/price-lists'}" class="btn btn-navigation-second d-flex justify-content-between mt-1" style="width: 100%; border-radius: 1.5rem;">
                       <div>
                         <span><i class="bi bi-currency-dollar"></i></span>
                         <span style="padding-left: 1rem;">Прайс-лист</span>
@@ -145,7 +145,7 @@
              <!-- Справочники -->
             <li class="mb-2">
               <div class="d-inline-flex gap-1" style="width: 100%;">
-                <button @click="toggleReferenceCollapse"  :class="{'active': isClickedReference}" class="btn btn-navigation d-flex justify-content-between" style="width: 100%; border-radius: 1.5rem;" data-bs-toggle="collapse" data-bs-target="#multiCollapseReference" href="#multiCollapseReference" role="button" aria-expanded="false" aria-controls="multiCollapseReference">
+                <button @click="toggleReferenceCollapse" :class="{'active': isClickedReference}" class="btn btn-navigation d-flex justify-content-between" style="width: 100%; border-radius: 1.5rem;" data-bs-toggle="collapse" data-bs-target="#multiCollapseReference" href="#multiCollapseReference" role="button" aria-expanded="false" aria-controls="multiCollapseReference">
                   <div>
                     <span><i class="bi bi-file-text-fill"></i></span>
                     <span style="padding-left: 1rem;">Справочники</span>
@@ -157,37 +157,37 @@
                 <div class="col">
                   <div class="container">
                   <div class="collapse multi-collapse" id="multiCollapseReference">
-                    <button @click="$router.push('/collections')" class="btn btn-navigation d-flex justify-content-between my-1" style="width: 100%; border-radius: 1.5rem;">
+                    <button @click="$router.push('/collections')" :class="{'active': currentPath === '/collections'}" class="btn btn-navigation-second d-flex justify-content-between my-1" style="width: 100%; border-radius: 1.5rem;">
                       <div>
                         <span><i class="bi bi-file-zip-fill"></i></span>
                         <span style="padding-left: 1rem;">Коллекции</span>
                       </div>
                     </button>
-                    <button @click="$router.push('/sizes')" class="btn btn-navigation d-flex justify-content-between mb-1" style="width: 100%;  border-radius: 1.5rem;">
+                    <button @click="$router.push('/sizes')" :class="{'active': currentPath === '/sizes'}" class="btn btn-navigation-second d-flex justify-content-between mb-1" style="width: 100%;  border-radius: 1.5rem;">
                       <div>
                         <span><i class="bi bi-file-code-fill"></i></span>
                         <span style="padding-left: 1rem;">Размеры</span>
                       </div>
                     </button>
-                    <button @click="$router.push('/size-guides')" class="btn btn-navigation d-flex justify-content-between mb-1" style="width: 100%; border-radius: 1.5rem;">
+                    <button @click="$router.push('/size-guides')" :class="{'active': currentPath === '/size-guides'}" class="btn btn-navigation-second d-flex justify-content-between mb-1" style="width: 100%; border-radius: 1.5rem;">
                       <div>
                         <span><i class="bi bi-file-spreadsheet-fill"></i></span>
                         <span style="padding-left: 1rem;">Размерные сетки</span>
                       </div>
                     </button>
-                    <button @click="$router.push('/colors')" class="btn btn-navigation d-flex justify-content-between mb-1" style="width: 100%;  border-radius: 1.5rem;">
+                    <button @click="$router.push('/colors')" :class="{'active': currentPath === '/colors'}" class="btn btn-navigation-second d-flex justify-content-between mb-1" style="width: 100%;  border-radius: 1.5rem;">
                       <div>
                         <span><i class="bi bi-file-image-fill"></i></span>
                         <span style="padding-left: 1rem;">Цвета</span>
                       </div>
                     </button>
-                    <button @click="$router.push('/order-status')" class="btn btn-navigation d-flex justify-content-between mb-1" style="width: 100%; border-radius: 1.5rem;">
+                    <button @click="$router.push('/order-status')" :class="{'active': currentPath === '/order-status'}" class="btn btn-navigation-second d-flex justify-content-between mb-1" style="width: 100%; border-radius: 1.5rem;">
                       <div>
                         <span><i class="bi bi-file-check-fill"></i></span>
                         <span style="padding-left: 1rem;">Статусы заказов</span>
                       </div>
                     </button>
-                    <button @click="$router.push('/details')" class="btn btn-navigation d-flex justify-content-between" style="width: 100%; border-radius: 1.5rem;">
+                    <button @click="$router.push('/details')" :class="{'active': currentPath === '/details'}" class="btn btn-navigation-second d-flex justify-content-between" style="width: 100%; border-radius: 1.5rem;">
                       <div>
                         <span><i class="bi bi-file-font-fill"></i></span>
                         <span style="padding-left: 1rem;">Описание</span>
@@ -214,7 +214,7 @@
                 <div class="col">
                   <div class="container">
                   <div class="collapse multi-collapse" id="multiCollapseOrder">
-                    <button @click="$router.push('/orders')" class="btn btn-navigation d-flex justify-content-between mt-1" style="width: 100%; border-radius: 1.5rem;">
+                    <button @click="$router.push('/orders')" :class="{'active': currentPath === '/orders'}" class="btn btn-navigation-second d-flex justify-content-between mt-1" style="width: 100%; border-radius: 1.5rem;">
                       <div>
                         <span><i class="bi bi-bag-fill"></i></span>
                         <span style="padding-left: 1rem;">Все заказы</span>
@@ -226,25 +226,43 @@
               </div>
             </li>
 
-            <!-- Клиенты -->
+            <!-- Пользователи -->
             <li class="mb-2">
               <div class="d-inline-flex gap-1" style="width: 100%;">
-                <button @click="isClickedClient = !isClickedClient" :class="{'active': isClickedClient}" class="btn btn-navigation d-flex justify-content-between" style="width: 100%; border-radius: 1.5rem;" data-bs-toggle="collapse" href="#multiCollapseClient" role="button" aria-expanded="false" aria-controls="multiCollapseClient">
+                <button @click="isClickedUser = !isClickedUser" :class="{'active': isClickedUser}" class="btn btn-navigation d-flex justify-content-between" style="width: 100%; border-radius: 1.5rem;" data-bs-toggle="collapse" href="#multiCollapseUser" role="button" aria-expanded="false" aria-controls="multiCollapseUser">
                   <div>
                     <span><i class="bi bi-people-fill"></i></span>
-                    <span style="padding-left: 1rem;">Клиенты</span>
+                    <span style="padding-left: 1rem;">Пользователи</span>
                   </div>
-                  <span><i :class="isClickedClient ? 'bi-caret-up-fill' : 'bi-caret-right-fill'"></i></span>
+                  <span><i :class="isClickedUser ? 'bi-caret-up-fill' : 'bi-caret-right-fill'"></i></span>
                 </button>
               </div>
               <div class="row">
                 <div class="col">
                   <div class="container">
-                  <div class="collapse multi-collapse" id="multiCollapseClient">
-                    <button @click="$router.push('/clients')" class="btn btn-navigation d-flex justify-content-between mt-1" style="width: 100%; border-radius: 1.5rem;">
+                  <div class="collapse multi-collapse" id="multiCollapseUser">
+                    <button @click="$router.push('/users')" :class="{'active': currentPath === '/users'}" class="btn btn-navigation-second d-flex justify-content-between my-1" style="width: 100%; border-radius: 1.5rem;">
                       <div>
-                        <span><i class="bi-people-fill"></i></span>
-                        <span style="padding-left: 1rem;">Все клиенты</span>
+                        <span><i class="bi bi-person-fill"></i></span>
+                        <span style="padding-left: 1rem;">Пользователи</span>
+                      </div>
+                    </button>
+                    <button @click="$router.push('/employees')" :class="{'active': currentPath === '/employees'}" class="btn btn-navigation-second d-flex justify-content-between my-1" style="width: 100%; border-radius: 1.5rem;">
+                      <div>
+                        <span><i class="bi bi-person-vcard-fill"></i></span>
+                        <span style="padding-left: 1rem;">Сотрудники</span>
+                      </div>
+                    </button>
+                    <button @click="$router.push('/departments')" :class="{'active': currentPath === '/departments'}" class="btn btn-navigation-second d-flex justify-content-between my-1" style="width: 100%; border-radius: 1.5rem;">
+                      <div>
+                        <span><i class="bi bi-diagram-3-fill"></i></span>
+                        <span style="padding-left: 1rem;">Отделы</span>
+                      </div>
+                    </button>
+                    <button @click="$router.push('/employee-statuses')" :class="{'active': currentPath === '/employee-statuses'}" class="btn btn-navigation-second d-flex justify-content-between" style="width: 100%; border-radius: 1.5rem;">
+                      <div>
+                        <span><i class="bi bi-lightning-charge-fill"></i></span>
+                        <span style="padding-left: 1rem;">Статусы сотрудников</span>
                       </div>
                     </button>
                   </div>
@@ -268,7 +286,7 @@
                 <div class="col">
                   <div class="container">
                   <div class="collapse multi-collapse" id="multiCollapseWarehouse">
-                    <button @click="$router.push('/warehouses')" class="btn btn-navigation d-flex justify-content-between mt-1" style="width: 100%; border-radius: 1.5rem;">
+                    <button @click="$router.push('/warehouses')" :class="{'active': currentPath === '/warehouses'}" class="btn btn-navigation-second d-flex justify-content-between mt-1" style="width: 100%; border-radius: 1.5rem;">
                       <div>
                         <span><i class="bi bi-house-fill"></i></span>
                         <span style="padding-left: 1rem;">Все cклады</span>
@@ -295,7 +313,7 @@
                 <div class="col">
                   <div class="container">
                   <div class="collapse multi-collapse" id="multiCollapseReport">
-                    <button @click="$router.push('/reports')" class="btn btn-navigation d-flex justify-content-between mt-1" style="width: 100%; border-radius: 1.5rem;">
+                    <button @click="$router.push('/reports')" :class="{'active': currentPath === '/reports'}" class="btn btn-navigation-second d-flex justify-content-between mt-1" style="width: 100%; border-radius: 1.5rem;">
                       <div>
                         <span><i class="bi bi-file-text-fill"></i></span>
                         <span style="padding-left: 1rem;">Все отчеты</span>
@@ -324,10 +342,10 @@
 <script>
 import axios from 'axios'
 import bootstrap from 'bootstrap/dist/js/bootstrap.js'
-// overflow-y: auto;
 export default {
     data() {
         return {
+          currentPath: '',
           isClickedStatistic: false,
           multiCollapseStatistic: null,
 
@@ -343,8 +361,8 @@ export default {
           isClickedOrder: false,
           multiCollapseOrder: null,
 
-          isClickedClient: false,
-          multiCollapseClient: null,
+          isClickedUser: false,
+          multiCollapseUser: null,
 
           isClickedWarehouse: false,
           multiCollapseWarehouse: null,
@@ -388,12 +406,12 @@ export default {
         this.multiCollapseOrder.toggle();
         this.isClickedOrder = !this.isClickedOrder;
       },
-      toggleClientCollapse() {
-        if (!this.multiCollapseClient) {
-          this.multiCollapseClient = new bootstrap.Collapse(document.getElementById('multiCollapseClient'));
+      toggleUserCollapse() {
+        if (!this.multiCollapseUser) {
+          this.multiCollapseUser = new bootstrap.Collapse(document.getElementById('multiCollapseUser'));
         }
-        this.multiCollapseClient.toggle();
-        this.isClickedClient = !this.isClickedClient;
+        this.multiCollapseUser.toggle();
+        this.isClickedUser = !this.isClickedUser;
       },
       toggleWarehouseCollapse() {
         if (!this.multiCollapseWarehouse) {
@@ -407,9 +425,10 @@ export default {
       checkCurrentRoute(to, from) {
         const StatisticRoutes = ['/', '/product-statistics'];
         const ModelRoutes = ['/big-categories', '/categories', '/models', '/product'];
+        const PriceListRoutes = ['/price-lists'];
         const ReferenceRoutes = ['/collections', '/sizes', '/colors', '/order-status'];
         const OrdersRoutes = ['/orders'];
-        const ClientsRoutes = ['/clients'];
+        const UsersRoutes = ['/users', '/employees', '/departments', '/employee-statuses'];
         const WarehouseRoutes = ['/warehouse'];
 
         const BaseRoutes = ['/'];
@@ -418,7 +437,13 @@ export default {
         }
 
         const currentRoute = to.path; // Текущий URL
-        const previousRoute = from.path; 
+        this.currentPath = currentRoute
+        const previousRoute = from.path;
+
+        if (currentRoute == '/products') {
+
+        }
+
         console.log("previousRoute")
         console.log(previousRoute)
         console.log("previousRoute")
@@ -435,6 +460,10 @@ export default {
           this.toggleModelCollapse()
         }
 
+        if ((PriceListRoutes.some(route => currentRoute.startsWith(route)) && BaseRoutes.includes(previousRoute))) {
+          this.togglePriceListCollapse()
+        }
+
         if ((ReferenceRoutes.some(route => currentRoute.startsWith(route)) && BaseRoutes.includes(previousRoute))) {
           this.toggleReferenceCollapse()
         }
@@ -443,8 +472,8 @@ export default {
           this.toggleOrderCollapse()
         }
 
-        if ((ClientsRoutes.some(route => currentRoute.startsWith(route)) && BaseRoutes.includes(previousRoute))) {
-          this.toggleClientCollapse()
+        if ((UsersRoutes.some(route => currentRoute.startsWith(route)) && BaseRoutes.includes(previousRoute))) {
+          this.toggleUserCollapse()
         }
         
         if ((WarehouseRoutes.some(route => currentRoute.startsWith(route)) && BaseRoutes.includes(previousRoute))) {

@@ -7,8 +7,12 @@ from .product import router
 from .warehouse import router
 from .warehouse_element import router
 from .order_status import router
-from .client import router
 from .order import router
 from .product_instance import router
 from .price_list import router
 from .price_list_element import router
+from .department import router
+from .detail import router
+from .employee_status import router
+from .employee import router
+from .user import router

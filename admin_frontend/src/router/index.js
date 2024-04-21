@@ -15,13 +15,16 @@ import Size from '../views/Size.vue'
 import Color from '../views/Color.vue'
 import OrderStatus from '../views/OrderStatus.vue'
 
-import Client from '../views/Client.vue'
+import User from '../views/User.vue'
+import Employee from '../views/Employee.vue'
 
 import Order from '../views/Order.vue'
 
 import Warehouse from '@/views/Warehouse.vue'
 import PriceList from '@/views/PriceList.vue'
 
+import Department from '@/views/Department.vue'
+import EmployeeStatus from '@/views/EmployeeStatus.vue'
 
 
 
@@ -89,9 +92,14 @@ const routes = [
   },
 
   {
-    path: '/clients',
-    name: 'Client',
-    component: Client
+    path: '/users',
+    name: 'User',
+    component: User
+  },
+  {
+    path: '/employees',
+    name: 'Employee',
+    component: Employee
   },
 
   {
@@ -106,9 +114,19 @@ const routes = [
     component: Warehouse
   },
   {
-    path: '/price-list',
+    path: '/price-lists',
     name: 'PriceList',
     component: PriceList
+  },
+  {
+    path: '/departments',
+    name: 'Department',
+    component: Department
+  },
+  {
+    path: '/employee-statuses',
+    name: 'EmployeeStatus',
+    component: EmployeeStatus
   },
 
 ]

@@ -4,8 +4,8 @@
             
             <div class="d-flex align-items-center flex-grow-1" >
                 <div class="input-group align-items-center">
-                    <span @click="searchClients" class="input-group-text" id="basic-addon1" style="border-radius: 1.5rem 0 0 1.5rem;"><i class="bi bi-search" style="font-size: 16px;"></i></span>
-                    <input v-model="search" @keyup.enter="searchClients" type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1" style="border-radius: 0 1.5rem 1.5rem 0;">
+                    <span @click="searchUser" class="input-group-text" id="basic-addon1" style="border-radius: 1.5rem 0 0 1.5rem;"><i class="bi bi-search" style="font-size: 16px;"></i></span>
+                    <input v-model="search" @keyup.enter="searchUser" type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1" style="border-radius: 0 1.5rem 1.5rem 0;">
                 </div>
                 <div class="d-flex align-items-center">
                     
@@ -135,20 +135,20 @@
                             </div>
                             <div class="modal-body">
                                 <div class="form-floating mt-2 mb-3">
-                                    <input type="text" class="form-control" placeholder="name@example.com" v-model="newClient.name">
-                                    <label for="floatingInput">Имя</label>
+                                    <input type="text" class="form-control" placeholder="name@example.com" v-model="newUser.login">
+                                    <label for="floatingInput">Логин</label>
                                 </div>
-                                <div class="form-floating mb-3">
-                                    <input type="text" class="form-control" placeholder="Password" v-model="newClient.phone">
-                                    <label for="floatingPassword">Телефон</label>
+                                <div class="form-floating mt-2 mb-3">
+                                    <input type="text" class="form-control" placeholder="name@example.com" v-model="newUser.password">
+                                    <label for="floatingInput">Пароль</label>
                                 </div>
                                 <div class="form-floating mb-2">
-                                    <input type="text" class="form-control" placeholder="Password" v-model="newClient.email">
+                                    <input type="text" class="form-control" placeholder="Password" v-model="newUser.email">
                                     <label for="floatingPassword">Email</label>
                                 </div>
                             </div>
                             <div class="modal-footer ">
-                                <button @click="addClient()" type="button" class="btn btn-second w-100" data-bs-dismiss="modal">Cоздать</button>
+                                <button @click="addUser()" type="button" class="btn btn-second w-100" data-bs-dismiss="modal">Cоздать</button>
                             </div>
                             </div>
                         </div>
@@ -156,7 +156,7 @@
                 </div>
             </div>
         </div>
-        <div class="row flex-grow-1" id="clientlist">
+        <div class="row flex-grow-1" id="userlist">
             <div class="col d-flex flex-column" style="flex-grow: 1;">
             
                 <div v-if="loading">
@@ -168,12 +168,16 @@
                 </div>
                 <div v-if="!loading">
                     <div class="col d-flex flex-column" style="flex-grow: 1;"></div>
-                    <ListClients
-                    v-for="client in clients.clients"
-                    v-bind:key="client.id"
-                    v-bind:client="client"
-                    @clientDeleted="handleClientDeleted" 
-                    @clientUpdated="handleClientUpdated"
+                    <ListUsers
+                    v-for="user in users.users"
+                    v-bind:key="user.id"
+                    v-bind:user="user"
+
+                    :setLoading="setLoading"
+                    :loading="loading"
+
+                    :handleUserDeleted = "handleUserDeleted"
+                    :handleUserUpdated = "handleUserUpdated"
                     :showErrorToast="showErrorToast"/>
                 </div>
 
@@ -183,7 +187,7 @@
             <div class="col text-center">
                 <nav class="px-0 py-0" aria-label="Навигация по страницам">
                     <ul class="my-2 pagination justify-content-center">
-                        <li class="page-item page-item-pointer" v-if="clients.totalPages > 1 && currentPage > 1">
+                        <li class="page-item page-item-pointer" v-if="users.totalPages > 1 && currentPage > 1">
                             <a class="page-link" @click="changePage(currentPage - 1)" aria-label="Предыдущая">
                             <span aria-hidden="true">&laquo;</span>
                             </a>
@@ -196,7 +200,7 @@
                             <a class="page-link" @click="changePage(page)" :class="{ 'active': page == currentPage }">{{ page }}</a>
                             </template>
                         </li>
-                        <li class="page-item page-item-pointer" v-if="clients.totalPages > 1 && currentPage < clients.totalPages">
+                        <li class="page-item page-item-pointer" v-if="users.totalPages > 1 && currentPage < users.totalPages">
                             <a class="page-link" @click="changePage(currentPage + 1)" aria-label="Следующая">
                             <span aria-hidden="true">&raquo;</span>
                             </a>
@@ -233,25 +237,25 @@ import axios from 'axios'
 import { Toast } from 'bootstrap/dist/js/bootstrap.js'
 
 
-import ListClients from '@/components/ListClients.vue'
+import ListUsers from '@/components/ListUsers.vue'
 
 export default {
-    name: 'Client',
+    name: 'user',
     data() {
         return {
             search: '',
             selectedSort: '',
 
-            newClient: {
-                name: '',
-                phone: '',
+            newUser: {
+                login: '',
+                password: '',
                 email: '',
             },
 
-            clients : {
+            users : {
                 totalCount: 0,
                 totalPages: 0,
-                clients: []
+                users: []
             },
 
             loading : true,
@@ -259,13 +263,13 @@ export default {
         }
     },
     components: {
-        ListClients,
+        ListUsers,
     },
     computed: {
         displayedPages() {
             const totalDisplayPages = 5;
             const startPage = Math.max(1, this.currentPage - 2);
-            const endPage = Math.min(this.clients.totalPages, startPage + totalDisplayPages - 1);
+            const endPage = Math.min(this.users.totalPages, startPage + totalDisplayPages - 1);
 
             let pages = [];
 
@@ -277,32 +281,32 @@ export default {
             pages.push(i);
             }
 
-            if (endPage < this.clients.totalPages) {
-            pages.push('...', this.clients.totalPages);
+            if (endPage < this.users.totalPages) {
+            pages.push('...', this.users.totalPages);
             }
 
             return pages;
         }
     },
     async mounted() {
-        this.currentPage = localStorage.getItem('clientCurrentPage');
+        this.currentPage = localStorage.getItem('userCurrentPage');
 
         if (!this.currentPage) {
             this.currentPage = 1;
-            localStorage.setItem('clientCurrentPage', this.currentPage);
+            localStorage.setItem('userCurrentPage', this.currentPage);
         }
 
-        this.selectedSort = localStorage.getItem('clientSelectedSort');
+        this.selectedSort = localStorage.getItem('userselectedSort');
 
         if (!this.selectedSort) {
             this.selectedSort = 'none';
-            localStorage.setItem('clientSelectedSort', this.selectedSort);
+            localStorage.setItem('userselectedSort', this.selectedSort);
         }
 
-        await this.getClients(this.currentPage, this.selectedSort);
+        await this.getUsers(this.currentPage, this.selectedSort);
     },
     methods: {
-        async getClients(page, selectedSort) {
+        async getUsers(page, selectedSort) {
             const offset = (page - 1) * 50
             let params = {
                 offset: offset,
@@ -320,20 +324,20 @@ export default {
 
             try {
                 this.loading = true;
-                const response = await axios.get(`/clients`, { params });
+                const response = await axios.get(`/users`, { params });
                 if (!response.status == 200) {
                     this.showErrorToast(response.status, response.data)
                     console.log(response);
                 }
-                const { total_count, total_pages, clients } = response.data;
+                const { total_count, total_pages, users } = response.data;
                 const transformedData = {
                     totalCount: total_count,
                     totalPages: total_pages,
-                    clients: clients
+                    users: users
                 };
 
-                this.clients = transformedData;
-                console.log(this.clients);
+                this.users = transformedData;
+                console.log(this.users);
             } catch (error) {
                 this.showErrorToast(error.code, error.message);
                 console.log(error);
@@ -341,26 +345,26 @@ export default {
                 this.loading = false;
             }
         },
-        async addClient() {
+        async addUser() {
             const formData = {
-                name: this.newClient.name,
-                phone: this.newClient.phone,
-                email: this.newClient.email,
+                login: this.newUser.login,
+                password: this.newUser.password,
+                email: this.newUser.email,
             }
             try {
                 this.loading = true;
-                const response = await axios.post(`/client`, formData);
+                const response = await axios.post(`/user`, formData);
                 if (response.status == 200) {
                     this.showSuccessfulCreationСlientToast()
-                    this.newClient.name = '',
-                    this.newClient.phone = '',
-                    this.newClient.email = ''
+                    this.newUser.login = '',
+                    this.newUser.password = '',
+                    this.newUser.email = ''
                 }
                 else {
                     this.showErrorToast(response.status, response.data)
                     console.log(response);
                 }
-                await this.getClients(this.currentPage, this.selectedSort);
+                await this.getUsers(this.currentPage, this.selectedSort);
             } catch (error) {
                 this.showErrorToast(error.code, error.message);
                 console.log(error);
@@ -368,11 +372,11 @@ export default {
                 this.loading = false;
             }
         },
-        async searchClients() {
+        async searchUser() {
             try {
                 this.currentPage = 1;
-                localStorage.setItem('clientCurrentPage',  this.currentPage);
-                await this.getClients(this.currentPage, this.selectedSort);
+                localStorage.setItem('userCurrentPage',  this.currentPage);
+                await this.getUsers(this.currentPage, this.selectedSort);
             } catch (error) {
                 this.showErrorToast(error.code, error.message);
                 console.log(error);
@@ -382,18 +386,18 @@ export default {
         },
         async changePage(page) {
             this.loading = true;
-            localStorage.setItem('clientCurrentPage', page);
+            localStorage.setItem('userCurrentPage', page);
             this.currentPage = page
-            await this.getClients(page, this.selectedSort);
+            await this.getUsers(page, this.selectedSort);
             this.loading = false;
         },
         async changeSort() {
             this.loading = true;
             try {
                 this.currentPage = 1;
-                localStorage.setItem('clientCurrentPage',  this.currentPage);
-                localStorage.setItem('clientSelectedSort',  this.selectedSort);
-                await this.getClients(this.currentPage, this.selectedSort);
+                localStorage.setItem('userCurrentPage',  this.currentPage);
+                localStorage.setItem('userselectedSort',  this.selectedSort);
+                await this.getUsers(this.currentPage, this.selectedSort);
             } catch (error) {
                 this.showErrorToast(error.code, error.message);
                 console.log(error);
@@ -411,49 +415,13 @@ export default {
             errorBody.textContent = 'Ошибка, ' + errorCode + ', ' + errorMessage;
             errorCreation.show();
         },
-        async handleClientDeleted() {
-            await this.getClients(this.currentPage, this.selectedSort);
+        async handleUserDeleted() {
+            await this.getUsers(this.currentPage, this.selectedSort);
         },
-        async handleClientUpdated() {
-            await this.getClients(this.currentPage, this.selectedSort);
+        async handleUserUpdated() {
+            await this.getUsers(this.currentPage, this.selectedSort);
         }
     },
 }   
 
 </script>
-
-<style lang="scss">
-
-button.btn {
-    border-radius: 0.75rem;
-}
-
-#clientlist {
-    overflow-y: auto;
-}
-
-#clientlist::-webkit-scrollbar {
-    width: 8px;
-}
-
-#clientlist::-webkit-scrollbar-track {
-    border-radius: 8px;
-    background-color: #e7e7e7;
-    border: 1px solid #cacaca;
-}
-
-#clientlist::-webkit-scrollbar-thumb {
-    border-radius: 8px;
-    background-color: #696cff;
-}
-
-input {
-    border-radius: 0;
-}
-
-.input-group-text:hover {
-    cursor: pointer;
-}
-
-
-</style>

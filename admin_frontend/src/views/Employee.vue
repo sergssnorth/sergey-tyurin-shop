@@ -3,8 +3,8 @@
         <div class="row mb-3">
             <div class="d-flex align-items-center flex-grow-1" >
                 <div class="input-group align-items-center">
-                    <span @click="searchCategories" class="input-group-text" id="basic-addon1" style="border-radius: 1.5rem 0 0 1.5rem;"><i class="bi bi-search" style="font-size: 16px;"></i></span>
-                    <input v-model="search" @keyup.enter="searchCategories" type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1" style="border-radius: 0 1.5rem 1.5rem 0;">
+                    <span @click="searchEmployees" class="input-group-text" id="basic-addon1" style="border-radius: 1.5rem 0 0 1.5rem;"><i class="bi bi-search" style="font-size: 16px;"></i></span>
+                    <input v-model="search" @keyup.enter="searchEmployees" type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1" style="border-radius: 0 1.5rem 1.5rem 0;">
                 </div>
                 <div class="d-flex align-items-center">
                     
@@ -95,8 +95,8 @@
                         </div>
                     </div>                    
 
-                    <!-- <button @click="" class="btn btn-icon d-inline mx-1 px-2 custom-dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i v-if="filterBigCategory == 0" class="bi bi-funnel"></i>
+                    <button @click="" class="btn btn-icon d-inline mx-1 px-2 custom-dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i v-if="filterEmployeeStatus == 0" class="bi bi-funnel"></i>
                         <i v-else class="bi bi-funnel-fill" style="color: #696cff;"></i>
                     </button>
 
@@ -104,46 +104,62 @@
                         <div class="row">
                             <div class="col">
                                 <div class="separator mx-3 mb-2">Фильтры</div>
-                                <select @change="handleBigCategoryChange" v-model="filterBigCategory" class="form-select mx-3 mb-2 py-2" style="width: 91%;" aria-label="Default select example">
-                                    <option :value="0">Выберите категорию</option>
-                                    <option v-for="bigCategory in bigCategories.bigCategories" :key="bigCategory.id" :value="bigCategory.id">
-                                        {{ bigCategory.name }}
+                                <select @change="handleEmployeeStatusChange" v-model="filterEmployeeStatus" class="form-select mx-3 mb-2 py-2" style="width: 91%;" aria-label="Default select example">
+                                    <option :value="0">Выберите cтатус</option>
+                                    <option v-for="employeeStatus in employeeStatuses.employeeStatuses" :key="employeeStatus.id" :value="employeeStatus.id">
+                                        {{ employeeStatus.name }}
+                                    </option>
+                                </select>
+                                <select @change="handleDepartmentChange" v-model="filterDepartment" class="form-select mx-3 mb-2 py-2" style="width: 91%;" aria-label="Default select example">
+                                    <option :value="0">Выберите отдел</option>
+                                    <option v-for="department in departments.departments" :key="department.id" :value="department.id">
+                                        {{ department.name }}
                                     </option>
                                 </select>
                             </div>
                         </div>
-                    </div> -->
+                    </div>
 
-                    <button class="btn btn-icon mx-1 px-2 d-inline text-success" data-bs-toggle="modal" data-bs-target="#сreateCategoryModal">
+                    <button class="btn btn-icon mx-1 px-2 d-inline text-success" data-bs-toggle="modal" data-bs-target="#сreateModelModal">
                         <i class="bi bi-box-seam" style="font-size: 18px;"></i>
                     </button>
                     
-                    <div class="modal fade" id="сreateCategoryModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal fade" id="сreateModelModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                             <div class="modal-content">
                             <div class="modal-header text-center">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">Создание категории</h1>
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Создание сотрудника</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <!-- <select v-model="newCategory.bigCategoryId" class="form-select py-3" aria-label="Default select example">
-                                    <option :value="0">Создание категории</option>
-                                    <option v-for="bigCategory in bigCategories.bigCategories" :key="bigCategory.id" :value="bigCategory.id">
-                                        {{ bigCategory.name }}
-                                    </option>
-                                </select> -->
                                 <div class="form-floating mt-2 mb-3">
-                                    <input type="text" class="form-control" placeholder="name@example.com" v-model="newCategory.name">
+                                    <input type="text" class="form-control" placeholder="name@example.com" v-model="newEmployee.userId">
+                                    <label for="floatingInput">Id пользвателя</label>
+                                </div>
+                                <div class="form-floating mt-2 mb-3">
+                                    <input type="text" class="form-control" placeholder="name@example.com" v-model="newEmployee.name">
                                     <label for="floatingInput">Имя</label>
                                 </div>
-                                <div class="form-floating mb-2">
-                                    <input type="text" class="form-control" placeholder="Password" v-model="newCategory.slug">
-                                    <label for="floatingPassword">Слаг</label>
+                                <div class="form-floating mt-2 mb-3">
+                                    <input type="text" class="form-control" placeholder="name@example.com" v-model="newEmployee.sname">
+                                    <label for="floatingInput">Фамилия</label>
                                 </div>
+                                <select v-model="newEmployee.employeeStatusId" class="form-select py-3 mt-2 mb-3" aria-label="Default select example">
+                                    <option :value="0">Статус сотрудника</option>
+                                    <option v-for="employeeStatus in employeeStatuses.employeeStatuses" :key="employeeStatus.id" :value="employeeStatus.id">
+                                        {{ employeeStatus.name }}
+                                    </option>
+                                </select>
+                                <select v-model="newEmployee.departmentId" class="form-select py-3 mb-3" aria-label="Default select example">
+                                    <option :value="0">Отдел</option>
+                                    <option v-for="department in departments.departments" :key="department.id" :value="department.id">
+                                        {{ department.name }}
+                                    </option>
+                                </select>
 
                             </div>
                             <div class="modal-footer ">
-                                <button @click="addCategory()" type="button" class="btn btn-second w-100" data-bs-dismiss="modal">Cоздать</button>
+                                <button @click="addEmployee()" type="button" class="btn btn-second w-100" data-bs-dismiss="modal">Cоздать</button>
                             </div>
                             </div>
                         </div>
@@ -162,31 +178,32 @@
                     </div>
                 </div>
                 <div v-if="!loading">
-                    <div v-if="categories.categories.length != 0">
-                        <ListCategories
-                        v-for="category in categories.categories"
-                        :key="category.id"
-                        :category="category"
+                    <div v-if="employees.employees.length != 0">
+                        <ListEmployees
+                        v-for="employee in employees.employees"
+                        :key="employee.id"
+                        :employee="employee"
+                        :employeeStatuses="employeeStatuses.employeeStatuses"
+                        :departments="departments.departments"
 
                         :setLoading="setLoading"
                         :loading="loading"
-                        :handleCategoryDeleted = "handleCategoryDeleted"
-                        :handleCategoryUpdated = "handleCategoryUpdated"
+                        :handleEmployeeDeleted = "handleEmployeeDeleted"
+                        :handleEmployeeUpdated = "handleEmployeeUpdated"
                         :showErrorToast="showErrorToast"/>
+
                     </div>
                     <div v-else>
-                        <span style="font-size: 1.3rem;">Категорий пока нет ...</span>
+                        <span style="font-size: 1.3rem;">Сотрудников пока нет ...</span>
                     </div>
-                    
                 </div>
-
             </div>
         </div>
         <div class="row">
             <div class="col text-center">
                 <nav class="px-0 py-0" aria-label="Навигация по страницам">
                     <ul class="my-2 pagination justify-content-center">
-                        <li class="page-item page-item-pointer" v-if="categories.totalPages > 1 && currentPage > 1">
+                        <li class="page-item page-item-pointer" v-if="employees.totalPages > 1 && currentPage > 1">
                             <a class="page-link" @click="changePage(currentPage - 1)" aria-label="Предыдущая">
                             <span aria-hidden="true">&laquo;</span>
                             </a>
@@ -199,7 +216,7 @@
                             <a class="page-link" @click="changePage(page)" :class="{ 'active': page == currentPage }">{{ page }}</a>
                             </template>
                         </li>
-                        <li class="page-item page-item-pointer" v-if="categories.totalPages > 1 && currentPage < categories.totalPages">
+                        <li class="page-item page-item-pointer" v-if="employees.totalPages > 1 && currentPage < employees.totalPages">
                             <a class="page-link" @click="changePage(currentPage + 1)" aria-label="Следующая">
                             <span aria-hidden="true">&raquo;</span>
                             </a>
@@ -209,10 +226,10 @@
             </div>
         </div>
         <div class="toast-container position-fixed bottom-0 end-0 p-3">
-            <div id="successfulCreationCategoryToast" class="toast text-bg-success" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
+            <div id="successfulCreationEmployeeToast" class="toast text-bg-success" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
                 <div class="d-flex">
                     <div class="toast-body">
-                        Категория успешно создана!
+                        Сотрудник успешно создан!
                     </div>
                     <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
@@ -229,31 +246,50 @@
             </div>
         </div>
     </div>
+
 </template>
 
 <script>
 import axios from 'axios'
 import { Toast } from 'bootstrap/dist/js/bootstrap.js'
 
-import ListCategories from '@/components/ListCategories'
+import ListEmployees from '@/components/ListEmployees'
 
 export default {
-    name: 'Category',
+    name: 'Employee',
     
     data() {
         return {
             search: '',
             selectedSort: '',
 
-            newCategory: {
-                name: '',
-                slug: '',
+            filterEmployeeStatus: 0,
+            filterDepartment: 0,
+
+            newEmployee: {
+                userId: 0,
+                name: "",
+                sname: "",
+                employeeStatusId: 0,
+                departmentId: 0
             },
 
-            categories : {
+            employees : {
                 totalCount: 0,
                 totalPages: 0,
-                categories: []
+                employees: []
+            },
+
+            departments: {
+                totalCount: 0,
+                totalPages: 0,
+                departments: []
+            },
+
+            employeeStatuses: {
+                totalCount: 0,
+                totalPages: 0,
+                employeeStatuses: []
             },
 
             loading : true,
@@ -261,13 +297,13 @@ export default {
         }
     },
     components: {
-        ListCategories,
+        ListEmployees,
     },
     computed: {
         displayedPages() {
             const totalDisplayPages = 5;
             const startPage = Math.max(1, this.currentPage - 2);
-            const endPage = Math.min(this.categories.totalPages, startPage + totalDisplayPages - 1);
+            const endPage = Math.min(this.employees.totalPages, startPage + totalDisplayPages - 1);
 
             let pages = [];
 
@@ -279,40 +315,117 @@ export default {
             pages.push(i);
             }
 
-            if (endPage < this.categories.totalPages) {
-            pages.push('...', this.categories.totalPages);
+            if (endPage < this.employees.totalPages) {
+            pages.push('...', this.employees.totalPages);
             }
 
             return pages;
         }
     },
+    created() {
+        const employeeStatus = this.$route.query['employee-status'];
+        if (employeeStatus) {
+            console.log('employeeStatus:', employeeStatus);
+            localStorage.setItem('modelFilterEmployeeStatus', employeeStatus);
+        } else {
+            localStorage.setItem('modelFilterEmployeeStatus', 0);
+        }
+
+        const department = this.$route.query['department'];
+        if (department) {
+            console.log('department:', department);
+            localStorage.setItem('modelFilterDepartment', department);
+        } else {
+            localStorage.setItem('modelFilterDepartment', 0);
+        }
+    },
     async mounted() {
-        this.currentPage = localStorage.getItem('categoryCurrentPage');
+        this.currentPage = localStorage.getItem('employeesCurrentPage');
 
         if (!this.currentPage) {
             this.currentPage = 1;
-            localStorage.setItem('categoryCurrentPage', this.currentPage);
+            localStorage.setItem('employeesCurrentPage', this.currentPage);
         }
 
-        this.selectedSort = localStorage.getItem('categorySelectedSort');
+        this.selectedSort = localStorage.getItem('employeesSelectedSort');
 
         if (!this.selectedSort) {
             this.selectedSort = 'none';
-            localStorage.setItem('categorySelectedSort', this.selectedSort);
+            localStorage.setItem('employeesSelectedSort', this.selectedSort);
         }
 
-        // this.filterBigCategory = localStorage.getItem('categoryFilterBigCategory');
+        this.filterEmployeeStatus = localStorage.getItem('modelFilterEmployeeStatus');
 
-        // if (!this.filterBigCategory) {
-        //     this.filterBigCategory = 0;
-        //     localStorage.setItem('categoryFilterBigCategory', this.filterBigCategory);
-        // }
+        if (!this.filterEmployeeStatus) {
+            this.filterEmployeeStatus = 0;
+            localStorage.setItem('modelFilterEmployeeStatus', this.filterEmployeeStatus);
+        }
 
-        await this.getCategories(this.currentPage, this.selectedSort);
+        this.filterDepartment = localStorage.getItem('modelFilterDepatment');
+
+        if (!this.filterDepartment) {
+            this.filterDepartment = 0;
+            localStorage.setItem('modelFilterDepatment', this.filterDepartment);
+        }
+
+
+        await this.getEmployees(this.currentPage, this.selectedSort, this.filterEmployeeStatus, this.filterDepartment);
+        await this.getDepartments()
+        await this.getEmployeeStatuses()
     },
     methods: {
-        async getCategories(page, selectedSort) {
-            console.log("getCategories")
+        async getDepartments() {
+            try {
+                this.loading = true;
+                const response = await axios.get(`/departments`);
+                if (!response.status == 200) {
+                    this.showErrorToast(response.status, response.data)
+                    console.log(response);
+                }
+                const { total_count, total_pages, departments } = response.data;
+
+                const transformedData = {
+                    totalCount: total_count,
+                    totalPages: total_pages,
+                    departments: departments
+                };
+
+                this.departments = transformedData;
+                console.log(this.categories);
+            } catch (error) {
+                this.showErrorToast(error.code, error.message);
+                console.log(error);
+            } finally {
+                this.loading = false;
+            }
+        },
+        async getEmployeeStatuses() {
+            try {
+                this.loading = true;
+                const response = await axios.get(`/employee-statuses`);
+                if (!response.status == 200) {
+                    this.showErrorToast(response.status, response.data)
+                    console.log(response);
+                }
+                const { total_count, total_pages, employee_statuses } = response.data;
+
+                const transformedData = {
+                    totalCount: total_count,
+                    totalPages: total_pages,
+                    employeeStatuses: employee_statuses
+                };
+
+                this.employeeStatuses = transformedData;
+                console.log(this.collections);
+            } catch (error) {
+                this.showErrorToast(error.code, error.message);
+                console.log(error);
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        async getEmployees(page, selectedSort, filterEmployeeStatus, filterDepartment) {
             const offset = (page - 1) * 50
             let params = {
                 offset: offset,
@@ -327,25 +440,33 @@ export default {
                 params.sort_by = sortBy;
                 params.order = order;
             }
+            if (filterEmployeeStatus != 0) {
+                console.log(filterEmployeeStatus)
+                params.employee_status_id = filterEmployeeStatus;
+            }
+            if (filterDepartment != 0) {
+                console.log(filterDepartment)
+                params.department_id = filterDepartment;
+            }
 
             try {
                 this.loading = true;
-                const response = await axios.get(`/categories`, { params });
+                const response = await axios.get(`/employees`, { params });
                 if (!response.status == 200) {
                     this.showErrorToast(response.status, response.data)
                     console.log(response);
                 }
-                const { total_count, total_pages, categories } = response.data;
+                const { total_count, total_pages, employees } = response.data;
 
                 // Преобразование ключей totalCount и totalPages
                 const transformedData = {
                     totalCount: total_count,
                     totalPages: total_pages,
-                    categories: categories
+                    employees: employees
                 };
 
-                this.categories = transformedData;
-                console.log(this.categories);
+                this.employees = transformedData;
+                console.log(this.employees);
             } catch (error) {
                 this.showErrorToast(error.code, error.message);
                 console.log(error);
@@ -353,25 +474,28 @@ export default {
                 this.loading = false;
             }
         },
-        async addCategory() {
+
+        async addEmployee() {
             const formData = {
-                name: this.newCategory.name,
-                slug: this.newCategory.slug
+                user_id: this.newEmployee.userId,
+                employee_status_id: this.newEmployee.employeeStatusId,
+                department_id: this.newEmployee.departmentId,
             }
             console.log(formData)
             try {
                 this.loading = true;
-                const response = await axios.post(`/category`, formData);
+                const response = await axios.post(`/employee`, formData);
                 if (response.status == 200) {
-                    this.showSuccessfulCreationCategoryToast()
-                    this.newCategory.name = '',
-                    this.newCategory.slug = ''
+                    this.showSuccessfulCreationEmployeeToast()
+                    this.newEmployee.userId = 0,
+                    this.newEmployee.employeeStatusId = 0,
+                    this.newEmployee.departmentId = 0
                 }
                 else {
                     this.showErrorToast(response.status, response.data)
                     console.log(response);
                 }
-                await this.getCategories(this.currentPage, this.selectedSort);
+                await this.getEmployees(this.currentPage, this.selectedSort, this.filterEmployeeStatus);
             } catch (error) {
                 this.showErrorToast(error.code, error.message);
                 console.log(error);
@@ -379,11 +503,11 @@ export default {
                 this.loading = false;
             }
         },
-        async searchCategories() {
+        async searchEmployees() {
             try {
                 this.currentPage = 1;
-                localStorage.setItem('categoryCurrentPage',  this.currentPage);
-                await this.getCategories(this.currentPage, this.selectedSort);
+                localStorage.setItem('employeesCurrentPage',  this.currentPage);
+                await this.getEmployees(this.currentPage, this.selectedSort, this.filterEmployeeStatus, this.filterDepartment);
             } catch (error) {
                 this.showErrorToast(error.code, error.message);
                 console.log(error);
@@ -393,18 +517,18 @@ export default {
         },
         async changePage(page) {
             this.loading = true;
-            localStorage.setItem('categoryCurrentPage', page);
+            localStorage.setItem('employeesCurrentPage', page);
             this.currentPage = page
-            await this.getCategories(page, this.selectedSort);
+            await this.getEmployees(page, this.selectedSort, this.filterEmployeeStatus, this.filterDepartment);
             this.loading = false;
         },
         async changeSort() {
             this.loading = true;
             try {
                 this.currentPage = 1;
-                localStorage.setItem('categoryCurrentPage',  this.currentPage);
-                localStorage.setItem('categorySelectedSort',  this.selectedSort);
-                await this.getCategories(this.currentPage, this.selectedSort);
+                localStorage.setItem('employeesCurrentPage',  this.currentPage);
+                localStorage.setItem('employeesSelectedSort',  this.selectedSort);
+                await this.getEmployees(this.currentPage, this.selectedSort, this.filterEmployeeStatus, this.filterDepartment);
             } catch (error) {
                 this.showErrorToast(error.code, error.message);
                 console.log(error);
@@ -413,13 +537,16 @@ export default {
             }
         },
 
-        async handleBigCategoryChange(event) {
-
-            await this.getCategories(this.currentPage, this.selectedSort);
+        async handleEmployeeStatusChange(event) {
+            await this.getEmployees(this.currentPage, this.selectedSort, this.filterEmployeeStatus, this.filterDepartment);
             console.log("Выбранное значение:", event.target.value);
         },
-        showSuccessfulCreationCategoryToast() {
-            const successfulCreation = new Toast(document.getElementById('successfulCreationCategoryToast'))
+        async handleDepartmentChange(event) {
+            await this.getEmployees(this.currentPage, this.selectedSort, this.filterEmployeeStatus, this.filterDepartment);
+            console.log("Выбранное значение:", event.target.value);
+        },
+        showSuccessfulCreationEmployeeToast() {
+            const successfulCreation = new Toast(document.getElementById('successfulCreationEmployeeToast'))
             successfulCreation.show()
         },
         showErrorToast(errorCode, errorMessage) {
@@ -432,28 +559,37 @@ export default {
             console.log("setLoading")
             this.loading = loading;
         },
-        async handleCategoryDeleted() {
-            console.log("handleCategoryDeleted")
-            await this.getCategories(this.currentPage, this.selectedSort);
+        async handleEmployeeDeleted() {
+            await this.getEmployees(this.currentPage, this.selectedSort, this.filterEmployeeStatus, this.filterDepartment);
         },
-        async handleCategoryUpdated() {
-            console.log("handleCategoryUpdated")
-            await this.getCategories(this.currentPage, this.selectedSort);
+        async handleEmployeeUpdated() {
+            await this.getEmployees(this.currentPage, this.selectedSort, this.filterEmployeeStatus, this.filterDepartment);
         }
-
     },
     watch: {
         async '$route'(to, from) {
-            // const bigCategory = this.$route.query['big-category'];
-            // if (bigCategory) {
-            //     console.log('big-category:', bigCategory);
-            //     localStorage.setItem('categoryFilterBigCategory', bigCategory);
-            // } else {
-            //     localStorage.setItem('categoryFilterBigCategory', 0);
-            // }
-            // this.filterBigCategory = localStorage.getItem('categoryFilterBigCategory');
+            const employeeStatus = this.$route.query['employee-status'];
+            if (employeeStatus) {
+                console.log('employeeStatus:', employeeStatus);
+                localStorage.setItem('modelFilterEmployeeStatus', employeeStatus);
+            } else {
+                localStorage.setItem('modelFilterEmployeeStatus', 0);
+            }
 
-            await this.getCategories(this.currentPage, this.selectedSort);
+            const department = this.$route.query['department'];
+            if (department) {
+                console.log('department:', department);
+                localStorage.setItem('modelFilterDepartment', department);
+            } else {
+                localStorage.setItem('modelFilterDepartment', 0);
+            }
+
+            this.filterEmployeeStatus = localStorage.getItem('modelFilterEmployeeStatus')
+            this.filterDepartment = localStorage.getItem('modelFilterDepartment')
+
+            await this.getEmployees(this.currentPage, this.selectedSort, this.filterEmployeeStatus, this.filterDepartment);
+            await this.getDepartments()
+            await this.getEmployeeStatuses()
         }
     }
 }   

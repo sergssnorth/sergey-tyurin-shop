@@ -35,11 +35,7 @@ async def get_order_statuses(offset: int = Query(0, ge=0),
     total_pages = ceil(total_count / limit)
 
     query = query.offset(offset).limit(limit)
-    colors_result = await session.execute(query)
-    colors = colors_result.scalars().all()
-    
-
-    result = await session.execute(select(OrderStatus))
+    result = await session.execute(query)
     order_statuses = result.scalars().all()
 
     return OrderStatusesResponseModel(

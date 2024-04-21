@@ -52,10 +52,24 @@ $secondcolor:#696cff;
         $hover-background: $secondcolor,
         $hover-border: $secondcolor,
         $hover-color: $white,
-        $active-background: $secondcolor,
+        $active-background: $white,
         $active-border: $secondcolor,
-        $active-color: $white
+        $active-color: $secondcolor
     );
+}
+
+.btn-navigation-second {
+  @include button-variant(
+      $background: $white,
+      $border: $secondcolor,
+      $color: $secondcolor,
+      $hover-background: $secondcolor,
+      $hover-border: $secondcolor,
+      $hover-color: $white,
+      $active-background: $secondcolor,
+      $active-border: $secondcolor,
+      $active-color: $white
+  );
 }
 
 .btn-second {

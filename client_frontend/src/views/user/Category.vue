@@ -1,11 +1,23 @@
 <template>
-    <div class="row">
-        <ProductBox 
-          v-for="product in products"
-          v-bind:key="product.id"
-          v-bind:product="product" />
+    <div class="row my-3 mx-0 pb-0 ">
+        <div class="col-1">
+
+        </div>
+        <div class="col-10">
+            <div class="row">
+                <ProductBox 
+                v-for="product in products.products"
+                :key="product.id"
+                :product="product" />
+            </div>
+        </div>
+        <div class="col-1">
+
+        </div>
+        
     </div>
 </template>
+
 
 <script>
 import axios from 'axios'
@@ -18,39 +30,51 @@ export default {
     },
     data() {
         return {
-            products: []
-        }
-    },
-    mounted() {
-        this.getCategory()
-        const categorySlug = this.$route.params.category_slug
-        document.title = categorySlug
-    },
-    watch: {
-        $route(to, from) {
-            if (to.name === 'Category') {
-                this.getCategory()
-                const categorySlug = this.$route.params.category_slug
-                document.title = categorySlug
+            products: {
+                totalCount: 0,
+                totalPages: 0,
+                products: []
             }
         }
     },
+    async mounted() {
+        const categorySlug = this.$route.params.category_slug
+        await this.getProducts(categorySlug)
+    },
     methods: {
-        async getCategory() {
-            const big_category_slug = this.$route.params.big_category_slug
-            const categorySlug = this.$route.params.category_slug
+        async getProducts(categorySlug) {
+            const params = { category_slug: categorySlug,
+                            offset: 0,
+                            limit: 20 }
+            try {
+                const response = await axios.get(`/products`, { params });
+                if (!response.status == 200) {
+                    this.showErrorToast(response.status, response.data)
+                    console.log(response);
+                }
+                const { total_count, total_pages, products } = response.data;
 
-            axios
-                .get(`/api/v1/products/${big_category_slug}/${categorySlug}/`)
-                .then(response => {
-                    this.products = response.data
-                    console.log()
-                })
-                .catch(error => {
-                    console.log(error)
-                })
+                // Преобразование ключей totalCount и totalPages
+                const transformedData = {
+                    totalCount: total_count,
+                    totalPages: total_pages,
+                    products: products
+                };
+                this.products = transformedData;
+                console.log(this.products)
+            } catch (error) {
+                this.showErrorToast(error.code, error.message);
+                console.error(error);
+            } 
         }
-    }
+    },
+    watch: {
+        async '$route'(to, from) {
+            const categorySlug = this.$route.params.category_slug
+            await this.getProducts(categorySlug)
+        }
+    },
+    
 }
 
 </script>

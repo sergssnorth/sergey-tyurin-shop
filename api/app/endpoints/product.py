@@ -1,7 +1,7 @@
 import os
 from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.models import Product, Color
+from app.models import Product, Model, Category, Color
 from app.db import get_session
 from fastapi.responses import JSONResponse
 
@@ -12,11 +12,15 @@ from math import ceil
 from pydantic import BaseModel, HttpUrl
 router = APIRouter()
 
+
 class ProductResponseModel(BaseModel):
     id: int
     model_id: int
+    model_name: str
+    model_slug: str
     color_id: int
     color_name: str
+    color_slug: str
     image1: Optional[str] = None
     image2: Optional[str] = None
     image3: Optional[str] = None
@@ -61,22 +65,31 @@ async def save_image(image: UploadFile) -> str:
 
 @router.get("/products", response_model=ProductListResponseModel)
 async def get_products(request: Request,
-                       
                        offset: int = Query(0, ge=0),
                        limit: int = Query(50, gt=0),
                        search: str = Query(None),
-                       model_id: Optional[int] = None, 
+
+                       product_id: Optional[int] = None,
+                       model_id: Optional[int] = None,
+                       category_slug: Optional[str] = None,
+
                        session: AsyncSession = Depends(get_session)):
     
-    query = select(Product, Color).join(Color)
-
+    query = select(Product, Model, Color, Category).join(Product.model).join(Product.color).join(Model.category)
+    
     if search:
         query = query.filter(or_(
             Color.name.ilike(f"%{search}%")
         ))    
+    
+    if product_id is not None:
+        query = query.filter(Product.id == product_id)
 
     if model_id is not None:
         query = query.filter(Product.model_id == model_id)
+
+    if category_slug is not None:
+        query = query.filter(Category.slug == category_slug)
                    
     total_count_query = select(func.count()).select_from(query)
     total_count_result = await session.execute(total_count_query)
@@ -87,12 +100,15 @@ async def get_products(request: Request,
     products_and_colors = await session.execute(query)
 
     products = []
-    for product, color in products_and_colors:
+    for product, model, color, category in products_and_colors:
         product_dict = {
             'id': product.id,
             'model_id': product.model_id,
+            'model_name': model.name,
+            'model_slug': model.slug,
             'color_id': product.color_id,
-            'color_name': color.name
+            'color_name': color.name,
+            'color_slug': color.slug,
         }
         # Добавляем только существующие изображения
         for i in range(1, 11):

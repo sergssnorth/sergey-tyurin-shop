@@ -17,6 +17,7 @@ router = APIRouter()
 class PriceListElementResponseModel(BaseModel):
     id: int
     price_list_id: Optional[int] = None
+    product_id: int
     product_instance_id: Optional[int] = None
     model_name: str
     size_name: str
@@ -33,6 +34,7 @@ async def get_price_list_elements(
     limit: int = Query(50, gt=0),
 
     price_list_id: Optional[int] = None,
+    product_id: Optional[int] = None,
     product_instance_id: Optional[int] = None,
 
     sort_by: str = Query(None, description="Sort by 'name' or 'id'."),
@@ -50,6 +52,9 @@ async def get_price_list_elements(
 
     if price_list_id is not None:
         query = query.filter(PriceListElement.price_list_id == price_list_id)
+
+    if product_id is not None:
+        query = query.filter(Product.id == product_id)
 
     if product_instance_id is not None:
         query = query.filter(PriceListElement.product_instance_id == product_instance_id)
@@ -78,6 +83,7 @@ async def get_price_list_elements(
             PriceListElementResponseModel(
                 id=price_list_element.id,
                 price_list_id=price_list_element.price_list_id,
+                product_id=product.id,
                 product_instance_id=price_list_element.product_instance_id,
                 model_name=model.name,
                 size_name=size.name,

@@ -1,5 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.models import ProductInstance, Size
+from app.models import ProductInstance, Size, Product, Model, Color
 from app.db import get_session
 
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -15,6 +15,8 @@ class ProductInstanceResponseModel(BaseModel):
     id: int
     product_id: int
     size_id: int
+    model_name: str
+    color_name: str
     size_name: str
 
 class ProductInstancesResponseModel(BaseModel):
@@ -36,7 +38,7 @@ async def get_product_instances(offset: int = Query(0, ge=0),
 
                      session: AsyncSession = Depends(get_session)):
 
-    query = select(ProductInstance, Size).join(Size)
+    query = select(ProductInstance, Product, Color, Model, Size).join(ProductInstance.product).join(Product.color).join(Product.model).join(ProductInstance.size)
 
     if search:
         query = query.filter(or_(
@@ -69,8 +71,10 @@ async def get_product_instances(offset: int = Query(0, ge=0),
             id=product_instance.id,
             product_id=product_instance.product_id,
             size_id=product_instance.size_id,
+            model_name= model.name,
+            color_name = color.name,
             size_name=size.name,
-        ) for product_instance, size in product_instances_and_sizes]
+        ) for product_instance, product, color, model, size in product_instances_and_sizes]
 
     return ProductInstancesResponseModel(
         total_count=total_count,
@@ -81,7 +85,7 @@ async def get_product_instances(offset: int = Query(0, ge=0),
 
 @router.post("/product-instance")
 async def add_product_instance(product_instance: ProductInstance, session: AsyncSession = Depends(get_session)):
-    new_product_instance = ProductInstance(id=product_instance.id, product_id=product_instance.product_id, size_id=product_instance.size_id)
+    new_product_instance = ProductInstance(product_id=product_instance.product_id, size_id=product_instance.size_id)
     session.add(new_product_instance)
     await session.commit()
     await session.refresh(new_product_instance)

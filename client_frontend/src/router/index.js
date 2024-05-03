@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import store from '../store'
-import AdminHome from '../views/admin/AdminHome.vue'
+
 import LogIn from '../components/LogIn.vue'
 import SignUp from '../components/SignUp.vue'
 import Home from '../views/user/Home.vue'
@@ -15,11 +15,6 @@ import Test from '../views/user/Test.vue'
 import Checkout from '../views/user/Checkout.vue'
 
 const routes = [
-  {
-    path: '/admin',
-    name: 'AdminHome',
-    component: AdminHome
-  },
   {
     path: '/',
     name: 'Home',
@@ -36,12 +31,17 @@ const routes = [
     component: SignUp
   },
   {
-    path: '/product/:big_category_slug/:category_slug/:product_slug',
+    path: '/product/:model_slug/:product_id',
     name: 'Product',
     component: Product
   },
-  {
-    path: '/:big_category_slug/:category_slug',
+  // {
+  //   path: '/:big_category_slug/:category_slug',
+  //   name: 'Category',
+  //   component: Category
+  // },
+   {
+    path: '/category/:category_slug',
     name: 'Category',
     component: Category
   },

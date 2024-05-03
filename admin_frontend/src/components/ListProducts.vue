@@ -7,6 +7,7 @@
                 <span style="margin-right: 0.75rem;">
                 <i class="bi bi-box"></i>
                 </span>
+                <span style="margin-right: 0.75rem;">{{ dataProduct.model_name }}</span>
                 <span>{{ dataProduct.color_name }}</span>
                 <span class="ms-auto"><i class="bi bi-hash"></i></span>
                 <span class="" style="margin-right: 1.5rem;">{{ dataProduct.id }}</span>
@@ -14,9 +15,32 @@
             
             <div class="vr" style="margin-right: 1.15rem;"></div>
             <div class="123123">
-                <button class="btn btn-icon mx-1 px-2 d-inline text-success" @click="">
+                <button data-bs-toggle="modal" :data-bs-target="'#addProductInstance_' + dataProduct.id" class="btn btn-icon mx-1 px-2 d-inline text-success" @click="">
                     <i class="bi bi-plus-circle" style="font-size: 18px;"></i>
                 </button>
+
+                <div class="modal fade" :id="'addProductInstance_' + dataProduct.id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header text-center">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Добавить экземляр продукта</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <select v-model="newProductInstances.sizeId" class="form-select py-3 mt-2 mb-3" aria-label="Default select example">
+                                    <option :value="0">Размер</option>
+                                    <option v-for="size in sizes" :key="size.id" :value="size.id">
+                                        {{ size.name }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="modal-footer ">
+                                <button @click="addProductInstance()" type="button" class="btn btn-second w-100" data-bs-dismiss="modal">Создать</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <button class="btn btn-icon mx-1 px-2 d-inline text-dark" @click="this.$router.push({ path: '/models', query: { 'model': dataProduct.id } });">
                     <i class="bi bi-layers" style="font-size: 18px;"></i>
                 </button>
@@ -32,12 +56,6 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <select v-model="updatedProduct.modelId" class="form-select py-3 mt-2 mb-3" aria-label="Default select example">
-                                    <option :value="0">Модель</option>
-                                    <option v-for="model in models" :key="model.id" :value="model.id">
-                                        {{ model.name }}
-                                    </option>
-                                </select>
                                 <select v-model="updatedProduct.colorId" class="form-select py-3 mb-3" aria-label="Default select example">
                                     <option :value="0">Коллекция</option>
                                     <option v-for="color in colors" :key="color.id" :value="color.id">
@@ -96,6 +114,7 @@ export default {
         product: Object,
         models: Array,
         colors: Array,
+        sizes: Array, 
 
         showErrorToast: Function,
         setLoading: Function,
@@ -121,6 +140,10 @@ export default {
                 productInstances: []
             },
             
+            newProductInstances: {
+                sizeId: 0,
+            },
+
             productInstancesLoading: true,
         }
     },
@@ -204,6 +227,28 @@ export default {
                 await this.handleModelDeleted()
             }
         },
+
+        async addProductInstance() {
+            this.productInstancesLoading = true;
+            const formData = {
+                product_id: this.dataProduct.id,
+                size_id: this.newProductInstances.sizeId
+            }
+            try {
+                const response = await axios.post(`/product-instance`, formData);
+                if (!response.status == 200) {
+                    this.showErrorToast(response.status, response.data)
+                    console.log(response);
+                }
+            } catch (error) {
+                this.showErrorToast(error.code, error.message);
+                console.error(error);
+            } finally {
+                this.productInstancesLoading = false;
+                await this.getProductInstances(this.dataProduct.id);
+            }
+        },
+
 
         async toggleSeparator(event) {
             console.log("toggleSeparator")

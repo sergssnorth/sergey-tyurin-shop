@@ -14,9 +14,38 @@
             
             <div class="vr" style="margin-right: 1.15rem;"></div>
             <div class="123123">
-                <button class="btn btn-icon mx-1 px-2 d-inline text-success" @click="">
+                <button data-bs-toggle="modal" :data-bs-target="'#addPriceListElement_' + dataPriceList.id" class="btn btn-icon mx-1 px-2 d-inline text-success" @click="">
                     <i class="bi bi-plus-circle" style="font-size: 18px;"></i>
                 </button>
+
+                <div class="modal fade" :id="'addPriceListElement_' + dataPriceList.id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header text-center">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Добавить элемент'</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- ТУТ ОСТАНОВИЛСЯ -->
+                                <select v-model="newPriceListElement.productInstanceId" class="form-select py-3 mt-2 mb-3" aria-label="Default select example">
+                                    <option :value="0">Продукт</option>
+                                    <option v-for="productInstance in productInstances" :key="productInstance.id" :value="productInstance.id">
+                                        {{  productInstance.model_name + ' - ' + productInstance.color_name + ' - ' + productInstance.size_name }}
+                                    </option>
+                                </select>
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" placeholder="name@example.com" v-model="newPriceListElement.price">
+                                    <label for="floatingInput">Цена</label>
+                                </div>
+                            </div>
+                            <div class="modal-footer ">
+                                <button @click="addPriceListElement()" type="button" class="btn btn-second w-100" data-bs-dismiss="modal">Cоздать</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
                 <button class="btn btn-icon mx-1 px-2 d-inline text-dark" @click="this.$router.push({ path: '/models', query: { 'model': dataPriceList.id } });">
                     <i class="bi bi-layers" style="font-size: 18px;"></i>
                 </button>
@@ -93,6 +122,7 @@ export default {
     name: 'ListPriceLists',
     props: {
         priceList: Object,
+        productInstances: Array,
 
         showErrorToast: Function,
         setLoading: Function,
@@ -117,6 +147,11 @@ export default {
                 priceListElements: []
             },
             
+            newPriceListElement: {
+                productInstanceId: 0,
+                price: ""
+            },
+
             priceListElementsLoading: true,
         }
     },
@@ -201,6 +236,32 @@ export default {
                 await this.handlePriceListDeleted()
             }
         },
+
+        async addPriceListElement() {
+            this.priceListElementsLoading = true;
+            if (!isNaN(this.newPriceListElement.price)) {
+                this.newPriceListElement.price = parseInt(this.newPriceListElement.price)
+            }
+            const formData = {
+                price_list_id: this.dataPriceList.id,
+                product_instance_id: this.newPriceListElement.productInstanceId,
+                price: this.newPriceListElement.price
+            }
+            try {
+                const response = await axios.post(`/price-list-element`, formData);
+                if (!response.status == 200) {
+                    this.showErrorToast(response.status, response.data)
+                    console.log(response);
+                }
+            } catch (error) {
+                this.showErrorToast(error.code, error.message);
+                console.error(error);
+            } finally {
+                this.priceListElementsLoading = false;
+                await this.getPriceListElements(this.dataPriceList.id);
+            }
+        },
+
 
         async toggleSeparator(event) {
             console.log("toggleSeparator")

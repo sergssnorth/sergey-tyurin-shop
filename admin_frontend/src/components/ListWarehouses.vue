@@ -14,9 +14,36 @@
             
             <div class="vr" style="margin-right: 1.15rem;"></div>
             <div class="123123">
-                <button class="btn btn-icon mx-1 px-2 d-inline text-success" @click="">
+                <button data-bs-toggle="modal" :data-bs-target="'#addWarehouseElement_' + dataWarehouse.id" class="btn btn-icon mx-1 px-2 d-inline text-success" @click="">
                     <i class="bi bi-plus-circle" style="font-size: 18px;"></i>
                 </button>
+
+                <div class="modal fade" :id="'addWarehouseElement_' + dataWarehouse.id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header text-center">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Добавить наличие</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- ТУТ ОСТАНОВИЛСЯ -->
+                                <select v-model="newWarehouseElement.productInstanceId" class="form-select py-3 mt-2 mb-3" aria-label="Default select example">
+                                    <option :value="0">Продукт</option>
+                                    <option v-for="productInstance in productInstances" :key="productInstance.id" :value="productInstance.id">
+                                        {{  productInstance.model_name + ' - ' + productInstance.color_name + ' - ' + productInstance.size_name }}
+                                    </option>
+                                </select>
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" placeholder="name@example.com" v-model="newWarehouseElement.count">
+                                    <label for="floatingInput">Количество</label>
+                                </div>
+                            </div>
+                            <div class="modal-footer ">
+                                <button @click="addWarehouseElement()" type="button" class="btn btn-second w-100" data-bs-dismiss="modal">Cоздать</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <button class="btn btn-icon mx-1 px-2 d-inline text-dark" @click="this.$router.push({ path: '/models', query: { 'model': dataWarehouse.id } });">
                     <i class="bi bi-layers" style="font-size: 18px;"></i>
@@ -66,6 +93,9 @@
                                 <span style="margin-right: 0.5em;">{{ warehouseElement.id }}.</span>
                                 <span style="margin-right: 1.5rem;">{{ warehouseElement.model_name }}</span>
 
+                                <span style="margin-right: 0.25rem;"><i class="bi bi-file-image-fill"></i></span>
+                                <span style="margin-right: 1rem;">{{ warehouseElement.color_name }}</span>
+
                                 <span style="margin-right: 0.25rem;"><i class="bi bi-file-code-fill"></i></span>
                                 <span>{{ warehouseElement.size_name }}</span>
 
@@ -93,6 +123,7 @@ export default {
     name: 'ListWarehouses',
     props: {
         warehouse: Object,
+        productInstances: Array,
 
         showErrorToast: Function,
         setLoading: Function,
@@ -117,6 +148,11 @@ export default {
                 warehouseElements: []
             },
             
+            newWarehouseElement: {
+                productInstanceId: 0,
+                count: ""
+            },
+
             warehouseElementsLoading: true,
         }
     },
@@ -199,6 +235,31 @@ export default {
             } finally {
                 this.setLoading(false);
                 await this.handleWarehouseDeleted()
+            }
+        },
+
+        async addWarehouseElement() {
+            this.warehouseElementsLoading = true;
+            if (!isNaN(this.newWarehouseElement.count)) {
+                this.newWarehouseElement.count = parseInt(this.newWarehouseElement.count)
+            }
+            const formData = {
+                warehouse_id: this.dataWarehouse.id,
+                product_instance_id: this.newWarehouseElement.productInstanceId,
+                count: this.newWarehouseElement.count
+            }
+            try {
+                const response = await axios.post(`/warehouse-element`, formData);
+                if (!response.status == 200) {
+                    this.showErrorToast(response.status, response.data)
+                    console.log(response);
+                }
+            } catch (error) {
+                this.showErrorToast(error.code, error.message);
+                console.error(error);
+            } finally {
+                this.warehouseElementsLoading = false;
+                await this.getWarehouseElements(this.dataWarehouse.id);
             }
         },
 

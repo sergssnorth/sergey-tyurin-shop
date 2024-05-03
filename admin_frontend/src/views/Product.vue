@@ -218,6 +218,7 @@
                         :product="product"
                         :models="models.models"
                         :colors="colors.colors"
+                        :sizes="sizes.sizes"
 
                         :setLoading="setLoading"
                         :loading="loading"
@@ -328,6 +329,12 @@ export default {
                 colors: []
             },
 
+            sizes: {
+                totalCount: 0,
+                totalPages: 0,
+                sizes: []
+            },
+
             loading : true,
             currentPage: 1,
         }
@@ -392,6 +399,7 @@ export default {
         await this.getProducts(this.currentPage, this.selectedSort, this.filterModel);
         await this.getModels()
         await this.getColors()
+        await this.getSizes()
     },
     methods: {
         async getProducts(page, selectedSort, filterModel) {
@@ -491,7 +499,31 @@ export default {
                 this.loading = false;
             }
         },
+        async getSizes() {
+            try {
+                this.loading = true;
+                const response = await axios.get(`/sizes`);
+                if (!response.status == 200) {
+                    this.showErrorToast(response.status, response.data)
+                    console.log(response);
+                }
+                const { total_count, total_pages, sizes } = response.data;
 
+                const transformedData = {
+                    totalCount: total_count,
+                    totalPages: total_pages,
+                    sizes: sizes
+                };
+
+                this.sizes = transformedData;
+                console.log(this.sizes);
+            } catch (error) {
+                this.showErrorToast(error.code, error.message);
+                console.log(error);
+            } finally {
+                this.loading = false;
+            }
+        },
         async addProduct() {
             const formData = new FormData();
             formData.append('model_id', this.newProduct.modelId);

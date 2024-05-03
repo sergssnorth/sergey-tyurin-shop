@@ -137,6 +137,7 @@
                         v-for="priceList in priceLists.priceLists"
                         :key="priceList.id"
                         :priceList="priceList"
+                        :productInstances = "productInstances.productInstances"
 
                         :setLoading="setLoading"
                         :loading="loading"
@@ -225,6 +226,12 @@ export default {
                 priceLists: []
             },
 
+            productInstances : {
+                totalCount: 0,
+                totalPages: 0,
+                productInstances: []
+            },
+
             loading : true,
             currentPage: 1,
         }
@@ -271,6 +278,7 @@ export default {
         }
 
         await this.getPriceLists(this.currentPage, this.selectedSort);
+        await this.getProductInstances();
     },
     methods: {
         async getPriceLists(page, selectedSort) {
@@ -334,6 +342,33 @@ export default {
             } catch (error) {
                 this.showErrorToast(error.code, error.message);
                 console.log(error);
+            } finally {
+                this.loading = false;
+            }
+        },
+        async getProductInstances() {
+            this.loading = true;
+            const params = {
+                          offset: 0,
+                        limit: 200 }
+            try {
+                const response = await axios.get(`/product-instances`, { params });
+                if (!response.status == 200) {
+                    this.showErrorToast(response.status, response.data)
+                    console.log(response);
+                }
+                const { total_count, total_pages, product_instances } = response.data;
+
+                // Преобразование ключей totalCount и totalPages
+                const transformedData = {
+                    totalCount: total_count,
+                    totalPages: total_pages,
+                    productInstances: product_instances
+                };
+                this.productInstances = transformedData;
+            } catch (error) {
+                this.showErrorToast(error.code, error.message);
+                console.error(error);
             } finally {
                 this.loading = false;
             }

@@ -1,6 +1,6 @@
 from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.models import WarehouseElement, ProductInstance, Size , Product, Model
+from app.models import WarehouseElement, ProductInstance, Size , Product,Color,  Model
 from app.db import get_session
 
 
@@ -18,6 +18,7 @@ class WarehouseElementResponseModel(BaseModel):
     warehouse_id: Optional[int] = None
     product_instance_id: Optional[int] = None
     model_name: str
+    color_name: str
     size_name: str
     count: int
 
@@ -31,6 +32,7 @@ async def get_warehouse_elements(
     offset: int = Query(0, ge=0),
     limit: int = Query(50, gt=0),
     warehouse_id: Optional[int] = None,
+    product_id: Optional[int] = None,
     product_instance_id: Optional[int] = None,
     sort_by: str = Query(None, description="Sort by 'name' or 'id'."),
     order: str = Query("desc", description="Sort order: 'asc' or 'desc'."),
@@ -38,12 +40,16 @@ async def get_warehouse_elements(
 ):
 
     query = (
-        select(WarehouseElement, ProductInstance, Product, Size, Model)
+        select(WarehouseElement, ProductInstance, Product, Color, Size, Model)
         .join(WarehouseElement.product_instances)
         .join(ProductInstance.size)
         .join(ProductInstance.product)
+        .join(Product.color)
         .join(Model)
     )
+
+    if product_id is not None:
+        query = query.filter(Product.id == product_id)
 
     if warehouse_id is not None:
         query = query.filter(WarehouseElement.warehouse_id == warehouse_id)
@@ -70,13 +76,14 @@ async def get_warehouse_elements(
     warehouse_elements = await session.execute(query)
 
     response_data = []
-    for warehouse_element, product_instance, product, size, model in warehouse_elements:
+    for warehouse_element, product_instance, product, color, size, model in warehouse_elements:
         response_data.append(
             WarehouseElementResponseModel(
                 id=warehouse_element.id,
                 warehouse_id=warehouse_element.warehouse_id,
                 product_instance_id=warehouse_element.product_instance_id,
                 model_name=model.name,
+                color_name=color.name,
                 size_name=size.name,
                 count=warehouse_element.count,
             )

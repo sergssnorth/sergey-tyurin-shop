@@ -24,6 +24,7 @@ from app.endpoints import department
 from app.endpoints import employee_status
 from app.endpoints import employee
 from app.endpoints import user
+from app.endpoints import order_element
 
 
 app = FastAPI()
@@ -31,6 +32,7 @@ app = FastAPI()
 origins = [
     "http://localhost",
     "http://localhost:8080",
+    "http://localhost:8081",
 ]
 
 app.add_middleware(
@@ -62,3 +64,5 @@ app.include_router(department.router)
 app.include_router(employee_status.router)
 app.include_router(employee.router)
 app.include_router(user.router)
+app.include_router(order_element.router)
+

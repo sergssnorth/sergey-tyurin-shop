@@ -81,7 +81,7 @@
                                     class="form-select mx-3 mb-2 py-2" style="width: 91%;"
                                     aria-label="Default select example">
                                     <option :value="0">Выберите работника</option>
-                                    <option v-for="employe in employees.employees" :key="employe.id"
+                                    <option v-for="employee in employees.employees" :key="employee.id"
                                         :value="employee.id">
                                         {{ employee.name }} {{ employee.sname }}
                                     </option>
@@ -89,10 +89,10 @@
                                 <select @change="handleOrderStatusChange" v-model="filterEmployee"
                                     class="form-select mx-3 mb-2 py-2" style="width: 91%;"
                                     aria-label="Default select example">
-                                    <option :value="0">Выберите коллекцию</option>
-                                    <option v-for="collection in collections.collections" :key="collection.id"
-                                        :value="collection.id">
-                                        {{ collection.name }}
+                                    <option :value="0">Выберите статус</option>
+                                    <option v-for="orderStatus in orderStatuses.orderStatuses" :key="orderStatus.id"
+                                        :value="orderStatus.id">
+                                        {{ orderStatus.name }}
                                     </option>
                                 </select>
                             </div>
@@ -109,40 +109,17 @@
                         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                             <div class="modal-content">
                                 <div class="modal-header text-center">
-                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Создание модели</h1>
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Создание заказа</h1>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
                                     <select v-model="newOrder.categoryId" class="form-select py-3 mt-2 mb-3"
                                         aria-label="Default select example">
-                                        <option :value="0">Категория</option>
-                                        <option v-for="category in categories.categories" :key="category.id"
-                                            :value="category.id">
-                                            {{ category.name }}
-                                        </option>
-                                    </select>
-                                    <select v-model="newOrder.collectionId" class="form-select py-3 mb-3"
-                                        aria-label="Default select example">
-                                        <option :value="0">Коллекция</option>
-                                        <option v-for="collection in collections.collections" :key="collection.id"
-                                            :value="collection.id">
-                                            {{ collection.name }}
-                                        </option>
-                                    </select>
-                                    <select v-model="newOrder.detailId" class="form-select py-3 mb-3"
-                                        aria-label="Default select example">
-                                        <option :value="0">Описание</option>
-                                        <option v-for="detail in details.details" :key="detail.id" :value="detail.id">
-                                            {{ detail.name }}
-                                        </option>
-                                    </select>
-                                    <select v-model="newOrder.sizeGuideId" class="form-select py-3 mb-3"
-                                        aria-label="Default select example">
-                                        <option :value="0">Размерная сетка</option>
-                                        <option v-for="sideGuide in sizeGuides.sizeGuides" :key="sideGuide.id"
-                                            :value="sideGuide.id">
-                                            {{ sideGuide.name }}
+                                        <option :value="0">Пользователь</option>
+                                        <option v-for="user in users.users" :key="user.id"
+                                            :value="user.id">
+                                            {{ user.email }}
                                         </option>
                                     </select>
 
@@ -151,11 +128,63 @@
                                             v-model="newOrder.name">
                                         <label for="floatingInput">Имя</label>
                                     </div>
-                                    <div class="form-floating mb-2">
-                                        <input type="text" class="form-control" placeholder="Password"
-                                            v-model="newOrder.slug">
-                                        <label for="floatingPassword">Слаг</label>
+
+                                    <div class="form-floating mt-2 mb-3">
+                                        <input type="text" class="form-control" placeholder="name@example.com"
+                                            v-model="newOrder.sname">
+                                        <label for="floatingInput">Фамилия</label>
                                     </div>
+
+                                    <div class="form-floating mt-2 mb-3">
+                                        <input type="text" class="form-control" placeholder="name@example.com"
+                                            v-model="newOrder.lname">
+                                        <label for="floatingInput">Отчество</label>
+                                    </div>
+
+                                    <div class="form-floating mt-2 mb-3">
+                                        <input type="text" class="form-control" placeholder="name@example.com"
+                                            v-model="newOrder.phone">
+                                        <label for="floatingInput">Телефон</label>
+                                    </div>
+
+                                    <div class="form-floating mt-2 mb-3">
+                                        <input type="text" class="form-control" placeholder="name@example.com"
+                                            v-model="newOrder.phone">
+                                        <label for="floatingInput">Email</label>
+                                    </div>
+
+                                    <div class="form-floating mt-2 mb-3">
+                                        <input type="text" class="form-control" placeholder="name@example.com"
+                                            v-model="newOrder.phone">
+                                        <label for="floatingInput">Регион</label>
+                                    </div>
+
+                                    <div class="form-floating mt-2 mb-3">
+                                        <input type="text" class="form-control" placeholder="name@example.com"
+                                            v-model="newOrder.phone">
+                                        <label for="floatingInput">Город</label>
+                                    </div>
+
+                                    <div class="form-floating mt-2 mb-3">
+                                        <input type="text" class="form-control" placeholder="name@example.com"
+                                            v-model="newOrder.phone">
+                                        <label for="floatingInput">Почтовый индекс</label>
+                                    </div>
+                                    <select v-model="newOrder.collectionId" class="form-select py-3 mb-3"
+                                        aria-label="Default select example">
+                                        <option :value="0">Сотрудник</option>
+                                        <option v-for="employee in employees.employees" :key="employee.id"
+                                            :value="employee.id">
+                                            {{ employee.name }}
+                                        </option>
+                                    </select>
+                                    <select v-model="newOrder.orderStatusId" class="form-select py-3 mb-3"
+                                        aria-label="Default select example">
+                                        <option :value="0">Описание</option>
+                                        <option v-for="orderStatus in orderStatuses.orderStatuses" :key="orderStatus.id" :value="orderStatus.id">
+                                            {{ orderStatus.name }}
+                                        </option>
+                                    </select>
                                 </div>
                                 <div class="modal-footer ">
                                     <button @click="addModel()" type="button" class="btn btn-second w-100"
@@ -180,12 +209,12 @@
                 <div v-if="!loading">
                     <div v-if="orders.orders.length != 0">
                         <ListOrders 
-                        v-for="model in orders.orders" 
-                        :key="model.id" :model="model"
-                        :categories="categories.categories" 
-                        :collections="collections.collections"
-                        :details="details.details" 
-                        :sizeGuides="sizeGuides.sizeGuides" 
+                        v-for="order in orders.orders" 
+                        :key="order.id" 
+                        :order="order"
+                        :users="users.users"
+                        :employees="employees.employees" 
+                        :orderStatuses="orderStatuses.orderStatuses" 
                         
                         :setLoading="setLoading"
                         :loading="loading" 
@@ -197,9 +226,7 @@
                     <div v-else>
                         <span style="font-size: 1.3rem;">Моделей пока нет ...</span>
                     </div>
-
                 </div>
-
             </div>
         </div>
         <div class="row">
@@ -235,7 +262,7 @@
                 aria-atomic="true" data-bs-delay="3000">
                 <div class="d-flex">
                     <div class="toast-body">
-                        Модель успешно создана!
+                        Заказ успешно создан!
                     </div>
                     <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
                         aria-label="Close"></button>
@@ -294,6 +321,12 @@ export default {
                 orders: []
             },
 
+            users: {
+                totalCount: 0,
+                totalPages: 0,
+                users: []
+            },
+
             employees: {
                 totalCount: 0,
                 totalPages: 0,
@@ -305,6 +338,7 @@ export default {
                 totalPages: 0,
                 orderStatuses: []
             },
+
 
             loading: true,
             currentPage: 1,
@@ -367,13 +401,39 @@ export default {
 
 
         await this.getOrders(this.currentPage, this.selectedSort, this.filterEmployee, this.filterOrderStatus); // ОСТАНОВИЛСЯ ТУТ ОСТАНОВИЛСЯ ТУТ
+        await this.getUsers()
         await this.getEmployees()
         await this.getOrderStatuses()
-        // await this.getCollections()
-        // await this.getDetails()
-        // await this.getSizeGuides()
+       
+
     },
     methods: {
+        async getUsers() {
+            try {
+                this.loading = true;
+                const response = await axios.get(`/users`);
+                if (!response.status == 200) {
+                    this.showErrorToast(response.status, response.data)
+                    console.log(response);
+                }
+                const { total_count, total_pages, users } = response.data;
+
+                const transformedData = {
+                    totalCount: total_count,
+                    totalPages: total_pages,
+                    users: users
+                };
+
+                this.users = transformedData;
+                console.log(this.users);
+            } catch (error) {
+                this.showErrorToast(error.code, error.message);
+                console.log(error);
+            } finally {
+                this.loading = false;
+            }
+        },
+
         async getEmployees() {
             try {
                 this.loading = true;
@@ -461,7 +521,6 @@ export default {
                 }
                 const { total_count, total_pages, orders } = response.data;
 
-                // Преобразование ключей totalCount и totalPages
                 const transformedData = {
                     totalCount: total_count,
                     totalPages: total_pages,
